@@ -1,0 +1,62 @@
+# ── Dependências ──
+node_modules/
+.pnp
+.pnp.js
+
+# ── Build ──
+dist/
+dist-ssr/
+build/
+out/
+
+# ── Vite ──
+.vite/
+vite.config.*.timestamp-*
+
+# ── TypeScript ──
+*.tsbuildinfo
+
+# ── Testes / cobertura ──
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# ── Variáveis de ambiente (segredos) ──
+.env
+.env.*
+!.env.example
+
+# ── Editor ──
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.idea/
+*.suo
+*.ntvs_*
+*.njsproj
+*.sln
+*.sw?
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs ──
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Cache de ferramentas ──
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.turbo/
