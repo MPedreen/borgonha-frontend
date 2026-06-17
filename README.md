@@ -1,84 +1,74 @@
 # Borgonha Confeitaria — Frontend
 
-Interface web responsiva para gestão da confeitaria: PDV, estoque de ingredientes e relatórios financeiros.
+Interface web para gestão da confeitaria: PDV, estoque de ingredientes e relatórios financeiros.
 
 ## Stack
 
 | Camada | Tecnologia |
 |--------|------------|
-| Framework | Angular |
-| Linguagem | TypeScript |
-| Estilo | CSS / Angular Material (ou equivalente) |
-| Comunicação | HTTP REST (consumindo o backend .NET) |
+| Framework | React 18 + TypeScript 5 |
+| Build | Vite 5 |
+| Roteamento | React Router v6 |
+| Estado servidor | TanStack Query v5 |
+| HTTP | Axios |
+| Autenticação | keycloak-js 24 |
 
-## Telas / Módulos
+## Telas
 
-### PDV — Caixa
-- Listagem de produtos ativos com nome e preço
-- Carrinho de venda: adicionar/remover produtos com quantidade
-- Cálculo automático de total e troco (campo "valor recebido")
-- Confirmação da venda com feedback imediato (sucesso ou erro de estoque)
-- **Regra UX:** fluxo completo de uma venda em no máximo 3 cliques
+| Rota | Tela | Roles |
+|------|------|-------|
+| `/pdv` | PDV — grid de produtos, carrinho e troco em tempo real | `admin`, `atendente` |
+| `/vendas/:id` | Recibo da venda | `admin`, `atendente` |
+| `/produtos` | CRUD de produtos com receita dinâmica | `admin` |
+| `/estoque` | Ingredientes, entrada de estoque e alertas | `admin` |
+| `/relatorios` | KPIs diários/mensais e ranking de produtos | `admin` |
 
-### Produtos
-- Listagem, criação, edição e desativação de produtos
-- Cada produto inclui receita (ingredientes + quantidades por unidade)
-- Exibe preço de venda e custo calculado automaticamente
-
-### Estoque de Ingredientes
-- Listagem com quantidade atual, mínima e unidade de medida
-- Destaque visual (badge/alerta) para ingredientes em nível crítico (`atual <= mínimo`)
-- Entrada manual de estoque (formulário simples: ingrediente + quantidade)
-
-### Relatórios Financeiros
-- Seletor de data para relatório diário
-- Seletor de mês/ano para relatório mensal
-- Exibe: receita bruta, custo total, lucro, número de vendas, ranking de produtos mais vendidos
-
-## Regras de UX / Interface
-
-| Regra | Detalhe |
-|-------|---------|
-| Máximo 3 cliques por venda | PDV projetado para ser o fluxo mais rápido do sistema |
-| Sem conhecimento técnico | Sem jargões técnicos na interface; linguagem acessível a atendentes |
-| Responsiva | Funciona em desktop e tablet sem instalação |
-| Feedback imediato | Toda ação retorna confirmação ou mensagem de erro clara |
-| Alerta de estoque | Ingredientes críticos são destacados visualmente em todas as telas relevantes |
-
-## Estrutura de Componentes (sugerida)
+## Estrutura
 
 ```
-src/app/
-├── pdv/                  # Módulo de caixa/venda
-├── produtos/             # CRUD de produtos com receita
-├── estoque/              # Ingredientes e entradas manuais
-├── relatorios/           # Relatório diário e mensal
-└── shared/               # Componentes reutilizáveis (alertas, tabelas, etc.)
-```
-
-## Comunicação com o Backend
-
-Todos os dados vêm da API REST. Configurar a URL base em `environment.ts`:
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:5000'
-};
+src/
+├── auth/          # Keycloak singleton, provider, hooks e ProtectedRoute
+├── api/           # Funções Axios por domínio (produtos, ingredientes, vendas, relatorios)
+├── features/      # Páginas por domínio (pdv, produtos, estoque, relatorios)
+├── components/    # Badge, Spinner, KpiCard
+├── layouts/       # AppLayout (navbar com alerta de estoque)
+├── types/         # Tipos TypeScript por domínio
+└── styles/        # Design tokens e estilos base
 ```
 
 ## Como rodar
 
-```bash
-# Pré-requisitos: Node.js, Angular CLI
+### Com Docker (recomendado)
 
-npm install
-ng serve
-# Acesse http://localhost:4200
+```bash
+# Na raiz do monorepo
+cp .env.example .env        # preencher DB_PASSWORD e KEYCLOAK_ADMIN_PASSWORD
+docker compose up -d        # sobe postgres + keycloak
+docker compose --profile app up -d --build   # sobe backend + frontend
 ```
 
-## Fora do Escopo
+O frontend ficará disponível em `http://localhost:3000`.
 
-- Autenticação/login (MVP)
-- App mobile nativo (iOS/Android)
-- Integração com WhatsApp ou pedidos online
+### Localmente
+
+```bash
+# 1. Criar arquivo de variáveis de ambiente
+cp .env.example .env.local
+# Preencher VITE_API_URL e VITE_KEYCLOAK_URL
+
+# 2. Instalar dependências e subir
+npm install
+npm run dev
+# Acesse http://localhost:5173
+```
+
+## Variáveis de ambiente
+
+| Variável | Exemplo |
+|----------|---------|
+| `VITE_API_URL` | `http://localhost:5000` |
+| `VITE_KEYCLOAK_URL` | `http://localhost:8080` |
+
+## Autenticação
+
+O Keycloak é inicializado antes da montagem do React (`main.tsx`). Todas as rotas exigem autenticação. A role `atendente` acessa apenas o PDV; `admin` acessa tudo. O token é renovado automaticamente via interceptor Axios quando falta menos de 30 segundos para expirar.
