@@ -1,5 +1,6 @@
 export interface ItemVenda {
   produto_id: string;
+  nome_produto: string;
   quantidade: number;
   preco_unitario: number;
   subtotal: number;

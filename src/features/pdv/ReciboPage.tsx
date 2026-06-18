@@ -83,7 +83,7 @@ export function ReciboPage() {
           <tbody>
             {venda.itens.map((item, idx) => (
               <tr key={idx}>
-                <td>—</td>
+                <td>{item.nome_produto}</td>
                 <td style={{ textAlign: 'center' }}>{item.quantidade}</td>
                 <td style={{ textAlign: 'right' }}>{moeda(item.preco_unitario)}</td>
                 <td style={{ textAlign: 'right' }}>{moeda(item.subtotal)}</td>
