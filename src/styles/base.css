@@ -252,8 +252,20 @@ th {
   }
 }
 
-/* --- Responsividade: telas muito estreitas (≤ 480 px) --- */
-@media (max-width: 480px) {
+/* --- Responsividade: tablet estreito (641 px – 768 px) --- */
+@media (min-width: 641px) and (max-width: 768px) {
+  .navbar {
+    padding: var(--space-2) var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .navbar-links {
+    gap: var(--space-3);
+  }
+}
+
+/* --- Responsividade: mobile (≤ 640 px) — navbar colapsa em 2 linhas --- */
+@media (max-width: 640px) {
   .navbar {
     flex-wrap: wrap;
     padding: var(--space-2) var(--space-4);
@@ -268,4 +280,9 @@ th {
   .navbar-user {
     gap: var(--space-2);
   }
+}
+
+/* --- Modal responsivo --- */
+.modal-box {
+  width: min(380px, calc(100vw - 2 * var(--space-4)));
 }

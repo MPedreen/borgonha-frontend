@@ -181,7 +181,7 @@ export function RelatoriosPage() {
                 <KpiCard titulo="Lucro" valor={moeda(mensal.lucro)} variante={varianteLucro(mensal.lucro)} />
               </div>
 
-              <div className="card">
+              <div className="card table-scroll">
                 <h2 style={{ marginBottom: 'var(--space-4)' }}>Ranking de Produtos</h2>
 
                 {mensal.ranking.length === 0 ? (

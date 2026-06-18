@@ -270,8 +270,8 @@ export function EstoquePage() {
           onClick={(e) => { if (e.target === e.currentTarget) fecharModalEntrada(); }}
         >
           <div
-            className="card"
-            style={{ width: 380, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
+            className="card modal-box"
+            style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
           >
             <h2 style={{ marginBottom: 'var(--space-1)' }}>Registrar Entrada</h2>
             <p style={{ color: 'var(--color-neutral-500)', marginBottom: 'var(--space-4)' }}>
