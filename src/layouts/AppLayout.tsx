@@ -30,6 +30,7 @@ export function AppLayout() {
             </NavLink>
           )}
           {isAdmin && <NavLink to="/relatorios">Relatórios</NavLink>}
+          {isAdmin && <NavLink to="/usuarios">Usuários</NavLink>}
         </nav>
         <div className="navbar-user">
           <span>{username}</span>
