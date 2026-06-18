@@ -1,5 +1,4 @@
 export interface RelatorioDiario {
-  data: string;
   total_vendas: number;
   receita_bruta: number;
   custo_total: number;
@@ -13,8 +12,6 @@ export interface RankingProduto {
 }
 
 export interface RelatorioMensal {
-  ano: number;
-  mes: number;
   total_vendas: number;
   receita_bruta: number;
   custo_total: number;

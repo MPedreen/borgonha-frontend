@@ -19,6 +19,12 @@ const MESES = [
 
 const ANOS = Array.from({ length: 5 }, (_, i) => anoAtual - i);
 
+function varianteLucro(lucro: number) {
+  if (lucro > 0) return 'success' as const;
+  if (lucro < 0) return 'danger' as const;
+  return 'destaque' as const;
+}
+
 export function RelatoriosPage() {
   const [aba, setAba] = useState<'diario' | 'mensal'>('diario');
   const [dataDiario, setDataDiario] = useState(hoje());
@@ -62,6 +68,8 @@ export function RelatoriosPage() {
               marginBottom: -2,
               background: 'none',
               cursor: 'pointer',
+              border: 'none',
+              borderBottomStyle: 'solid',
             }}
           >
             {a === 'diario' ? 'Diário' : 'Mensal'}
@@ -97,16 +105,20 @@ export function RelatoriosPage() {
           )}
 
           {diario && !carregandoDiario && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-4)' }}>
-              <KpiCard titulo="Total de Vendas" valor={String(diario.total_vendas)} />
-              <KpiCard titulo="Receita Bruta" valor={moeda(diario.receita_bruta)} />
-              <KpiCard titulo="Custo Total" valor={moeda(diario.custo_total)} />
-              <KpiCard titulo="Lucro" valor={moeda(diario.lucro)} destaque />
-            </div>
-          )}
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-4)' }}>
+                <KpiCard titulo="Total de Vendas" valor={String(diario.total_vendas)} variante="destaque" />
+                <KpiCard titulo="Receita Bruta" valor={moeda(diario.receita_bruta)} />
+                <KpiCard titulo="Custo Total" valor={moeda(diario.custo_total)} />
+                <KpiCard titulo="Lucro" valor={moeda(diario.lucro)} variante={varianteLucro(diario.lucro)} />
+              </div>
 
-          {!diario && !carregandoDiario && !erroDiario && (
-            <p style={{ color: 'var(--color-neutral-500)' }}>Nenhum dado para esta data.</p>
+              {diario.total_vendas === 0 && (
+                <p style={{ marginTop: 'var(--space-6)', color: 'var(--color-neutral-500)' }}>
+                  Nenhuma venda registrada nesta data.
+                </p>
+              )}
+            </>
           )}
         </>
       )}
@@ -163,15 +175,20 @@ export function RelatoriosPage() {
                   marginBottom: 'var(--space-8)',
                 }}
               >
-                <KpiCard titulo="Total de Vendas" valor={String(mensal.total_vendas)} />
+                <KpiCard titulo="Total de Vendas" valor={String(mensal.total_vendas)} variante="destaque" />
                 <KpiCard titulo="Receita Bruta" valor={moeda(mensal.receita_bruta)} />
                 <KpiCard titulo="Custo Total" valor={moeda(mensal.custo_total)} />
-                <KpiCard titulo="Lucro" valor={moeda(mensal.lucro)} destaque />
+                <KpiCard titulo="Lucro" valor={moeda(mensal.lucro)} variante={varianteLucro(mensal.lucro)} />
               </div>
 
-              {mensal.ranking.length > 0 && (
-                <div className="card">
-                  <h2 style={{ marginBottom: 'var(--space-4)' }}>Ranking de Produtos</h2>
+              <div className="card">
+                <h2 style={{ marginBottom: 'var(--space-4)' }}>Ranking de Produtos</h2>
+
+                {mensal.ranking.length === 0 ? (
+                  <p style={{ color: 'var(--color-neutral-500)', padding: 'var(--space-4) 0' }}>
+                    Nenhuma venda registrada neste mês.
+                  </p>
+                ) : (
                   <table>
                     <thead>
                       <tr>
@@ -194,8 +211,8 @@ export function RelatoriosPage() {
                       ))}
                     </tbody>
                   </table>
-                </div>
-              )}
+                )}
+              </div>
             </>
           )}
         </>

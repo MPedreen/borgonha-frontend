@@ -1,16 +1,24 @@
 interface KpiCardProps {
   titulo: string;
   valor: string;
-  destaque?: boolean;
+  variante?: 'padrao' | 'destaque' | 'success' | 'danger';
 }
 
-export function KpiCard({ titulo, valor, destaque = false }: KpiCardProps) {
+const CORES: Record<NonNullable<KpiCardProps['variante']>, { borda: string; valor: string }> = {
+  padrao:   { borda: 'transparent',              valor: 'var(--color-neutral-900)' },
+  destaque: { borda: 'var(--color-primary)',      valor: 'var(--color-primary)'     },
+  success:  { borda: 'var(--color-success)',      valor: 'var(--color-success)'     },
+  danger:   { borda: 'var(--color-danger)',       valor: 'var(--color-danger)'      },
+};
+
+export function KpiCard({ titulo, valor, variante = 'padrao' }: KpiCardProps) {
+  const cores = CORES[variante];
   return (
     <div
       className="card"
       style={{
         minWidth: 160,
-        borderLeft: destaque ? '4px solid var(--color-primary)' : undefined,
+        borderLeft: `4px solid ${cores.borda}`,
       }}
     >
       <div
@@ -28,7 +36,7 @@ export function KpiCard({ titulo, valor, destaque = false }: KpiCardProps) {
         style={{
           fontSize: 'var(--font-size-xl)',
           fontWeight: 'var(--font-weight-bold)',
-          color: destaque ? 'var(--color-primary)' : 'var(--color-neutral-900)',
+          color: cores.valor,
         }}
       >
         {valor}
