@@ -200,7 +200,7 @@ export function EstoquePage() {
         </div>
       )}
 
-      <div className="card">
+      <div className="card table-scroll">
         <table>
           <thead>
             <tr>

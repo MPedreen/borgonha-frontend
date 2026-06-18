@@ -111,14 +111,7 @@ export function PdvPage() {
         style={{ marginBottom: 'var(--space-4)', maxWidth: 360, display: 'block' }}
       />
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 340px',
-          gap: 'var(--space-6)',
-          alignItems: 'start',
-        }}
-      >
+      <div className="pdv-layout">
         {/* Grade de produtos */}
         <div
           style={{
@@ -185,7 +178,7 @@ export function PdvPage() {
         </div>
 
         {/* Carrinho */}
-        <div className="card" style={{ position: 'sticky', top: 'var(--space-4)' }}>
+        <div className="card pdv-carrinho">
           <h2 style={{ marginBottom: 'var(--space-4)' }}>Carrinho</h2>
 
           {carrinho.length === 0 ? (

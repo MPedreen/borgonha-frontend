@@ -177,7 +177,7 @@ export function ProdutosPage() {
           </h2>
 
           <form onSubmit={submeterForm}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+            <div className="grid-2-col">
               <div className="field">
                 <label className="label" htmlFor="nome">Nome</label>
                 <input
@@ -272,7 +272,7 @@ export function ProdutosPage() {
         </div>
       )}
 
-      <div className="card">
+      <div className="card table-scroll">
         <table>
           <thead>
             <tr>
