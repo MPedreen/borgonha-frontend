@@ -1,13 +1,12 @@
-import keycloak from './keycloak';
-import { useAuthContext } from './KeycloakProvider';
+import { useAuthContext } from './AuthContext';
 
 export function useAuth() {
-  const { username, roles } = useAuthContext();
+  const { username, roles, onLogout } = useAuthContext();
 
   return {
     username,
     roles,
     hasRole: (role: string) => roles.includes(role),
-    logout: () => keycloak.logout({ redirectUri: window.location.origin }),
+    logout: onLogout,
   };
 }
