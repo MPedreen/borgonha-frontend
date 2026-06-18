@@ -6,6 +6,26 @@ import { Badge } from '../../components/Badge';
 import { Spinner } from '../../components/Spinner';
 import { extrairMensagemErro } from '../../lib/erros';
 import type { Ingrediente } from '../../types/ingrediente';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface FormNovoIngrediente {
   nome: string;
@@ -101,191 +121,160 @@ export function EstoquePage() {
 
   if (isLoading) {
     return (
-      <div className="page" style={{ display: 'flex', justifyContent: 'center', paddingTop: 64 }}>
+      <div className="max-w-[1100px] mx-auto px-6 py-6 flex justify-center pt-16">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 'var(--space-4)',
-        }}
-      >
-        <h1>Estoque</h1>
-        <button className="btn btn-primary" onClick={() => setMostrarFormNovo((p) => !p)}>
+    <div className="max-w-[1100px] mx-auto px-6 py-6">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Estoque</h1>
+        <Button onClick={() => setMostrarFormNovo((p) => !p)}>
           {mostrarFormNovo ? 'Cancelar' : '+ Novo Ingrediente'}
-        </button>
+        </Button>
       </div>
 
       {mostrarFormNovo && (
-        <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
-          <h2 style={{ marginBottom: 'var(--space-4)' }}>Novo Ingrediente</h2>
-          <form onSubmit={submeterNovoIngrediente}>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: 'var(--space-4)',
-              }}
-            >
-              <div className="field">
-                <label className="label" htmlFor="ing-nome">Nome</label>
-                <input
-                  id="ing-nome"
-                  className="input"
-                  required
-                  value={formNovo.nome}
-                  onChange={(e) => setFormNovo((p) => ({ ...p, nome: e.target.value }))}
-                />
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Novo Ingrediente</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={submeterNovoIngrediente} className="space-y-4">
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="ing-nome">Nome</Label>
+                  <Input
+                    id="ing-nome"
+                    required
+                    value={formNovo.nome}
+                    onChange={(e) => setFormNovo((p) => ({ ...p, nome: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ing-unidade">Unidade</Label>
+                  <Input
+                    id="ing-unidade"
+                    required
+                    placeholder="ex: g, ml, un"
+                    value={formNovo.unidade}
+                    onChange={(e) => setFormNovo((p) => ({ ...p, unidade: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ing-qtd-atual">Quantidade Atual</Label>
+                  <Input
+                    id="ing-qtd-atual"
+                    required
+                    type="text"
+                    inputMode="decimal"
+                    value={formNovo.quantidade_atual}
+                    onChange={(e) => setFormNovo((p) => ({ ...p, quantidade_atual: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ing-qtd-min">Quantidade Mínima</Label>
+                  <Input
+                    id="ing-qtd-min"
+                    required
+                    type="text"
+                    inputMode="decimal"
+                    value={formNovo.quantidade_minima}
+                    onChange={(e) => setFormNovo((p) => ({ ...p, quantidade_minima: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ing-custo">Custo Unitário (R$)</Label>
+                  <Input
+                    id="ing-custo"
+                    required
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={formNovo.custo_unitario}
+                    onChange={(e) => setFormNovo((p) => ({ ...p, custo_unitario: e.target.value }))}
+                  />
+                </div>
               </div>
-              <div className="field">
-                <label className="label" htmlFor="ing-unidade">Unidade</label>
-                <input
-                  id="ing-unidade"
-                  className="input"
-                  required
-                  placeholder="ex: g, ml, un"
-                  value={formNovo.unidade}
-                  onChange={(e) => setFormNovo((p) => ({ ...p, unidade: e.target.value }))}
-                />
-              </div>
-              <div className="field">
-                <label className="label" htmlFor="ing-qtd-atual">Quantidade Atual</label>
-                <input
-                  id="ing-qtd-atual"
-                  className="input"
-                  required
-                  type="text"
-                  inputMode="decimal"
-                  value={formNovo.quantidade_atual}
-                  onChange={(e) => setFormNovo((p) => ({ ...p, quantidade_atual: e.target.value }))}
-                />
-              </div>
-              <div className="field">
-                <label className="label" htmlFor="ing-qtd-min">Quantidade Mínima</label>
-                <input
-                  id="ing-qtd-min"
-                  className="input"
-                  required
-                  type="text"
-                  inputMode="decimal"
-                  value={formNovo.quantidade_minima}
-                  onChange={(e) => setFormNovo((p) => ({ ...p, quantidade_minima: e.target.value }))}
-                />
-              </div>
-              <div className="field">
-                <label className="label" htmlFor="ing-custo">Custo Unitário (R$)</label>
-                <input
-                  id="ing-custo"
-                  className="input"
-                  required
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="0,00"
-                  value={formNovo.custo_unitario}
-                  onChange={(e) => setFormNovo((p) => ({ ...p, custo_unitario: e.target.value }))}
-                />
-              </div>
-            </div>
-            <button type="submit" className="btn btn-primary" disabled={criando}>
-              {criando ? 'Salvando...' : 'Criar Ingrediente'}
-            </button>
-          </form>
-        </div>
+              <Button type="submit" disabled={criando}>
+                {criando ? 'Salvando...' : 'Criar Ingrediente'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )}
 
-      <div className="card table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Unidade</th>
-              <th style={{ textAlign: 'right' }}>Qtd Atual</th>
-              <th style={{ textAlign: 'right' }}>Qtd Mínima</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>Unidade</TableHead>
+              <TableHead className="text-right">Qtd Atual</TableHead>
+              <TableHead className="text-right">Qtd Mínima</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {(ingredientes ?? []).map((ing) => (
-              <tr key={ing.id}>
-                <td style={{ fontWeight: 600 }}>{ing.nome}</td>
-                <td>{ing.unidade}</td>
-                <td style={{ textAlign: 'right' }}>{ing.quantidade_atual.toLocaleString('pt-BR')}</td>
-                <td style={{ textAlign: 'right' }}>{ing.quantidade_minima.toLocaleString('pt-BR')}</td>
-                <td>
+              <TableRow key={ing.id}>
+                <TableCell className="font-semibold">{ing.nome}</TableCell>
+                <TableCell>{ing.unidade}</TableCell>
+                <TableCell className="text-right">{ing.quantidade_atual.toLocaleString('pt-BR')}</TableCell>
+                <TableCell className="text-right">{ing.quantidade_minima.toLocaleString('pt-BR')}</TableCell>
+                <TableCell>
                   {ing.esta_em_alerta ? (
                     <Badge variante="danger">CRÍTICO</Badge>
                   ) : (
                     <Badge variante="success">OK</Badge>
                   )}
-                </td>
-                <td>
-                  <button
-                    className="btn btn-secondary"
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="whitespace-nowrap"
                     onClick={() => abrirEntrada(ing)}
-                    style={{ whiteSpace: 'nowrap' }}
                   >
                     Entrada
-                  </button>
-                </td>
-              </tr>
+                  </Button>
+                </TableCell>
+              </TableRow>
             ))}
             {(ingredientes ?? []).length === 0 && (
-              <tr>
-                <td
-                  colSpan={6}
-                  style={{
-                    textAlign: 'center',
-                    color: 'var(--color-neutral-500)',
-                    padding: 'var(--space-8)',
-                  }}
-                >
+              <TableRow>
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                   Nenhum ingrediente cadastrado.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+      </Card>
 
-      {/* Modal de Entrada */}
-      {ingredienteEntrada && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.4)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 100,
-          }}
-          onClick={(e) => { if (e.target === e.currentTarget) fecharModalEntrada(); }}
-        >
-          <div
-            className="card modal-box"
-            style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
-          >
-            <h2 style={{ marginBottom: 'var(--space-1)' }}>Registrar Entrada</h2>
-            <p style={{ color: 'var(--color-neutral-500)', marginBottom: 'var(--space-4)' }}>
-              {ingredienteEntrada.nome} — atual: {ingredienteEntrada.quantidade_atual.toLocaleString('pt-BR')}{' '}
-              {ingredienteEntrada.unidade}
-            </p>
+      {/* Dialog de Entrada */}
+      <Dialog open={!!ingredienteEntrada} onOpenChange={(open) => { if (!open) fecharModalEntrada(); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registrar Entrada</DialogTitle>
+            {ingredienteEntrada && (
+              <DialogDescription>
+                {ingredienteEntrada.nome} — atual: {ingredienteEntrada.quantidade_atual.toLocaleString('pt-BR')}{' '}
+                {ingredienteEntrada.unidade}
+              </DialogDescription>
+            )}
+          </DialogHeader>
 
-            <div className="field">
-              <label className="label" htmlFor="entrada-qtd">
-                Quantidade ({ingredienteEntrada.unidade})
-              </label>
-              <input
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="entrada-qtd">
+                Quantidade ({ingredienteEntrada?.unidade})
+              </Label>
+              <Input
                 id="entrada-qtd"
-                className="input"
                 type="text"
                 inputMode="decimal"
                 placeholder="0"
@@ -295,33 +284,27 @@ export function EstoquePage() {
               />
             </div>
 
-            <div className="field">
-              <label className="label" htmlFor="entrada-obs">Observação (opcional)</label>
-              <input
+            <div className="space-y-1.5">
+              <Label htmlFor="entrada-obs">Observação (opcional)</Label>
+              <Input
                 id="entrada-obs"
-                className="input"
                 placeholder="ex: Compra fornecedor X"
                 value={observacaoEntrada}
                 onChange={(e) => setObservacaoEntrada(e.target.value)}
               />
             </div>
-
-            <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-              <button
-                className="btn btn-primary"
-                onClick={confirmarEntrada}
-                disabled={registrando}
-                style={{ flex: 1 }}
-              >
-                {registrando ? 'Registrando...' : 'Confirmar'}
-              </button>
-              <button className="btn btn-secondary" onClick={fecharModalEntrada}>
-                Cancelar
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="secondary" onClick={fecharModalEntrada}>
+              Cancelar
+            </Button>
+            <Button onClick={confirmarEntrada} disabled={registrando}>
+              {registrando ? 'Registrando...' : 'Confirmar'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

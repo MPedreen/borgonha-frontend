@@ -7,6 +7,11 @@ import { vendasApi } from '../../api/vendas';
 import { Spinner } from '../../components/Spinner';
 import { extrairMensagemErro } from '../../lib/erros';
 import type { Produto } from '../../types/produto';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface ItemCarrinho {
   produto_id: string;
@@ -93,229 +98,165 @@ export function PdvPage() {
 
   if (isLoading) {
     return (
-      <div className="page" style={{ display: 'flex', justifyContent: 'center', paddingTop: 64 }}>
+      <div className="max-w-[1100px] mx-auto px-6 py-6 flex justify-center pt-16">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <h1 style={{ marginBottom: 'var(--space-4)' }}>PDV — Caixa</h1>
+    <div className="max-w-[1100px] mx-auto px-6 py-6">
+      <h1 className="text-2xl font-bold mb-4">PDV — Caixa</h1>
 
-      <input
-        className="input"
+      <Input
         placeholder="Buscar produto pelo nome..."
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
-        style={{ marginBottom: 'var(--space-4)', maxWidth: 360, display: 'block' }}
+        className="mb-4 max-w-sm"
       />
 
-      <div className="pdv-layout">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
         {/* Grade de produtos */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-            gap: 'var(--space-3)',
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
           {produtosFiltrados.map((produto) => {
             const disponivel = produto.disponivel !== false;
             const noCarrinho = carrinho.some((i) => i.produto_id === produto.id);
             return (
               <button
                 key={produto.id}
-                className="card"
                 onClick={() => adicionarAoCarrinho(produto)}
                 disabled={!disponivel}
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  cursor: disponivel ? 'pointer' : 'not-allowed',
-                  opacity: disponivel ? 1 : 0.45,
-                  outline: noCarrinho ? '2px solid var(--color-primary)' : 'none',
-                  transition: 'opacity 0.15s, outline 0.1s',
-                }}
+                className={cn(
+                  'rounded-lg border border-border bg-card p-4 text-left shadow-sm transition-all',
+                  disponivel
+                    ? 'cursor-pointer hover:shadow-md hover:border-primary/50'
+                    : 'cursor-not-allowed opacity-45',
+                  noCarrinho && 'ring-2 ring-primary',
+                )}
               >
-                <div
-                  style={{
-                    fontWeight: 'var(--font-weight-bold)',
-                    marginBottom: 'var(--space-1)',
-                    lineHeight: 1.3,
-                  }}
-                >
+                <div className="font-semibold mb-1 leading-snug text-sm">
                   {produto.nome}
                 </div>
-                <div
-                  style={{
-                    color: 'var(--color-primary)',
-                    fontSize: '1.1rem',
-                    fontWeight: 700,
-                  }}
-                >
+                <div className="text-primary font-bold text-base">
                   {moeda(produto.preco_venda)}
                 </div>
                 {!disponivel && (
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-danger)', marginTop: 4 }}>
-                    Sem estoque
-                  </div>
+                  <div className="text-xs text-destructive mt-1">Sem estoque</div>
                 )}
               </button>
             );
           })}
           {produtosFiltrados.length === 0 && (
-            <p
-              style={{
-                gridColumn: '1 / -1',
-                color: 'var(--color-neutral-500)',
-                paddingTop: 'var(--space-4)',
-              }}
-            >
+            <p className="col-span-full text-muted-foreground pt-4">
               Nenhum produto encontrado.
             </p>
           )}
         </div>
 
         {/* Carrinho */}
-        <div className="card pdv-carrinho">
-          <h2 style={{ marginBottom: 'var(--space-4)' }}>Carrinho</h2>
-
-          {carrinho.length === 0 ? (
-            <p
-              style={{
-                color: 'var(--color-neutral-500)',
-                textAlign: 'center',
-                padding: 'var(--space-8) 0',
-              }}
-            >
-              Selecione produtos ao lado
-            </p>
-          ) : (
-            <>
-              <div style={{ marginBottom: 'var(--space-3)' }}>
-                {carrinho.map((item) => (
-                  <div
-                    key={item.produto_id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-2)',
-                      paddingBottom: 'var(--space-3)',
-                      marginBottom: 'var(--space-3)',
-                      borderBottom: '1px solid var(--color-neutral-200)',
-                    }}
-                  >
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {item.nome}
+        <Card className="lg:sticky lg:top-4">
+          <CardHeader>
+            <CardTitle>Carrinho</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {carrinho.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">
+                Selecione produtos ao lado
+              </p>
+            ) : (
+              <>
+                <div className="mb-3 space-y-3">
+                  {carrinho.map((item) => (
+                    <div
+                      key={item.produto_id}
+                      className="flex items-center gap-2 pb-3 border-b border-border last:border-0"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold truncate text-sm">{item.nome}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {moeda(item.preco_venda)} × {item.quantidade}
+                        </div>
                       </div>
-                      <div style={{ fontSize: '0.82rem', color: 'var(--color-neutral-500)' }}>
-                        {moeda(item.preco_venda)} × {item.quantidade}
+                      <div className="flex items-center gap-0.5">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="h-7 px-2 text-base"
+                          onClick={() => alterarQuantidade(item.produto_id, -1)}
+                        >
+                          −
+                        </Button>
+                        <span className="min-w-[24px] text-center font-semibold text-sm">
+                          {item.quantidade}
+                        </span>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="h-7 px-2 text-base"
+                          onClick={() => alterarQuantidade(item.produto_id, 1)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                      <div className="min-w-[68px] text-right font-semibold text-sm">
+                        {moeda(item.preco_venda * item.quantidade)}
                       </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ padding: '2px 9px' }}
-                        onClick={() => alterarQuantidade(item.produto_id, -1)}
-                      >
-                        −
-                      </button>
-                      <span
-                        style={{ minWidth: 24, textAlign: 'center', fontWeight: 600, fontSize: '0.95rem' }}
-                      >
-                        {item.quantidade}
-                      </span>
-                      <button
-                        className="btn btn-secondary"
-                        style={{ padding: '2px 9px' }}
-                        onClick={() => alterarQuantidade(item.produto_id, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <div style={{ minWidth: 68, textAlign: 'right', fontWeight: 600 }}>
-                      {moeda(item.preco_venda * item.quantidade)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontWeight: 'var(--font-weight-bold)',
-                  fontSize: '1.05rem',
-                  marginBottom: 'var(--space-4)',
-                  paddingTop: 'var(--space-2)',
-                  borderTop: '2px solid var(--color-neutral-200)',
-                }}
-              >
-                <span>Total</span>
-                <span>{moeda(subtotal)}</span>
-              </div>
-
-              <div className="field">
-                <label className="label" htmlFor="valorPago">
-                  Valor pago (R$)
-                </label>
-                <input
-                  id="valorPago"
-                  className="input"
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="0,00"
-                  value={valorPago}
-                  onChange={(e) => setValorPago(e.target.value)}
-                />
-              </div>
-
-              {valorPagoNum > 0 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontWeight: 'var(--font-weight-bold)',
-                    marginBottom: 'var(--space-4)',
-                    color: troco >= 0 ? 'var(--color-success)' : 'var(--color-danger)',
-                  }}
-                >
-                  <span>Troco</span>
-                  <span>{troco >= 0 ? moeda(troco) : 'Valor insuficiente'}</span>
+                  ))}
                 </div>
-              )}
-            </>
-          )}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-            <button
-              className="btn btn-primary"
-              onClick={confirmarVenda}
-              disabled={!podeConfirmar}
-              style={{ width: '100%', padding: 'var(--space-3)' }}
-            >
-              {isPending ? 'Confirmando...' : 'Confirmar Venda'}
-            </button>
-            {carrinho.length > 0 && (
-              <button
-                className="btn btn-secondary"
-                onClick={limparCarrinho}
-                style={{ width: '100%' }}
-              >
-                Limpar Carrinho
-              </button>
+                <div className="flex justify-between font-bold text-base mb-4 pt-2 border-t-2 border-border">
+                  <span>Total</span>
+                  <span>{moeda(subtotal)}</span>
+                </div>
+
+                <div className="space-y-1.5 mb-4">
+                  <Label htmlFor="valorPago">Valor pago (R$)</Label>
+                  <Input
+                    id="valorPago"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={valorPago}
+                    onChange={(e) => setValorPago(e.target.value)}
+                  />
+                </div>
+
+                {valorPagoNum > 0 && (
+                  <div
+                    className={cn(
+                      'flex justify-between font-bold mb-4',
+                      troco >= 0 ? 'text-success' : 'text-destructive',
+                    )}
+                  >
+                    <span>Troco</span>
+                    <span>{troco >= 0 ? moeda(troco) : 'Valor insuficiente'}</span>
+                  </div>
+                )}
+              </>
             )}
-          </div>
-        </div>
+
+            <div className="flex flex-col gap-2">
+              <Button
+                onClick={confirmarVenda}
+                disabled={!podeConfirmar}
+                className="w-full"
+                size="lg"
+              >
+                {isPending ? 'Confirmando...' : 'Confirmar Venda'}
+              </Button>
+              {carrinho.length > 0 && (
+                <Button
+                  variant="secondary"
+                  onClick={limparCarrinho}
+                  className="w-full"
+                >
+                  Limpar Carrinho
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

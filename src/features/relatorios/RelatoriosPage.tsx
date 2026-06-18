@@ -3,6 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import { relatoriosApi } from '../../api/relatorios';
 import { KpiCard } from '../../components/KpiCard';
 import { Spinner } from '../../components/Spinner';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const moeda = (valor: number) =>
   valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -26,10 +38,11 @@ function varianteLucro(lucro: number) {
 }
 
 export function RelatoriosPage() {
-  const [aba, setAba] = useState<'diario' | 'mensal'>('diario');
   const [dataDiario, setDataDiario] = useState(hoje());
   const [mesSelecionado, setMesSelecionado] = useState(mesAtual);
   const [anoSelecionado, setAnoSelecionado] = useState(anoAtual);
+
+  const [aba, setAba] = useState<'diario' | 'mensal'>('diario');
 
   const { data: diario, isLoading: carregandoDiario, isError: erroDiario } = useQuery({
     queryKey: ['relatorio-diario', dataDiario],
@@ -44,54 +57,26 @@ export function RelatoriosPage() {
   });
 
   return (
-    <div className="page">
-      <h1 style={{ marginBottom: 'var(--space-6)' }}>Relatórios</h1>
+    <div className="max-w-[1100px] mx-auto px-6 py-6">
+      <h1 className="text-2xl font-bold mb-6">Relatórios</h1>
 
-      {/* Abas */}
-      <div
-        style={{
-          display: 'flex',
-          gap: 0,
-          marginBottom: 'var(--space-6)',
-          borderBottom: '2px solid var(--color-neutral-200)',
-        }}
-      >
-        {(['diario', 'mensal'] as const).map((a) => (
-          <button
-            key={a}
-            onClick={() => setAba(a)}
-            style={{
-              padding: 'var(--space-3) var(--space-6)',
-              fontWeight: aba === a ? 'var(--font-weight-bold)' : undefined,
-              color: aba === a ? 'var(--color-primary)' : 'var(--color-neutral-500)',
-              borderBottom: aba === a ? '2px solid var(--color-primary)' : '2px solid transparent',
-              marginBottom: -2,
-              background: 'none',
-              cursor: 'pointer',
-              border: 'none',
-              borderBottomStyle: 'solid',
-            }}
-          >
-            {a === 'diario' ? 'Diário' : 'Mensal'}
-          </button>
-        ))}
-      </div>
+      <Tabs value={aba} onValueChange={(v) => setAba(v as 'diario' | 'mensal')}>
+        <TabsList>
+          <TabsTrigger value="diario">Diário</TabsTrigger>
+          <TabsTrigger value="mensal">Mensal</TabsTrigger>
+        </TabsList>
 
-      {/* Aba Diário */}
-      {aba === 'diario' && (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', marginBottom: 'var(--space-6)' }}>
-            <div className="field" style={{ margin: 0 }}>
-              <label className="label" htmlFor="data-diario" style={{ marginBottom: 'var(--space-1)' }}>
-                Data
-              </label>
-              <input
+        {/* Aba Diário */}
+        <TabsContent value="diario">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="space-y-1.5">
+              <Label htmlFor="data-diario">Data</Label>
+              <Input
                 id="data-diario"
-                className="input"
                 type="date"
                 value={dataDiario}
                 onChange={(e) => setDataDiario(e.target.value)}
-                style={{ width: 'auto' }}
+                className="w-auto"
               />
             </div>
           </div>
@@ -99,14 +84,12 @@ export function RelatoriosPage() {
           {carregandoDiario && <Spinner />}
 
           {erroDiario && (
-            <p style={{ color: 'var(--color-danger)' }}>
-              Não foi possível carregar o relatório.
-            </p>
+            <p className="text-destructive">Não foi possível carregar o relatório.</p>
           )}
 
           {diario && !carregandoDiario && (
             <>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--space-4)' }}>
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
                 <KpiCard titulo="Total de Vendas" valor={String(diario.total_vendas)} variante="destaque" />
                 <KpiCard titulo="Receita Bruta" valor={moeda(diario.receita_bruta)} />
                 <KpiCard titulo="Custo Total" valor={moeda(diario.custo_total)} />
@@ -114,41 +97,37 @@ export function RelatoriosPage() {
               </div>
 
               {diario.total_vendas === 0 && (
-                <p style={{ marginTop: 'var(--space-6)', color: 'var(--color-neutral-500)' }}>
+                <p className="mt-6 text-muted-foreground">
                   Nenhuma venda registrada nesta data.
                 </p>
               )}
             </>
           )}
-        </>
-      )}
+        </TabsContent>
 
-      {/* Aba Mensal */}
-      {aba === 'mensal' && (
-        <>
-          <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'flex-end', marginBottom: 'var(--space-6)', flexWrap: 'wrap' }}>
-            <div className="field" style={{ margin: 0 }}>
-              <label className="label" htmlFor="sel-mes">Mês</label>
+        {/* Aba Mensal */}
+        <TabsContent value="mensal">
+          <div className="flex gap-4 items-end mb-6 flex-wrap">
+            <div className="space-y-1.5">
+              <Label htmlFor="sel-mes">Mês</Label>
               <select
                 id="sel-mes"
-                className="select"
+                className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 value={mesSelecionado}
                 onChange={(e) => setMesSelecionado(Number(e.target.value))}
-                style={{ width: 'auto' }}
               >
                 {MESES.map((nome, i) => (
                   <option key={i + 1} value={i + 1}>{nome}</option>
                 ))}
               </select>
             </div>
-            <div className="field" style={{ margin: 0 }}>
-              <label className="label" htmlFor="sel-ano">Ano</label>
+            <div className="space-y-1.5">
+              <Label htmlFor="sel-ano">Ano</Label>
               <select
                 id="sel-ano"
-                className="select"
+                className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 value={anoSelecionado}
                 onChange={(e) => setAnoSelecionado(Number(e.target.value))}
-                style={{ width: 'auto' }}
               >
                 {ANOS.map((a) => (
                   <option key={a} value={a}>{a}</option>
@@ -160,63 +139,57 @@ export function RelatoriosPage() {
           {carregandoMensal && <Spinner />}
 
           {erroMensal && (
-            <p style={{ color: 'var(--color-danger)' }}>
-              Não foi possível carregar o relatório.
-            </p>
+            <p className="text-destructive">Não foi possível carregar o relatório.</p>
           )}
 
           {mensal && !carregandoMensal && (
             <>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                  gap: 'var(--space-4)',
-                  marginBottom: 'var(--space-8)',
-                }}
-              >
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4 mb-8">
                 <KpiCard titulo="Total de Vendas" valor={String(mensal.total_vendas)} variante="destaque" />
                 <KpiCard titulo="Receita Bruta" valor={moeda(mensal.receita_bruta)} />
                 <KpiCard titulo="Custo Total" valor={moeda(mensal.custo_total)} />
                 <KpiCard titulo="Lucro" valor={moeda(mensal.lucro)} variante={varianteLucro(mensal.lucro)} />
               </div>
 
-              <div className="card table-scroll">
-                <h2 style={{ marginBottom: 'var(--space-4)' }}>Ranking de Produtos</h2>
-
-                {mensal.ranking.length === 0 ? (
-                  <p style={{ color: 'var(--color-neutral-500)', padding: 'var(--space-4) 0' }}>
-                    Nenhuma venda registrada neste mês.
-                  </p>
-                ) : (
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Produto</th>
-                        <th style={{ textAlign: 'right' }}>Unidades Vendidas</th>
-                        <th style={{ textAlign: 'right' }}>Receita</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mensal.ranking.map((item, idx) => (
-                        <tr key={idx}>
-                          <td style={{ color: 'var(--color-neutral-500)', width: 40 }}>{idx + 1}°</td>
-                          <td style={{ fontWeight: idx === 0 ? 'var(--font-weight-bold)' : undefined }}>
-                            {item.nome}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>{item.unidades_vendidas}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 600 }}>{moeda(item.receita)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              <Card className="overflow-hidden">
+                <CardHeader>
+                  <CardTitle>Ranking de Produtos</CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {mensal.ranking.length === 0 ? (
+                    <p className="text-muted-foreground px-6 py-4">
+                      Nenhuma venda registrada neste mês.
+                    </p>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>#</TableHead>
+                          <TableHead>Produto</TableHead>
+                          <TableHead className="text-right">Unidades Vendidas</TableHead>
+                          <TableHead className="text-right">Receita</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {mensal.ranking.map((item, idx) => (
+                          <TableRow key={idx}>
+                            <TableCell className="text-muted-foreground w-10">{idx + 1}°</TableCell>
+                            <TableCell className={idx === 0 ? 'font-bold' : ''}>
+                              {item.nome}
+                            </TableCell>
+                            <TableCell className="text-right">{item.unidades_vendidas}</TableCell>
+                            <TableCell className="text-right font-semibold">{moeda(item.receita)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </CardContent>
+              </Card>
             </>
           )}
-        </>
-      )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

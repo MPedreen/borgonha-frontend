@@ -6,6 +6,18 @@ import { ingredientesApi } from '../../api/ingredientes';
 import { Spinner } from '../../components/Spinner';
 import { extrairMensagemErro } from '../../lib/erros';
 import type { Produto, ItemReceita } from '../../types/produto';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const moeda = (valor: number) =>
   valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -147,176 +159,163 @@ export function ProdutosPage() {
 
   if (isLoading) {
     return (
-      <div className="page" style={{ display: 'flex', justifyContent: 'center', paddingTop: 64 }}>
+      <div className="max-w-[1100px] mx-auto px-6 py-6 flex justify-center pt-16">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="page">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-        <h1>Produtos</h1>
-        <button className="btn btn-primary" onClick={abrirCriar}>
-          + Novo Produto
-        </button>
+    <div className="max-w-[1100px] mx-auto px-6 py-6">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Produtos</h1>
+        <Button onClick={abrirCriar}>+ Novo Produto</Button>
       </div>
 
-      <input
-        className="input"
+      <Input
         placeholder="Buscar produto..."
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
-        style={{ marginBottom: 'var(--space-4)', maxWidth: 360, display: 'block' }}
+        className="mb-4 max-w-sm"
       />
 
       {modoForm !== null && (
-        <div className="card" style={{ marginBottom: 'var(--space-6)' }}>
-          <h2 style={{ marginBottom: 'var(--space-4)' }}>
-            {modoForm === 'criar' ? 'Novo Produto' : `Editar: ${produtoEditando?.nome}`}
-          </h2>
-
-          <form onSubmit={submeterForm}>
-            <div className="grid-2-col">
-              <div className="field">
-                <label className="label" htmlFor="nome">Nome</label>
-                <input
-                  id="nome"
-                  className="input"
-                  required
-                  value={form.nome}
-                  onChange={(e) => setForm((p) => ({ ...p, nome: e.target.value }))}
-                />
-              </div>
-              <div className="field">
-                <label className="label" htmlFor="preco">Preço de Venda (R$)</label>
-                <input
-                  id="preco"
-                  className="input"
-                  required
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="0,00"
-                  value={form.preco_venda}
-                  onChange={(e) => setForm((p) => ({ ...p, preco_venda: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div style={{ marginBottom: 'var(--space-4)' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: 'var(--space-2)',
-                }}
-              >
-                <span className="label" style={{ margin: 0 }}>Receita</span>
-                <button type="button" className="btn btn-secondary" onClick={adicionarLinhaReceita}>
-                  + Ingrediente
-                </button>
-              </div>
-
-              {form.receita.map((linha, idx) => (
-                <div
-                  key={idx}
-                  style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', alignItems: 'center' }}
-                >
-                  <select
-                    className="select"
-                    value={linha.ingrediente_id}
-                    onChange={(e) => setReceitaItem(idx, 'ingrediente_id', e.target.value)}
-                    style={{ flex: 2 }}
-                  >
-                    <option value="">Selecionar ingrediente...</option>
-                    {(ingredientes ?? []).map((ing) => (
-                      <option key={ing.id} value={ing.id}>
-                        {ing.nome} ({ing.unidade})
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    className="input"
-                    type="number"
-                    min="0"
-                    step="any"
-                    placeholder="Qtd"
-                    value={linha.quantidade}
-                    onChange={(e) => setReceitaItem(idx, 'quantidade', e.target.value)}
-                    style={{ flex: 1 }}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>
+              {modoForm === 'criar' ? 'Novo Produto' : `Editar: ${produtoEditando?.nome}`}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={submeterForm} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="nome">Nome</Label>
+                  <Input
+                    id="nome"
+                    required
+                    value={form.nome}
+                    onChange={(e) => setForm((p) => ({ ...p, nome: e.target.value }))}
                   />
-                  {form.receita.length > 1 && (
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={() => removerLinhaReceita(idx)}
-                      style={{ padding: 'var(--space-2) var(--space-3)' }}
-                    >
-                      ×
-                    </button>
-                  )}
                 </div>
-              ))}
-            </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="preco">Preço de Venda (R$)</Label>
+                  <Input
+                    id="preco"
+                    required
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={form.preco_venda}
+                    onChange={(e) => setForm((p) => ({ ...p, preco_venda: e.target.value }))}
+                  />
+                </div>
+              </div>
 
-            <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-              <button type="submit" className="btn btn-primary" disabled={salvando}>
-                {salvando ? 'Salvando...' : 'Salvar'}
-              </button>
-              <button type="button" className="btn btn-secondary" onClick={fecharForm}>
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <Label>Receita</Label>
+                  <Button type="button" variant="secondary" size="sm" onClick={adicionarLinhaReceita}>
+                    + Ingrediente
+                  </Button>
+                </div>
+
+                {form.receita.map((linha, idx) => (
+                  <div key={idx} className="flex gap-2 mb-2 items-center">
+                    <select
+                      className="flex-[2] h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      value={linha.ingrediente_id}
+                      onChange={(e) => setReceitaItem(idx, 'ingrediente_id', e.target.value)}
+                    >
+                      <option value="">Selecionar ingrediente...</option>
+                      {(ingredientes ?? []).map((ing) => (
+                        <option key={ing.id} value={ing.id}>
+                          {ing.nome} ({ing.unidade})
+                        </option>
+                      ))}
+                    </select>
+                    <Input
+                      className="flex-1"
+                      type="number"
+                      min="0"
+                      step="any"
+                      placeholder="Qtd"
+                      value={linha.quantidade}
+                      onChange={(e) => setReceitaItem(idx, 'quantidade', e.target.value)}
+                    />
+                    {form.receita.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => removerLinhaReceita(idx)}
+                      >
+                        ×
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-3">
+                <Button type="submit" disabled={salvando}>
+                  {salvando ? 'Salvando...' : 'Salvar'}
+                </Button>
+                <Button type="button" variant="secondary" onClick={fecharForm}>
+                  Cancelar
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       )}
 
-      <div className="card table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Preço de Venda</th>
-              <th>Custo</th>
-              <th>Itens na Receita</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
+      <Card className="overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome</TableHead>
+              <TableHead>Preço de Venda</TableHead>
+              <TableHead>Custo</TableHead>
+              <TableHead>Itens na Receita</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {produtosFiltrados.map((produto) => (
-              <tr key={produto.id}>
-                <td style={{ fontWeight: 600 }}>{produto.nome}</td>
-                <td>{moeda(produto.preco_venda)}</td>
-                <td>{produto.custo_calculado != null ? moeda(produto.custo_calculado) : '—'}</td>
-                <td>{produto.receita.length} ingrediente{produto.receita.length !== 1 ? 's' : ''}</td>
-                <td>
-                  <div style={{ display: 'flex', gap: 'var(--space-2)', justifyContent: 'flex-end' }}>
-                    <button className="btn btn-secondary" onClick={() => abrirEditar(produto)}>
+              <TableRow key={produto.id}>
+                <TableCell className="font-semibold">{produto.nome}</TableCell>
+                <TableCell>{moeda(produto.preco_venda)}</TableCell>
+                <TableCell>{produto.custo_calculado != null ? moeda(produto.custo_calculado) : '—'}</TableCell>
+                <TableCell>{produto.receita.length} ingrediente{produto.receita.length !== 1 ? 's' : ''}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2 justify-end">
+                    <Button variant="secondary" size="sm" onClick={() => abrirEditar(produto)}>
                       Editar
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ color: 'var(--color-danger)' }}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
                       onClick={() => desativar(produto)}
                       disabled={atualizando}
                     >
                       Desativar
-                    </button>
+                    </Button>
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
             {produtosFiltrados.length === 0 && (
-              <tr>
-                <td colSpan={5} style={{ textAlign: 'center', color: 'var(--color-neutral-500)', padding: 'var(--space-8)' }}>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                   Nenhum produto encontrado.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TableBody>
+        </Table>
+      </Card>
     </div>
   );
 }

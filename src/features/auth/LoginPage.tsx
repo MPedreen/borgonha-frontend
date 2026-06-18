@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../auth/auth';
 import { useAuthContext } from '../../auth/AuthContext';
+import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -29,78 +33,55 @@ export function LoginPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'var(--color-background)',
-    }}>
-      <div className="card" style={{
-        width: 'min(400px, calc(100vw - 2 * var(--space-4)))',
-        padding: 'var(--space-8)',
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: 'var(--space-8)' }}>
-          <h1 style={{
-            color: 'var(--color-primary)',
-            fontSize: '2rem',
-            margin: '0 0 var(--space-1)',
-          }}>
-            Borgonha
-          </h1>
-          <p style={{ color: 'var(--color-neutral-500)', margin: 0, fontSize: '0.95rem' }}>
-            Confeitaria
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label className="label" htmlFor="username">Usuário</label>
-            <input
-              id="username"
-              className="input"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-              autoFocus
-              required
-            />
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md">
+        <CardContent className="pt-8 pb-8 px-8">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-primary mb-1">Borgonha</h1>
+            <p className="text-muted-foreground text-base">Confeitaria</p>
           </div>
 
-          <div className="field">
-            <label className="label" htmlFor="password">Senha</label>
-            <input
-              id="password"
-              className="input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="username">Usuário</Label>
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                autoFocus
+                required
+              />
+            </div>
 
-          {erro && (
-            <p style={{
-              color: 'var(--color-danger)',
-              fontSize: '0.875rem',
-              margin: '0 0 var(--space-3)',
-            }}>
-              {erro}
-            </p>
-          )}
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary"
-            style={{ width: '100%', padding: 'var(--space-3)' }}
-            disabled={loading}
-          >
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
-      </div>
+            {erro && (
+              <p className="text-destructive text-sm">{erro}</p>
+            )}
+
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

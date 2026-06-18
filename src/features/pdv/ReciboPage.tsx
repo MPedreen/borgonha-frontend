@@ -2,6 +2,16 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { vendasApi } from '../../api/vendas';
 import { Spinner } from '../../components/Spinner';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const moeda = (valor: number) =>
   valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -26,7 +36,7 @@ export function ReciboPage() {
 
   if (isLoading) {
     return (
-      <div className="page" style={{ display: 'flex', justifyContent: 'center', paddingTop: 64 }}>
+      <div className="max-w-[1100px] mx-auto px-6 py-6 flex justify-center pt-16">
         <Spinner />
       </div>
     );
@@ -34,95 +44,84 @@ export function ReciboPage() {
 
   if (isError || !venda) {
     return (
-      <div className="page">
-        <p style={{ color: 'var(--color-danger)' }}>Não foi possível carregar o recibo.</p>
-        <Link to="/pdv" className="btn btn-secondary" style={{ marginTop: 'var(--space-4)', display: 'inline-flex' }}>
-          Voltar ao PDV
-        </Link>
+      <div className="max-w-[1100px] mx-auto px-6 py-6">
+        <p className="text-destructive mb-4">Não foi possível carregar o recibo.</p>
+        <Button variant="secondary" asChild>
+          <Link to="/pdv">Voltar ao PDV</Link>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="page" style={{ maxWidth: 520, margin: '0 auto' }}>
-      <div className="card" style={{ textAlign: 'center' }}>
-        <div
-          style={{
-            background: 'var(--color-success-bg)',
-            color: 'var(--color-success)',
-            borderRadius: 'var(--radius)',
-            padding: 'var(--space-4)',
-            marginBottom: 'var(--space-6)',
-            fontWeight: 'var(--font-weight-bold)',
-            fontSize: 'var(--font-size-lg)',
-          }}
-        >
-          ✓ Venda registrada com sucesso!
-        </div>
+    <div className="max-w-[520px] mx-auto px-6 py-6">
+      <Card>
+        <CardContent className="pt-6">
+          {/* Banner de sucesso */}
+          <div className="bg-success/10 text-success rounded-lg px-4 py-4 mb-6 font-bold text-base text-center">
+            ✓ Venda registrada com sucesso!
+          </div>
 
-        <div style={{ textAlign: 'left', marginBottom: 'var(--space-4)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-            <span style={{ color: 'var(--color-neutral-500)', fontSize: '0.85rem' }}>Data / Hora</span>
-            <span>{formatarDataHora(venda.data_hora)}</span>
+          {/* Metadados */}
+          <div className="text-left mb-4 space-y-2">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground text-sm">Data / Hora</span>
+              <span className="text-sm">{formatarDataHora(venda.data_hora)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground text-sm">Operador</span>
+              <span className="text-sm">{venda.criado_por}</span>
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-            <span style={{ color: 'var(--color-neutral-500)', fontSize: '0.85rem' }}>Operador</span>
-            <span>{venda.criado_por}</span>
-          </div>
-        </div>
 
-        <table style={{ marginBottom: 'var(--space-4)' }}>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th style={{ textAlign: 'center' }}>Qtd</th>
-              <th style={{ textAlign: 'right' }}>Unit.</th>
-              <th style={{ textAlign: 'right' }}>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {venda.itens.map((item, idx) => (
-              <tr key={idx}>
-                <td>{item.nome_produto}</td>
-                <td style={{ textAlign: 'center' }}>{item.quantidade}</td>
-                <td style={{ textAlign: 'right' }}>{moeda(item.preco_unitario)}</td>
-                <td style={{ textAlign: 'right' }}>{moeda(item.subtotal)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          {/* Tabela de itens */}
+          <div className="mb-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Item</TableHead>
+                  <TableHead className="text-center">Qtd</TableHead>
+                  <TableHead className="text-right">Unit.</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {venda.itens.map((item, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>{item.nome_produto}</TableCell>
+                    <TableCell className="text-center">{item.quantidade}</TableCell>
+                    <TableCell className="text-right">{moeda(item.preco_unitario)}</TableCell>
+                    <TableCell className="text-right">{moeda(item.subtotal)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-        <div
-          style={{
-            borderTop: '2px solid var(--color-neutral-200)',
-            paddingTop: 'var(--space-3)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 'var(--space-2)',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'var(--font-weight-bold)', fontSize: '1.1rem' }}>
-            <span>Total</span>
-            <span>{moeda(venda.total)}</span>
+          {/* Totais */}
+          <div className="border-t-2 border-border pt-3 flex flex-col gap-2">
+            <div className="flex justify-between font-bold text-lg">
+              <span>Total</span>
+              <span>{moeda(venda.total)}</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Valor pago</span>
+              <span>{moeda(venda.valor_pago)}</span>
+            </div>
+            <div className="flex justify-between font-bold text-success">
+              <span>Troco</span>
+              <span>{moeda(venda.troco)}</span>
+            </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--color-neutral-500)' }}>
-            <span>Valor pago</span>
-            <span>{moeda(venda.valor_pago)}</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'var(--font-weight-bold)', color: 'var(--color-success)' }}>
-            <span>Troco</span>
-            <span>{moeda(venda.troco)}</span>
-          </div>
-        </div>
 
-        <Link
-          to="/pdv"
-          className="btn btn-primary"
-          style={{ marginTop: 'var(--space-6)', display: 'inline-flex', padding: 'var(--space-3) var(--space-8)' }}
-        >
-          Nova Venda
-        </Link>
-      </div>
+          {/* Botão nova venda */}
+          <div className="mt-6 flex justify-center">
+            <Button asChild size="lg" className="px-10">
+              <Link to="/pdv">Nova Venda</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

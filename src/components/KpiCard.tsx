@@ -1,46 +1,36 @@
+import { cn } from '@/lib/utils'
+
 interface KpiCardProps {
-  titulo: string;
-  valor: string;
-  variante?: 'padrao' | 'destaque' | 'success' | 'danger';
+  titulo: string
+  valor: string
+  variante?: 'padrao' | 'destaque' | 'success' | 'danger'
 }
 
-const CORES: Record<NonNullable<KpiCardProps['variante']>, { borda: string; valor: string }> = {
-  padrao:   { borda: 'transparent',              valor: 'var(--color-neutral-900)' },
-  destaque: { borda: 'var(--color-primary)',      valor: 'var(--color-primary)'     },
-  success:  { borda: 'var(--color-success)',      valor: 'var(--color-success)'     },
-  danger:   { borda: 'var(--color-danger)',       valor: 'var(--color-danger)'      },
-};
+const varianteClasses: Record<
+  NonNullable<KpiCardProps['variante']>,
+  { borda: string; valor: string }
+> = {
+  padrao:   { borda: 'border-l-transparent', valor: 'text-foreground' },
+  destaque: { borda: 'border-l-primary',     valor: 'text-primary' },
+  success:  { borda: 'border-l-success',     valor: 'text-success' },
+  danger:   { borda: 'border-l-destructive', valor: 'text-destructive' },
+}
 
 export function KpiCard({ titulo, valor, variante = 'padrao' }: KpiCardProps) {
-  const cores = CORES[variante];
+  const classes = varianteClasses[variante]
   return (
     <div
-      className="card"
-      style={{
-        minWidth: 160,
-        borderLeft: `4px solid ${cores.borda}`,
-      }}
+      className={cn(
+        'rounded-lg border border-border bg-card p-4 shadow-sm min-w-[160px] border-l-4',
+        classes.borda,
+      )}
     >
-      <div
-        style={{
-          fontSize: '0.8rem',
-          color: 'var(--color-neutral-500)',
-          marginBottom: 'var(--space-2)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-        }}
-      >
+      <div className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
         {titulo}
       </div>
-      <div
-        style={{
-          fontSize: 'var(--font-size-xl)',
-          fontWeight: 'var(--font-weight-bold)',
-          color: cores.valor,
-        }}
-      >
+      <div className={cn('text-2xl font-bold', classes.valor)}>
         {valor}
       </div>
     </div>
-  );
+  )
 }
