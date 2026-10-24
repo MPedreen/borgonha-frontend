@@ -1,0 +1,46 @@
+<header class="cabecalho" [class.cabecalho--flutuante]="rolou()">
+  <div class="barra">
+    <a
+      class="marca"
+      href="/"
+      aria-label="Borgonha Confeitaria – voltar ao início"
+      (click)="navegacao.irPara($event, 'inicio')"
+    >
+      <app-logo />
+    </a>
+
+    <nav class="navegacao" aria-label="Principal">
+      <ul class="navegacao__lista">
+        <li><app-menu-sabores /></li>
+        @for (link of links; track link.id) {
+          <li>
+            <a
+              class="navegacao__link"
+              [href]="'/#' + link.id"
+              (click)="navegacao.irPara($event, link.id)"
+            >
+              {{ link.rotulo }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <div class="acoes">
+      <button type="button" appBotao tamanho="compacto" (click)="pedido.abrir()">
+        <span class="acoes__texto-curto">Pedir</span>
+        <span class="acoes__texto-longo">Faça seu pedido</span>
+      </button>
+      <button
+        type="button"
+        class="acoes__menu"
+        aria-haspopup="dialog"
+        (click)="menuCelularAberto.set(true)"
+      >
+        <app-icone nome="menu" /><span class="visualmente-oculto">Abrir menu</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<app-menu-celular [aberto]="menuCelularAberto()" (fechado)="menuCelularAberto.set(false)" />

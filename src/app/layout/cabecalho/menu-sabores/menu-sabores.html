@@ -1,0 +1,38 @@
+<button
+  #gatilho
+  type="button"
+  class="gatilho"
+  aria-controls="painel-sabores"
+  [attr.aria-expanded]="aberto()"
+  (click)="aoClicarNoGatilho($event)"
+>
+  Cookies <app-icone nome="chevron-down" class="gatilho__seta" />
+</button>
+
+<div id="painel-sabores" class="painel" [hidden]="!aberto()">
+  <div class="painel__topo">
+    <p class="painel__titulo">Nossos sabores</p>
+    <a class="painel__ver-todos" href="/#cookies" (click)="irParaCardapio($event)">
+      Ver o cardápio completo <app-icone nome="arrow-right" />
+    </a>
+  </div>
+
+  <ul class="painel__lista">
+    @for (cookie of catalogo.cookies(); track cookie.slug) {
+      <li>
+        <a class="sabor" [href]="'/#produto-' + cookie.slug" (click)="irParaSabor($event, cookie)">
+          <app-imagem-produto
+            class="sabor__foto"
+            formato="miniatura"
+            tamanhos="80px"
+            [imagem]="cookie.imagens.inteiro"
+          />
+          <span class="sabor__nome">{{ cookie.nome }}</span>
+          @if (cookie.frase) {
+            <span class="sabor__frase">{{ cookie.frase }}</span>
+          }
+        </a>
+      </li>
+    }
+  </ul>
+</div>

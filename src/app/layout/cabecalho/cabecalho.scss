@@ -1,0 +1,111 @@
+@use 'mixins' as *;
+
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: block;
+}
+
+.barra {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--altura-cabecalho);
+  padding-inline: var(--margem-lateral);
+  border-bottom: 1px solid var(--cor-linha);
+  background-color: rgb(255 248 231 / 94%);
+  backdrop-filter: blur(10px);
+  transition:
+    margin var(--duracao-media) var(--curva),
+    border-radius var(--duracao-media) var(--curva),
+    box-shadow var(--duracao-media) var(--curva),
+    transform var(--duracao-media) var(--curva);
+}
+
+// Depois de rolar: cápsula flutuante (só mexe nas margens laterais, sem empurrar a página).
+.cabecalho--flutuante .barra {
+  margin-inline: clamp(0.5rem, 2vw, 1.25rem);
+  border-bottom-color: transparent;
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra);
+  transform: translateY(0.6rem);
+}
+
+.marca {
+  display: block;
+  flex-shrink: 0;
+  border-radius: var(--raio-p);
+}
+
+.navegacao {
+  display: none;
+
+  @include a-partir-de($desktop) {
+    display: block;
+  }
+}
+
+.navegacao__lista {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navegacao__link {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-pilula);
+  color: var(--cor-vinho);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: var(--espacamento-maiusculas);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color var(--duracao-rapida);
+
+  &:hover {
+    background-color: var(--cor-creme-escuro);
+  }
+}
+
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.acoes__texto-longo {
+  display: none;
+}
+
+@include a-partir-de($tablet) {
+  .acoes__texto-curto {
+    display: none;
+  }
+
+  .acoes__texto-longo {
+    display: inline;
+  }
+}
+
+.acoes__menu {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 2px solid var(--cor-vinho);
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--cor-vinho);
+  cursor: pointer;
+
+  @include a-partir-de($desktop) {
+    display: none;
+  }
+}

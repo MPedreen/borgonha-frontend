@@ -1,0 +1,123 @@
+.gatilho {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: var(--raio-pilula);
+  background-color: transparent;
+  color: var(--cor-vinho);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: var(--espacamento-maiusculas);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--duracao-rapida);
+
+  &:hover,
+  &[aria-expanded='true'] {
+    background-color: var(--cor-creme-escuro);
+  }
+}
+
+.gatilho__seta {
+  transition: transform var(--duracao-media) var(--curva);
+
+  [aria-expanded='true'] > & {
+    transform: rotate(180deg);
+  }
+}
+
+// O painel se posiciona em relação à barra do cabeçalho, ocupando a largura dela.
+.painel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: clamp(0.5rem, 2vw, 1.25rem);
+  right: clamp(0.5rem, 2vw, 1.25rem);
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.5rem 1.75rem 1.75rem;
+  border-radius: var(--raio-g);
+  background-color: var(--cor-creme);
+  box-shadow: var(--sombra-forte);
+  animation: abrir var(--duracao-media) var(--curva);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.painel__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.painel__titulo {
+  color: var(--cor-vinho);
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: var(--espacamento-titulo);
+  text-transform: uppercase;
+}
+
+.painel__ver-todos {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cor-vinho);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-underline-offset: 0.3em;
+}
+
+.painel__lista {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sabor {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 0.85rem;
+  align-items: center;
+  height: 100%;
+  padding: 0.6rem;
+  border-radius: var(--raio-m);
+  color: var(--cor-texto);
+  text-decoration: none;
+  transition: background-color var(--duracao-rapida);
+
+  &:hover {
+    background-color: var(--cor-creme-escuro);
+  }
+}
+
+.sabor__foto {
+  grid-row: span 2;
+}
+
+.sabor__nome {
+  align-self: end;
+  color: var(--cor-vinho);
+  font-weight: 800;
+}
+
+.sabor__frase {
+  align-self: start;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+@keyframes abrir {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}

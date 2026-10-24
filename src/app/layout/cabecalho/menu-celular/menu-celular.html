@@ -1,0 +1,62 @@
+<app-dialogo
+  [aberto]="aberto()"
+  idTitulo="titulo-menu-celular"
+  formato="tela-cheia"
+  (fechado)="aoFecharDialogo()"
+>
+  <div class="menu">
+    <div class="menu__topo">
+      <p id="titulo-menu-celular" class="menu__titulo">Menu</p>
+      <button type="button" class="menu__fechar" (click)="fechado.emit()">
+        <app-icone nome="x" /> Fechar
+      </button>
+    </div>
+
+    <nav aria-label="Menu do celular">
+      <p class="menu__secao">Nossos cookies</p>
+      <ul class="menu__sabores">
+        @for (cookie of catalogo.cookies(); track cookie.slug) {
+          <li>
+            <a
+              class="sabor"
+              [href]="'/#produto-' + cookie.slug"
+              (click)="irParaSabor($event, cookie.slug)"
+            >
+              <app-imagem-produto
+                class="sabor__foto"
+                formato="miniatura"
+                tamanhos="64px"
+                [imagem]="cookie.imagens.inteiro"
+              />
+              <span class="sabor__texto">
+                <span class="sabor__nome">{{ cookie.nome }}</span>
+                @if (cookie.frase) {
+                  <span class="sabor__frase">{{ cookie.frase }}</span>
+                }
+              </span>
+            </a>
+          </li>
+        }
+      </ul>
+
+      <ul class="menu__links">
+        @for (link of links; track link.id) {
+          <li>
+            <a class="menu__link" [href]="'/#' + link.id" (click)="irPara($event, link.id)">
+              {{ link.rotulo }} <app-icone nome="arrow-right" />
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <button type="button" appBotao largo tamanho="grande" (click)="pedir()">Faça seu pedido</button>
+
+    @if (loja.instagram(); as instagram) {
+      <a class="menu__instagram" [href]="instagram.url" target="_blank" rel="noopener">
+        <app-icone nome="instagram" /> {{ instagram.perfil }}
+        <span class="visualmente-oculto">(abre em nova aba)</span>
+      </a>
+    }
+  </div>
+</app-dialogo>
