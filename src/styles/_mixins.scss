@@ -1,0 +1,31 @@
+// Pontos de quebra (largura mínima da tela).
+$tablet: 768px;
+$desktop: 960px;
+$largo: 1200px;
+
+@mixin a-partir-de($largura) {
+  @media (min-width: $largura) {
+    @content;
+  }
+}
+
+@mixin ate($largura) {
+  @media (max-width: ($largura - 0.02px)) {
+    @content;
+  }
+}
+
+// Para fundos escuros: o anel de foco passa a ser creme.
+@mixin fundo-escuro {
+  --cor-foco: var(--cor-creme);
+
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+}
+
+@mixin sobretitulo {
+  font-size: var(--tamanho-sobretitulo);
+  font-weight: 700;
+  letter-spacing: var(--espacamento-maiusculas);
+  text-transform: uppercase;
+}

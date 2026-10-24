@@ -1,0 +1,105 @@
+// Estilos da diretiva appBotao (button[appBotao], a[appBotao]).
+.botao {
+  --botao-fundo: var(--cor-vinho);
+  --botao-texto: var(--cor-creme);
+  --botao-borda: var(--cor-vinho);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 3rem;
+  padding: 0.85em 1.6em;
+  border: 2px solid var(--botao-borda);
+  border-radius: var(--raio-pilula);
+  background-color: var(--botao-fundo);
+  color: var(--botao-texto);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color var(--duracao-rapida),
+    border-color var(--duracao-rapida),
+    color var(--duracao-rapida),
+    transform var(--duracao-rapida) var(--curva);
+
+  &:hover {
+    --botao-fundo: var(--cor-vinho-hover);
+    --botao-borda: var(--cor-vinho-hover);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  app-icone {
+    font-size: 1.15em;
+  }
+}
+
+.botao--contorno {
+  --botao-fundo: transparent;
+  --botao-texto: var(--cor-vinho);
+
+  &:hover {
+    --botao-fundo: var(--cor-vinho);
+    --botao-texto: var(--cor-creme);
+    --botao-borda: var(--cor-vinho);
+  }
+}
+
+.botao--creme {
+  --botao-fundo: var(--cor-creme);
+  --botao-texto: var(--cor-vinho);
+  --botao-borda: var(--cor-creme);
+
+  &:hover {
+    --botao-fundo: var(--cor-creme-escuro);
+    --botao-borda: var(--cor-creme-escuro);
+  }
+}
+
+.botao--link {
+  --botao-fundo: transparent;
+  --botao-texto: currentColor;
+  --botao-borda: transparent;
+
+  min-height: auto;
+  padding: 0.5em 0.25em;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
+
+  &:hover {
+    --botao-fundo: transparent;
+    --botao-borda: transparent;
+
+    text-decoration-thickness: 3px;
+  }
+}
+
+.botao--compacto {
+  min-height: 2.75rem;
+  padding: 0.65em 1.15em;
+  font-size: 0.75rem;
+}
+
+.botao--grande {
+  min-height: 3.5rem;
+  padding: 1em 2em;
+  font-size: 0.9375rem;
+}
+
+.botao--largo {
+  width: 100%;
+}

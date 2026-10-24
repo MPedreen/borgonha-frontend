@@ -1,0 +1,32 @@
+// Fonte da marca: Pacaembu (Naipe Foundry), a mesma do site de referência.
+// PENDENTE: comprar a licença web (MyFonts ou Naipe) ou usar pelo Adobe Fonts.
+// Com os arquivos .woff2 em public/fontes/, é só descomentar o bloco abaixo:
+// a família 'Pacaembu' já é a primeira opção de --fonte-base.
+//
+// @font-face {
+//   font-family: 'Pacaembu';
+//   src: url('/fontes/pacaembu-regular.woff2') format('woff2');
+//   font-weight: 400;
+//   font-display: swap;
+// }
+// @font-face {
+//   font-family: 'Pacaembu';
+//   src: url('/fontes/pacaembu-medium.woff2') format('woff2');
+//   font-weight: 500;
+//   font-display: swap;
+// }
+// @font-face {
+//   font-family: 'Pacaembu';
+//   src: url('/fontes/pacaembu-bold.woff2') format('woff2');
+//   font-weight: 700;
+//   font-display: swap;
+// }
+// @font-face {
+//   font-family: 'Pacaembu';
+//   src: url('/fontes/pacaembu-black.woff2') format('woff2');
+//   font-weight: 800 900;
+//   font-display: swap;
+// }
+
+// Gabarito (licença OFL): a alternativa gratuita mais parecida com a Pacaembu, usada até a licença chegar.
+@use '@fontsource-variable/gabarito';
