@@ -1,0 +1,14 @@
+<a class="pular-para-conteudo" href="#conteudo" (click)="pularParaConteudo($event, conteudo)"
+  >Pular para o conteúdo</a
+>
+
+<app-barra-aviso />
+<app-cabecalho />
+
+<main id="conteudo" #conteudo tabindex="-1">
+  <router-outlet />
+</main>
+
+<app-rodape />
+<app-barra-pedido-celular />
+<app-painel-pedido />

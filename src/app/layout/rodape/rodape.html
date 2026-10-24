@@ -1,0 +1,74 @@
+<footer class="rodape">
+  <div class="container">
+    <div class="chamada">
+      <a
+        class="chamada__marca"
+        href="/"
+        aria-label="Borgonha Confeitaria – voltar ao início"
+        (click)="navegacao.irPara($event, 'inicio')"
+      >
+        <app-logo variante="empilhado" />
+      </a>
+      <p class="chamada__titulo">Bateu vontade?</p>
+      <button type="button" appBotao variante="creme" tamanho="grande" (click)="pedido.abrir()">
+        Faça seu pedido <app-icone nome="arrow-right" />
+      </button>
+    </div>
+
+    <div class="colunas">
+      <nav class="coluna" aria-labelledby="rodape-navegue">
+        <h2 id="rodape-navegue" class="coluna__titulo">Navegue</h2>
+        <ul>
+          @for (link of links; track link.id) {
+            <li>
+              <a [href]="'/#' + link.id" (click)="navegacao.irPara($event, link.id)">{{
+                link.rotulo
+              }}</a>
+            </li>
+          }
+        </ul>
+      </nav>
+
+      <div class="coluna">
+        <h2 class="coluna__titulo">Peça</h2>
+        <ul>
+          @for (canal of canais(); track canal.tipo) {
+            <li>
+              <a [href]="canal.link" target="_blank" rel="noopener">
+                {{ nomeCurtoDoCanal[canal.tipo]
+                }}<span class="visualmente-oculto"> (abre em nova aba)</span>
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="coluna">
+        <h2 class="coluna__titulo">Visite</h2>
+        <address>{{ loja.endereco() }}</address>
+        <ul>
+          @for (horario of loja.horarios(); track horario) {
+            <li>{{ horario }}</li>
+          }
+        </ul>
+      </div>
+
+      @if (loja.instagram(); as instagram) {
+        <div class="coluna">
+          <h2 class="coluna__titulo">Siga</h2>
+          <a class="instagram" [href]="instagram.url" target="_blank" rel="noopener">
+            <app-icone nome="instagram" /> {{ instagram.perfil }}
+            <span class="visualmente-oculto">(abre em nova aba)</span>
+          </a>
+        </div>
+      }
+    </div>
+
+    <div class="base">
+      @if (origem(); as lugar) {
+        <p>Feito com amor em {{ lugar }}</p>
+      }
+      <p>&copy; {{ ano }} Borgonha Confeitaria</p>
+    </div>
+  </div>
+</footer>

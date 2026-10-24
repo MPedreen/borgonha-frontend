@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
+}
+
+.pular-para-conteudo {
+  position: absolute;
+  top: -10rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--raio-m);
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+  font-weight: 700;
+
+  &:focus {
+    top: 1rem;
+  }
+}

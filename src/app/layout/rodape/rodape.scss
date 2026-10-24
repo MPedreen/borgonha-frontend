@@ -1,0 +1,101 @@
+@use 'mixins' as *;
+
+.rodape {
+  --cor-foco: var(--cor-creme);
+
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(3rem, 7vw, 5rem);
+  border-radius: var(--raio-g) var(--raio-g) 0 0;
+  background-color: var(--cor-vinho-escuro);
+  color: var(--cor-creme);
+
+  a {
+    color: var(--cor-creme);
+    text-underline-offset: 0.3em;
+  }
+}
+
+.chamada {
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+  padding-bottom: clamp(2.5rem, 6vw, 4rem);
+  border-bottom: 1px solid rgb(255 248 231 / 18%);
+  text-align: center;
+}
+
+.chamada__marca {
+  display: block;
+  border-radius: var(--raio-p);
+}
+
+.chamada__titulo {
+  font-size: var(--tamanho-titulo);
+  font-weight: 800;
+  letter-spacing: var(--espacamento-titulo);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.colunas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(9.5rem, 100%), 1fr));
+  gap: 2rem;
+  padding-block: clamp(2.5rem, 6vw, 3.5rem);
+
+  ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.coluna {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.coluna__titulo {
+  color: var(--cor-creme);
+  font-size: var(--tamanho-sobretitulo);
+  letter-spacing: var(--espacamento-maiusculas);
+  text-transform: uppercase;
+}
+
+.instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.base {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  padding-bottom: 1.5rem;
+  font-size: 0.8125rem;
+}
+
+// Assinatura gigante no fim da página. É só decoração: fica no CSS, com texto alternativo
+// vazio, para não ser lida por leitores de tela nem contar como texto do conteúdo.
+.rodape::after {
+  content: 'Borgonha';
+  content: 'Borgonha' / '';
+  display: block;
+  margin-bottom: -0.18em;
+  color: var(--cor-vinho);
+  font-size: clamp(4.5rem, 19vw, 17rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+  text-align: center;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
