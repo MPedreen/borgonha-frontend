@@ -47,16 +47,31 @@ Com a API rodando: `npm run build`. A página inicial sai pré-renderizada, com 
 
 Em produção, o navegador chama a API em `/api`, no mesmo domínio do site (veja `src/environments/environment.ts`).
 
+Na hospedagem, configure o fallback: endereços que não são arquivos (como `/admin` e a página "não encontrada") devem receber o `index.csr.html`, que é renderizado no navegador. O `index.html` é só a página inicial pré-renderizada.
+
+## Cardápio semanal e área do administrador
+
+O cardápio muda toda semana: o site avisa, logo acima dos cookies, que tudo o que aparece ali está disponível hoje. A página pré-renderizada traz o cardápio da hora do build, e o navegador busca a versão do dia assim que a página carrega.
+
+O botão **Área do administrador**, no fim do rodapé, leva a `/admin`. Depois do login, os proprietários podem:
+
+- marcar cada produto como **No cardápio**, **Esgotado** (aparece com o aviso "Esgotado hoje") ou **Oculto** (sai do site);
+- trocar nome, descrição, gramatura, frase e sabores, e enviar ou remover as fotos;
+- cadastrar e excluir produtos.
+
+As mudanças valem na hora. O código da área do administrador fica em `src/app/admin/`, carregado só quando alguém abre `/admin`, e as páginas não são indexadas pelos buscadores. O usuário e a senha ficam só na API: veja o README do [borgonha-backend](https://github.com/MPedreen/borgonha-backend).
+
 ## Organização de `src/app`
 
 | Pasta | Conteúdo |
 |---|---|
 | `core/` | Sem interface: modelos, acesso à API, estado com signals, pedido (links do WhatsApp), navegação, SEO e imagens |
 | `ui/` | Componentes visuais reutilizáveis: botão, ícone, selo, etiqueta, cartão e imagem de produto, diálogo, acordeão, trilho, esqueleto, revelação e logo |
-| `layout/` | Barra de aviso, cabeçalho (menu de sabores e menu do celular), rodapé e barra fixa de pedido do celular |
+| `layout/` | Estrutura das páginas do site: barra de aviso, cabeçalho (menu de sabores e menu do celular), rodapé e barra fixa de pedido do celular |
 | `pedido/` | Painel e opções de "Faça seu pedido" |
-| `secoes/` | As seções da página inicial, na ordem: hero, cookies, por dentro, doces, salgados, diferenciais, como pedir e dúvidas |
+| `secoes/` | As seções da página inicial, na ordem: hero, cookies (com o aviso de cardápio semanal), por dentro, doces, salgados, diferenciais, como pedir e dúvidas |
 | `paginas/` | Página inicial e página não encontrada |
+| `admin/` | Área do administrador: login, lista de produtos, editor e envio de fotos |
 
 Os estilos globais (tokens de cor, tipografia, mixins e botões) ficam em `src/styles/`; os testes de ponta a ponta, em `e2e/`; os scripts, em `scripts/`; e as fotos originais, em `design/originais/`.
 
