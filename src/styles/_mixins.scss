@@ -29,3 +29,52 @@ $largo: 1200px;
   letter-spacing: var(--espacamento-maiusculas);
   text-transform: uppercase;
 }
+
+// Campos de formulário da área do administrador (rótulo, campo, ajuda e erro).
+@mixin campos-de-formulario {
+  .campo {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .campo__rotulo {
+    color: var(--cor-vinho);
+    font-size: var(--tamanho-pequeno);
+    font-weight: 800;
+  }
+
+  .campo__ajuda {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .campo__erro {
+    color: var(--cor-vinho);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  input:not([type='radio'], [type='checkbox'], [type='file']),
+  textarea,
+  select {
+    inline-size: 100%;
+    min-block-size: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--cor-texto);
+    border-radius: var(--raio-m);
+    background-color: #fff;
+    color: var(--cor-texto);
+    font: inherit;
+
+    &[aria-invalid='true'] {
+      border-width: 2px;
+      border-color: var(--cor-vinho);
+    }
+  }
+
+  textarea {
+    min-block-size: 7rem;
+    line-height: 1.5;
+    resize: vertical;
+  }
+}

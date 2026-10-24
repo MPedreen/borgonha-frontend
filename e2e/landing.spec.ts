@@ -23,6 +23,16 @@ test('avisa que o cardápio é semanal: o que está no site é o que tem hoje', 
   await expect(aviso).toContainText(/hoje, (\S+-feira|sábado|domingo), \d+ de /);
 });
 
+test('o rodapé leva à área do administrador, que pede login', async ({ page }) => {
+  await page.getByRole('link', { name: 'Área do administrador' }).click();
+
+  await expect(page).toHaveURL(/\/admin\/entrar$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Área do administrador');
+  await expect(page.getByLabel('Usuário')).toBeVisible();
+  await expect(page.getByLabel('Senha', { exact: true })).toHaveAttribute('type', 'password');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+});
+
 test('"Faça seu pedido" oferece WhatsApp, iFood e a loja física', async ({ page }) => {
   await page
     .getByRole('button', { name: /Faça seu pedido/ })

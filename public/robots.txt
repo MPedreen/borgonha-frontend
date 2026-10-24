@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+# Área do administrador: protegida por senha e fora dos buscadores.
+Disallow: /admin
 
 # PENDENTE: quando o domínio estiver definido, adicionar a linha
 # Sitemap: https://SEU-DOMINIO/sitemap.xml

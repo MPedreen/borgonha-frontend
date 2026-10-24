@@ -1,0 +1,77 @@
+<div class="cabecalho">
+  <h1 class="cabecalho__titulo">Cardápio da semana</h1>
+  <p>
+    Escolha o que aparece no site hoje. As mudanças entram no ar na hora, e o cliente vê o cardápio
+    atualizado ao abrir ou recarregar a página.
+  </p>
+  <dl class="legenda">
+    @for (opcao of opcoes; track opcao.valor) {
+      <div class="legenda__item">
+        <dt>{{ opcao.rotulo }}</dt>
+        <dd>{{ opcao.explicacao }}</dd>
+      </div>
+    }
+  </dl>
+</div>
+
+<p class="aviso" role="status">{{ aviso() }}</p>
+
+@if (store.cardapio(); as cardapio) {
+  @for (categoria of cardapio.categorias; track categoria.slug) {
+    <section class="categoria" [attr.aria-labelledby]="'categoria-' + categoria.slug">
+      <div class="categoria__topo">
+        <h2 class="categoria__titulo" [id]="'categoria-' + categoria.slug">{{ categoria.nome }}</h2>
+        <a
+          appBotao
+          variante="contorno"
+          tamanho="compacto"
+          routerLink="produtos/novo"
+          [queryParams]="{ categoria: categoria.slug }"
+        >
+          <app-icone nome="plus" /> Adicionar
+          <span class="visualmente-oculto">em {{ categoria.nome }}</span>
+        </a>
+      </div>
+
+      @if (categoria.produtos.length === 0) {
+        <p class="categoria__vazia">Nenhum produto nesta categoria.</p>
+      } @else {
+        <ul class="lista">
+          @for (produto of categoria.produtos; track produto.slug) {
+            <li class="item" [attr.data-situacao]="produto.situacao">
+              <app-imagem-produto
+                class="item__foto"
+                formato="quadrado"
+                tamanhos="64px"
+                [imagem]="produto.imagens.inteiro"
+              />
+              <div class="item__info">
+                <h3 class="item__nome">{{ produto.nome }}</h3>
+                <p class="item__peso">{{ produto.peso ?? 'Sem gramatura' }}</p>
+              </div>
+              <app-seletor-situacao
+                class="item__situacao"
+                [slug]="produto.slug"
+                [nomeDoProduto]="produto.nome"
+                [situacao]="produto.situacao"
+                [salvando]="salvando() === produto.slug"
+                (alterar)="alterarSituacao(produto, $event)"
+              />
+              <a class="item__editar" [routerLink]="['produtos', produto.slug]">
+                <app-icone nome="pencil" /> Editar
+                <span class="visualmente-oculto">{{ produto.nome }}</span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+} @else if (store.erro(); as erro) {
+  <div class="estado" role="alert">
+    <p>{{ erro }}</p>
+    <button type="button" appBotao (click)="store.carregar()">Tentar de novo</button>
+  </div>
+} @else {
+  <p class="estado" role="status">Carregando o cardápio…</p>
+}

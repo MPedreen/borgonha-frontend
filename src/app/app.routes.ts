@@ -4,6 +4,11 @@ import { Inicio } from './paginas/inicio/inicio';
 
 export const routes: Routes = [
   {
+    // Carregada só quando alguém abre a área do administrador: não pesa no site.
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.routes').then((m) => m.ROTAS_DO_ADMIN),
+  },
+  {
     path: '',
     component: LayoutSite,
     children: [

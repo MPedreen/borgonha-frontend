@@ -1,0 +1,74 @@
+<main class="pagina">
+  <div class="cartao">
+    <p class="cartao__marca">Borgonha Confeitaria</p>
+    <h1 class="cartao__titulo">Área do administrador</h1>
+    <p class="cartao__texto">Entre para atualizar o cardápio do dia.</p>
+
+    @if (sessao() === 'expirada') {
+      <p class="cartao__aviso" role="status">Sua sessão terminou. Entre de novo para continuar.</p>
+    }
+
+    <form class="formulario" novalidate (submit)="entrar($event)">
+      @let usuario = formulario.usuario();
+      <div class="campo">
+        <label class="campo__rotulo" for="usuario">Usuário</label>
+        <input
+          id="usuario"
+          type="text"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          [formField]="formulario.usuario"
+          [attr.aria-invalid]="usuario.touched() && usuario.invalid()"
+          aria-describedby="usuario-erro"
+        />
+        <p class="campo__erro" id="usuario-erro">
+          @if (usuario.touched() && usuario.invalid()) {
+            {{ usuario.errors()[0].message }}
+          }
+        </p>
+      </div>
+
+      @let senha = formulario.senha();
+      <div class="campo">
+        <label class="campo__rotulo" for="senha">Senha</label>
+        <div class="senha">
+          <input
+            id="senha"
+            [type]="senhaVisivel() ? 'text' : 'password'"
+            autocomplete="current-password"
+            [formField]="formulario.senha"
+            [attr.aria-invalid]="senha.touched() && senha.invalid()"
+            aria-describedby="senha-erro"
+          />
+          <button
+            type="button"
+            class="senha__mostrar"
+            [attr.aria-pressed]="senhaVisivel()"
+            (click)="senhaVisivel.set(!senhaVisivel())"
+          >
+            <app-icone [nome]="senhaVisivel() ? 'eye-off' : 'eye'" />
+            <span class="visualmente-oculto">Mostrar senha</span>
+          </button>
+        </div>
+        <p class="campo__erro" id="senha-erro">
+          @if (senha.touched() && senha.invalid()) {
+            {{ senha.errors()[0].message }}
+          }
+        </p>
+      </div>
+
+      <p class="erro" role="alert">{{ erro() }}</p>
+
+      <button type="submit" appBotao largo tamanho="grande" [disabled]="formulario().submitting()">
+        @if (formulario().submitting()) {
+          <app-icone nome="loader-circle" class="girando" /> Entrando…
+        } @else {
+          <app-icone nome="lock" /> Entrar
+        }
+      </button>
+    </form>
+
+    <a class="voltar" routerLink="/"><app-icone nome="arrow-left" /> Voltar para o site</a>
+  </div>
+</main>

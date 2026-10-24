@@ -1,0 +1,79 @@
+.foto {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: start;
+  gap: 1rem;
+}
+
+.foto__previa {
+  inline-size: 7.5rem;
+  border-radius: var(--raio-m);
+  overflow: hidden;
+}
+
+.foto__info {
+  display: grid;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+
+.foto__titulo {
+  color: var(--cor-vinho);
+  font-weight: 800;
+}
+
+.foto__ajuda,
+.foto__estado {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.foto__estado {
+  font-weight: 700;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.foto__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.foto__botao,
+.foto__remover {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-block-size: 2.75rem;
+  padding: 0.4rem 1rem;
+  border: 1.5px solid var(--cor-vinho);
+  border-radius: var(--raio-pilula);
+  font: inherit;
+  font-size: var(--tamanho-pequeno);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.foto__botao {
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+
+  &:has(input:focus-visible) {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 2px;
+  }
+}
+
+.foto__botao--ocupado,
+.foto__remover:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.foto__remover {
+  background: none;
+  color: var(--cor-vinho);
+}

@@ -1,0 +1,41 @@
+<div class="foto">
+  <app-imagem-produto
+    class="foto__previa"
+    tamanhos="10rem"
+    [formato]="formato()"
+    [imagem]="imagem()"
+    [anel]="formato() === 'cookie'"
+  />
+
+  <div class="foto__info">
+    <p class="foto__titulo">{{ titulo() }}</p>
+    @if (ajuda()) {
+      <p class="foto__ajuda" [id]="idAjuda()">{{ ajuda() }}</p>
+    }
+
+    <div class="foto__acoes">
+      <label class="foto__botao" [class.foto__botao--ocupado]="ocupado()">
+        <input
+          type="file"
+          accept="image/*"
+          class="visualmente-oculto"
+          [disabled]="ocupado()"
+          [attr.aria-describedby]="ajuda() ? idAjuda() : null"
+          (change)="enviar($event)"
+        />
+        <app-icone nome="image-plus" />
+        {{ imagem() ? 'Trocar foto' : 'Enviar foto' }}
+        <span class="visualmente-oculto">: {{ titulo() }}</span>
+      </label>
+
+      @if (imagem()) {
+        <button type="button" class="foto__remover" [disabled]="ocupado()" (click)="remover()">
+          <app-icone nome="trash-2" /> Remover
+          <span class="visualmente-oculto">{{ titulo() }}</span>
+        </button>
+      }
+    </div>
+
+    <p class="foto__estado" role="status">{{ estado() }}</p>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { LojaStore } from '../../core/estado/loja-store';
 import { TipoCanalPedido } from '../../core/modelos/loja';
 import { Navegacao } from '../../core/navegacao/navegacao';
@@ -16,7 +17,7 @@ const NOME_CURTO_DO_CANAL: Record<TipoCanalPedido, string> = {
 
 @Component({
   selector: 'app-rodape',
-  imports: [Botao, Icone, Logo],
+  imports: [Botao, Icone, Logo, RouterLink],
   templateUrl: './rodape.html',
   styleUrl: './rodape.scss',
 })

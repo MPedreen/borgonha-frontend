@@ -1,0 +1,74 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-block-size: 100dvh;
+  background-color: var(--cor-creme);
+}
+
+.topo {
+  @include fundo-escuro;
+
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+}
+
+.topo__conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  padding: 0.75rem var(--margem-lateral);
+}
+
+.topo__marca {
+  display: grid;
+  color: var(--cor-creme);
+  font-size: 1.125rem;
+  font-weight: 900;
+  line-height: 1.1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.topo__area {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: var(--espacamento-maiusculas);
+}
+
+.topo__acoes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.topo__acao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-block-size: 2.75rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgb(255 248 231 / 45%);
+  border-radius: var(--raio-pilula);
+  background: none;
+  color: var(--cor-creme);
+  font: inherit;
+  font-size: var(--tamanho-pequeno);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(255 248 231 / 12%);
+  }
+}
+
+.conteudo {
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem) var(--margem-lateral) 4rem;
+}

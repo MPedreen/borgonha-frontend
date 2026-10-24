@@ -1,0 +1,207 @@
+<a class="voltar" routerLink="/admin"><app-icone nome="arrow-left" /> Voltar para o cardápio</a>
+
+@if (novo() || produto()) {
+  <h1 class="titulo">{{ produto()?.nome ?? 'Novo produto' }}</h1>
+
+  <p class="aviso" role="status">{{ aviso() }}</p>
+
+  @if (produto(); as produto) {
+    <section class="bloco" aria-labelledby="titulo-situacao">
+      <h2 class="bloco__titulo" id="titulo-situacao">Situação no site</h2>
+      <app-seletor-situacao
+        [slug]="produto.slug"
+        [nomeDoProduto]="produto.nome"
+        [situacao]="produto.situacao"
+        [salvando]="salvandoSituacao()"
+        (alterar)="alterarSituacao(produto, $event)"
+      />
+    </section>
+
+    <section class="bloco" aria-labelledby="titulo-fotos">
+      <h2 class="bloco__titulo" id="titulo-fotos">Fotos</h2>
+      <div class="fotos">
+        <app-campo-foto
+          [produto]="produto"
+          tipo="inteiro"
+          titulo="Foto principal"
+          ajuda="Aparece no cardápio. Use uma foto bem iluminada, com o doce no centro."
+        />
+        <app-campo-foto
+          [produto]="produto"
+          tipo="partido"
+          titulo="Foto partido ao meio"
+          ajuda="Opcional. Mostra o recheio na galeria “Por dentro”."
+        />
+      </div>
+    </section>
+  }
+
+  <form
+    class="bloco formulario"
+    novalidate
+    aria-labelledby="titulo-informacoes"
+    (submit)="salvar($event)"
+  >
+    <h2 class="bloco__titulo" id="titulo-informacoes">Informações</h2>
+
+    @if (novo()) {
+      <div class="campo">
+        <label class="campo__rotulo" for="categoria">Categoria</label>
+        <select id="categoria" [formField]="formulario.categoria">
+          @for (categoria of store.cardapio()?.categorias ?? []; track categoria.slug) {
+            <option [value]="categoria.slug">{{ categoria.nome }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    @let nome = formulario.nome();
+    <div class="campo">
+      <label class="campo__rotulo" for="nome">Nome</label>
+      <input
+        id="nome"
+        type="text"
+        [formField]="formulario.nome"
+        [attr.aria-invalid]="nome.touched() && nome.invalid()"
+        aria-describedby="nome-erro"
+      />
+      <p class="campo__erro" id="nome-erro">
+        @if (nome.touched() && nome.invalid()) {
+          {{ nome.errors()[0].message }}
+        }
+      </p>
+    </div>
+
+    @let descricao = formulario.descricao();
+    <div class="campo">
+      <label class="campo__rotulo" for="descricao">Descrição</label>
+      <textarea
+        id="descricao"
+        rows="5"
+        [formField]="formulario.descricao"
+        [attr.aria-invalid]="descricao.touched() && descricao.invalid()"
+        aria-describedby="descricao-contador descricao-erro"
+      ></textarea>
+      <p class="campo__ajuda" id="descricao-contador">
+        {{ descricao.value().length }} de {{ limites.descricao }} caracteres
+      </p>
+      <p class="campo__erro" id="descricao-erro">
+        @if (descricao.touched() && descricao.invalid()) {
+          {{ descricao.errors()[0].message }}
+        }
+      </p>
+    </div>
+
+    <div class="linha">
+      @let peso = formulario.peso();
+      <div class="campo">
+        <label class="campo__rotulo" for="peso">Gramatura</label>
+        <input
+          id="peso"
+          type="text"
+          inputmode="text"
+          [formField]="formulario.peso"
+          [attr.aria-invalid]="peso.touched() && peso.invalid()"
+          aria-describedby="peso-ajuda peso-erro"
+        />
+        <p class="campo__ajuda" id="peso-ajuda">Ex.: 130g. Deixe em branco para não mostrar.</p>
+        <p class="campo__erro" id="peso-erro">
+          @if (peso.touched() && peso.invalid()) {
+            {{ peso.errors()[0].message }}
+          }
+        </p>
+      </div>
+
+      @let frase = formulario.frase();
+      <div class="campo">
+        <label class="campo__rotulo" for="frase">Frase curta</label>
+        <input
+          id="frase"
+          type="text"
+          [formField]="formulario.frase"
+          [attr.aria-invalid]="frase.touched() && frase.invalid()"
+          aria-describedby="frase-ajuda frase-erro"
+        />
+        <p class="campo__ajuda" id="frase-ajuda">
+          Opcional. Aparece no menu de sabores (ex.: “Recheado de Nutella. Precisa dizer mais?”).
+        </p>
+        <p class="campo__erro" id="frase-erro">
+          @if (frase.touched() && frase.invalid()) {
+            {{ frase.errors()[0].message }}
+          }
+        </p>
+      </div>
+    </div>
+
+    <div class="campo">
+      <label class="campo__rotulo" for="variacoes">Sabores ou versões</label>
+      <textarea
+        id="variacoes"
+        rows="3"
+        [formField]="formulario.variacoes"
+        aria-describedby="variacoes-ajuda"
+      ></textarea>
+      <p class="campo__ajuda" id="variacoes-ajuda">
+        Opcional. Um por linha (ex.: os sabores do bolo de pote).
+      </p>
+    </div>
+
+    @if (novo()) {
+      <p class="campo__ajuda">Depois de salvar, você vai poder enviar as fotos.</p>
+    }
+
+    <div class="acoes">
+      <button type="submit" appBotao [disabled]="formulario().submitting()">
+        <app-icone [nome]="formulario().submitting() ? 'loader-circle' : 'check'" />
+        {{ novo() ? 'Criar produto' : 'Salvar alterações' }}
+      </button>
+      <a appBotao variante="link" routerLink="/admin">Cancelar</a>
+    </div>
+  </form>
+
+  @if (produto(); as produto) {
+    <section class="bloco bloco--perigo" aria-labelledby="titulo-excluir">
+      <h2 class="bloco__titulo" id="titulo-excluir">Excluir produto</h2>
+      <p class="campo__ajuda">
+        Para tirar do site só por um tempo, use “Oculto”. Excluir apaga o produto e as fotos de vez.
+      </p>
+      @if (confirmandoExclusao()) {
+        <p class="confirmacao" role="alert">Tem certeza que quer excluir {{ produto.nome }}?</p>
+        <div class="acoes">
+          <button
+            type="button"
+            class="botao-perigo"
+            [disabled]="excluindo()"
+            (click)="excluir(produto)"
+          >
+            <app-icone nome="trash-2" /> Sim, excluir
+          </button>
+          <button
+            type="button"
+            appBotao
+            variante="link"
+            [disabled]="excluindo()"
+            (click)="confirmandoExclusao.set(false)"
+          >
+            Não, manter
+          </button>
+        </div>
+      } @else {
+        <button type="button" class="botao-perigo" (click)="confirmandoExclusao.set(true)">
+          <app-icone nome="trash-2" /> Excluir produto
+        </button>
+      }
+    </section>
+  }
+} @else if (store.cardapio()) {
+  <div class="estado">
+    <p>Produto não encontrado. Ele pode ter sido excluído.</p>
+  </div>
+} @else if (store.erro(); as erro) {
+  <div class="estado" role="alert">
+    <p>{{ erro }}</p>
+    <button type="button" appBotao (click)="store.carregar()">Tentar de novo</button>
+  </div>
+} @else {
+  <p class="estado" role="status">Carregando…</p>
+}

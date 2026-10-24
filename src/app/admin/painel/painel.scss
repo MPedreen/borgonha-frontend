@@ -1,0 +1,158 @@
+@use 'mixins' as *;
+
+.cabecalho {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: var(--tamanho-pequeno);
+  line-height: 1.5;
+}
+
+.cabecalho__titulo {
+  color: var(--cor-vinho);
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.legenda {
+  display: grid;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+
+  @include a-partir-de($tablet) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.legenda__item {
+  dt {
+    color: var(--cor-vinho);
+    font-weight: 800;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.aviso {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-inline-start: 4px solid var(--cor-vinho);
+  border-radius: var(--raio-p);
+  background-color: var(--cor-creme-escuro);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 700;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.categoria {
+  margin-top: 2rem;
+}
+
+.categoria__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.categoria__titulo {
+  color: var(--cor-vinho);
+  font-size: 1.375rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.categoria__vazia {
+  font-size: var(--tamanho-pequeno);
+}
+
+.lista {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  grid-template-areas:
+    'foto info editar'
+    'situacao situacao situacao';
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.75rem;
+  border-radius: var(--raio-g);
+  background-color: #fff;
+  box-shadow: var(--sombra);
+
+  @include a-partir-de($desktop) {
+    grid-template-columns: 4rem 1fr auto auto;
+    grid-template-areas: 'foto info situacao editar';
+  }
+
+  &[data-situacao='oculto'] {
+    background-color: var(--cor-creme-escuro);
+
+    .item__foto {
+      opacity: 0.55;
+      filter: grayscale(1);
+    }
+  }
+}
+
+.item__foto {
+  grid-area: foto;
+  inline-size: 4rem;
+  border-radius: var(--raio-m);
+  overflow: hidden;
+}
+
+.item__info {
+  grid-area: info;
+  min-inline-size: 0;
+}
+
+.item__nome {
+  color: var(--cor-vinho);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.item__peso {
+  font-size: 0.8125rem;
+}
+
+.item__situacao {
+  grid-area: situacao;
+  overflow-x: auto;
+}
+
+.item__editar {
+  grid-area: editar;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-block-size: 2.75rem;
+  padding-inline: 0.5rem;
+  color: var(--cor-vinho);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 800;
+}
+
+.estado {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  padding: 2rem 0;
+}

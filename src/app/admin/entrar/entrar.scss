@@ -1,0 +1,115 @@
+@use 'mixins' as *;
+
+@include campos-de-formulario;
+
+.pagina {
+  display: grid;
+  min-block-size: 100dvh;
+  padding: 1.5rem var(--margem-lateral);
+  place-items: center;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--cor-vinho) 0 3.5rem,
+    var(--cor-vinho-listra) 3.5rem 7rem
+  );
+}
+
+.cartao {
+  display: grid;
+  gap: 1rem;
+  inline-size: min(100%, 26rem);
+  padding: clamp(1.75rem, 5vw, 2.5rem);
+  border-radius: var(--raio-g);
+  background-color: var(--cor-creme);
+  box-shadow: var(--sombra-forte);
+}
+
+.cartao__marca {
+  @include sobretitulo;
+
+  color: var(--cor-vinho);
+}
+
+.cartao__titulo {
+  color: var(--cor-vinho);
+  font-size: clamp(1.625rem, 1.4rem + 1vw, 2rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cartao__texto {
+  font-size: var(--tamanho-pequeno);
+}
+
+.cartao__aviso {
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-m);
+  background-color: var(--cor-creme-escuro);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 700;
+}
+
+.formulario {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.campo__erro:empty,
+.erro:empty {
+  display: none;
+}
+
+.senha {
+  position: relative;
+
+  input {
+    padding-inline-end: 3.25rem;
+  }
+}
+
+.senha__mostrar {
+  position: absolute;
+  inset-block: 0.25rem;
+  inset-inline-end: 0.25rem;
+  display: grid;
+  inline-size: 2.75rem;
+  place-items: center;
+  border: 0;
+  border-radius: var(--raio-m);
+  background: none;
+  color: var(--cor-vinho);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.erro {
+  padding: 0.75rem 1rem;
+  border-inline-start: 4px solid var(--cor-vinho);
+  border-radius: var(--raio-p);
+  background-color: var(--cor-creme-escuro);
+  color: var(--cor-vinho);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 700;
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-self: center;
+  min-block-size: 2.75rem;
+  color: var(--cor-vinho);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 700;
+}
+
+.girando {
+  animation: girar 1s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(1turn);
+  }
+}

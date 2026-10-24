@@ -1,0 +1,122 @@
+@use 'mixins' as *;
+
+@include campos-de-formulario;
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-block-size: 2.75rem;
+  color: var(--cor-vinho);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 800;
+}
+
+.titulo {
+  margin-block: 0.5rem 1rem;
+  color: var(--cor-vinho);
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.aviso {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-inline-start: 4px solid var(--cor-vinho);
+  border-radius: var(--raio-p);
+  background-color: var(--cor-creme-escuro);
+  font-size: var(--tamanho-pequeno);
+  font-weight: 700;
+}
+
+.aviso:empty,
+.campo__erro:empty {
+  display: none;
+}
+
+.bloco {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border-radius: var(--raio-g);
+  background-color: #fff;
+  box-shadow: var(--sombra);
+}
+
+.bloco__titulo {
+  color: var(--cor-vinho);
+  font-size: 1.125rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.fotos {
+  display: grid;
+  gap: 1.5rem;
+
+  @include a-partir-de($desktop) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.linha {
+  display: grid;
+  gap: 1rem;
+
+  @include a-partir-de($tablet) {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bloco--perigo {
+  border: 1.5px dashed var(--cor-vinho);
+  box-shadow: none;
+}
+
+.confirmacao {
+  font-weight: 800;
+}
+
+.botao-perigo {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.4rem;
+  min-block-size: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border: 1.5px solid var(--cor-vinho);
+  border-radius: var(--raio-pilula);
+  background: none;
+  color: var(--cor-vinho);
+  font: inherit;
+  font-size: var(--tamanho-pequeno);
+  font-weight: 800;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--cor-vinho);
+    color: var(--cor-creme);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+.estado {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  padding: 2rem 0;
+}

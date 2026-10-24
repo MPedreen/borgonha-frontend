@@ -28,3 +28,19 @@ test('o painel "Faça seu pedido" aberto não tem problemas de acessibilidade', 
 
   expect(resultado.violations).toEqual([]);
 });
+
+test('a tela de login da área do administrador não tem problemas de acessibilidade', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/admin/entrar');
+  await expect(page.getByRole('heading', { name: 'Área do administrador' })).toBeVisible();
+
+  // Com os erros de validação à mostra, que também precisam ser acessíveis.
+  await page.getByRole('button', { name: 'Entrar' }).click();
+  await expect(page.getByText('Informe o usuário.')).toBeVisible();
+
+  const resultado = await new AxeBuilder({ page }).withTags(REGRAS_WCAG_AA).analyze();
+
+  expect(resultado.violations).toEqual([]);
+});
