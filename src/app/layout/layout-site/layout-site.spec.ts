@@ -2,11 +2,11 @@ import { IMAGE_LOADER } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { App } from './app';
-import { API_URL } from './core/api/api-url';
-import { carregadorDeImagens } from './core/imagens/carregador-de-imagens';
+import { API_URL } from '../../core/api/api-url';
+import { carregadorDeImagens } from '../../core/imagens/carregador-de-imagens';
+import { LayoutSite } from './layout-site';
 
-describe('App', () => {
+describe('LayoutSite', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -19,7 +19,7 @@ describe('App', () => {
   });
 
   it('monta a estrutura da página: aviso, cabeçalho, conteúdo, rodapé e painel de pedido', async () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(LayoutSite);
     await fixture.whenStable();
     const elemento = fixture.nativeElement as HTMLElement;
 
@@ -35,7 +35,7 @@ describe('App', () => {
   });
 
   it('o link "Pular para o conteúdo" leva o foco ao conteúdo principal', async () => {
-    const fixture = TestBed.createComponent(App);
+    const fixture = TestBed.createComponent(LayoutSite);
     const elemento = fixture.nativeElement as HTMLElement;
     document.body.appendChild(elemento);
     await fixture.whenStable();
