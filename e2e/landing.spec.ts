@@ -16,6 +16,13 @@ test('mostra o conceito "Parte ao meio" e os 6 sabores de cookie', async ({ page
   await expect(page.getByRole('heading', { name: 'Bateu fome de salgado?' })).toBeVisible();
 });
 
+test('avisa que o cardápio é semanal: o que está no site é o que tem hoje', async ({ page }) => {
+  const aviso = page.getByRole('note', { name: /Cardápio da semana/ });
+
+  await expect(aviso).toContainText('Tudo o que aparece aqui está disponível hoje');
+  await expect(aviso).toContainText(/hoje, (\S+-feira|sábado|domingo), \d+ de /);
+});
+
 test('"Faça seu pedido" oferece WhatsApp, iFood e a loja física', async ({ page }) => {
   await page
     .getByRole('button', { name: /Faça seu pedido/ })

@@ -8,6 +8,8 @@
       alinhamento="centro"
     />
 
+    <app-aviso-cardapio-semanal />
+
     @if (catalogo.carregando()) {
       <ul class="grade" aria-hidden="true">
         @for (indice of esqueletos; track indice) {

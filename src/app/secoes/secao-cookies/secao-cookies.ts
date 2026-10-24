@@ -7,13 +7,14 @@ import { CabecalhoSecao } from '../../ui/cabecalho-secao/cabecalho-secao';
 import { CartaoProduto } from '../../ui/cartao-produto/cartao-produto';
 import { Esqueleto } from '../../ui/esqueleto/esqueleto';
 import { Revelar } from '../../ui/revelar/revelar';
+import { AvisoCardapioSemanal } from '../aviso-cardapio-semanal/aviso-cardapio-semanal';
 
 const CARDS_DO_ESQUELETO = 6;
 
 /** O cardápio de cookies (todos os sabores à vista, sem carrossel). */
 @Component({
   selector: 'app-secao-cookies',
-  imports: [Botao, CabecalhoSecao, CartaoProduto, Esqueleto, Revelar],
+  imports: [AvisoCardapioSemanal, Botao, CabecalhoSecao, CartaoProduto, Esqueleto, Revelar],
   templateUrl: './secao-cookies.html',
   styleUrl: './secao-cookies.scss',
 })

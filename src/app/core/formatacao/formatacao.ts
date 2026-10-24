@@ -46,6 +46,18 @@ export function formatarPreco(valor: number): string {
   return formatoMoeda.format(valor);
 }
 
+const formatoDia = new Intl.DateTimeFormat('pt-BR', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'America/Sao_Paulo',
+});
+
+/** Data no fuso da loja. Ex.: "sexta-feira, 23 de outubro". */
+export function formatarDia(data: Date): string {
+  return formatoDia.format(data);
+}
+
 function maiuscula(texto: string): string {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
