@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NG_CLI_ANALYTICS: false
+
+jobs:
+  site:
+    name: Lint, testes, build e testes de ponta a ponta
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      # Mesma organização do desenvolvimento: frontend/ e backend/ lado a lado.
+      - uses: actions/checkout@v7
+        with:
+          path: frontend
+
+      # A API roda junto: a pré-renderização e os testes de ponta a ponta usam os dados dela.
+      - uses: actions/checkout@v7
+        with:
+          repository: MPedreen/borgonha-backend
+          path: backend
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: backend/global.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar formatação
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Testes unitários
+        run: npm test -- --watch=false
+
+      - name: Subir a API
+        working-directory: backend
+        run: |
+          dotnet build src/Borgonha.Api
+          dotnet run --project src/Borgonha.Api --no-build --launch-profile http > "$RUNNER_TEMP/api.log" 2>&1 &
+          for tentativa in $(seq 1 30); do
+            if curl --silent --fail http://localhost:5170/health > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat "$RUNNER_TEMP/api.log"
+          exit 1
+
+      - name: Build de produção (pré-renderizado)
+        run: npm run build
+
+      - name: Instalar o Chromium do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes de ponta a ponta (Playwright + axe)
+        run: npm run e2e
+
+      - name: Guardar os rastros dos testes que falharam
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rastros-playwright
+          path: frontend/test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Mostrar o log da API
+        if: failure()
+        run: cat "$RUNNER_TEMP/api.log" || true
