@@ -6,19 +6,31 @@ import { fileURLToPath } from 'node:url';
 import { siIfood, siInstagram, siWhatsapp } from 'simple-icons';
 
 const ICONES_LUCIDE = [
+  'arrow-left',
   'arrow-right',
   'bike',
+  'calendar-heart',
+  'check',
   'chevron-down',
   'chevron-left',
   'chevron-right',
   'clock',
   'cookie',
   'external-link',
+  'eye',
+  'eye-off',
   'hand-heart',
+  'image-plus',
+  'loader-circle',
+  'lock',
+  'log-out',
   'map-pin',
   'menu',
+  'pencil',
+  'plus',
   'sparkles',
   'store',
+  'trash-2',
   'x',
 ];
 
