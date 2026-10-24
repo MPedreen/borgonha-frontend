@@ -56,7 +56,7 @@ O cardápio muda toda semana: o site avisa, logo acima dos cookies, que tudo o q
 O botão **Área do administrador**, no fim do rodapé, leva a `/admin`. Depois do login, os proprietários podem:
 
 - marcar cada produto como **No cardápio**, **Esgotado** (aparece com o aviso "Esgotado hoje") ou **Oculto** (sai do site);
-- trocar nome, descrição, gramatura, frase e sabores, e enviar ou remover as fotos;
+- trocar nome, descrição, preço, gramatura, frase e sabores, e enviar ou remover as fotos;
 - cadastrar e excluir produtos.
 
 As mudanças valem na hora. O código da área do administrador fica em `src/app/admin/`, carregado só quando alguém abre `/admin`, e as páginas não são indexadas pelos buscadores. O usuário e a senha ficam só na API: veja o README do [borgonha-backend](https://github.com/MPedreen/borgonha-backend).

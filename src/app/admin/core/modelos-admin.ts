@@ -14,9 +14,11 @@ export interface ProdutoAdmin {
   slug: string;
   nome: string;
   categoria: string;
-  descricao: string;
+  descricao: string | null;
   frase: string | null;
   peso: string | null;
+  /** Preço em reais; sem preço, o site mostra só o produto. */
+  preco: number | null;
   variacoes: string[];
   imagens: ImagensProduto;
   situacao: SituacaoProduto;
@@ -32,12 +34,13 @@ export interface CardapioAdmin {
   categorias: CategoriaAdmin[];
 }
 
-/** Textos editáveis de um produto. */
+/** Dados editáveis de um produto. */
 export interface DadosDoProduto {
   nome: string;
-  descricao: string;
+  descricao: string | null;
   frase: string | null;
   peso: string | null;
+  preco: number | null;
   variacoes: string[];
 }
 

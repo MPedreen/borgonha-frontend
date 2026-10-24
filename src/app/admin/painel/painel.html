@@ -47,7 +47,12 @@
               />
               <div class="item__info">
                 <h3 class="item__nome">{{ produto.nome }}</h3>
-                <p class="item__peso">{{ produto.peso ?? 'Sem gramatura' }}</p>
+                <p class="item__detalhes">
+                  <span class="item__preco">{{
+                    produto.preco !== null ? formatarPreco(produto.preco) : 'Sem preço'
+                  }}</span>
+                  · {{ produto.peso ?? 'sem gramatura' }}
+                </p>
               </div>
               <app-seletor-situacao
                 class="item__situacao"

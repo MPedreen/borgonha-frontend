@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { formatarPreco } from '../../core/formatacao/formatacao';
 import { Botao } from '../../ui/botao/botao';
 import { Icone } from '../../ui/icone/icone';
 import { ImagemProduto } from '../../ui/imagem-produto/imagem-produto';
@@ -24,6 +25,7 @@ const ROTULO_DA_SITUACAO: Record<SituacaoProduto, string> = {
 export class Painel {
   protected readonly store = inject(CardapioAdminStore);
   protected readonly opcoes = OPCOES_DE_SITUACAO;
+  protected readonly formatarPreco = formatarPreco;
 
   /** Resultado da última alteração (ou a mensagem deixada pela página anterior). */
   protected readonly aviso = signal(mensagemDaNavegacao());

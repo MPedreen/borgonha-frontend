@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, linkedSignal, signal, untracked } from '@angular/core';
-import { form, FormField, maxLength, required, submit } from '@angular/forms/signals';
+import { form, FormField, maxLength, required, submit, validate } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { Botao } from '../../ui/botao/botao';
 import { Icone } from '../../ui/icone/icone';
@@ -7,6 +7,7 @@ import { CampoFoto } from '../campo-foto/campo-foto';
 import { CardapioAdminStore } from '../core/cardapio-admin-store';
 import { mensagemDaNavegacao } from '../core/mensagem-da-navegacao';
 import { DadosDoProduto, ProdutoAdmin, SituacaoProduto } from '../core/modelos-admin';
+import { escreverPreco, lerPreco } from '../core/preco';
 import { SeletorSituacao } from '../seletor-situacao/seletor-situacao';
 
 /** Os mesmos limites da API. */
@@ -18,6 +19,8 @@ interface ValoresDoFormulario {
   descricao: string;
   frase: string;
   peso: string;
+  /** Como foi digitado (ex.: "12,50"); vazio = sem preço. */
+  preco: string;
   /** Uma variação por linha. */
   variacoes: string;
 }
@@ -58,12 +61,16 @@ export class EditorProduto {
     required(campo.categoria, { message: 'Escolha a categoria.' });
     required(campo.nome, { message: 'Informe o nome.' });
     maxLength(campo.nome, LIMITES.nome, { message: `Use até ${LIMITES.nome} caracteres.` });
-    required(campo.descricao, { message: 'Escreva a descrição.' });
     maxLength(campo.descricao, LIMITES.descricao, {
       message: `Use até ${LIMITES.descricao} caracteres.`,
     });
     maxLength(campo.frase, LIMITES.frase, { message: `Use até ${LIMITES.frase} caracteres.` });
     maxLength(campo.peso, LIMITES.peso, { message: `Use até ${LIMITES.peso} caracteres.` });
+    validate(campo.preco, ({ value }) =>
+      lerPreco(value()) === undefined
+        ? { kind: 'preco', message: 'Use só números, como 15 ou 12,50 (até R$ 9.999,99).' }
+        : null,
+    );
   });
 
   protected readonly aviso = signal(mensagemDaNavegacao());
@@ -143,6 +150,7 @@ function valoresIniciais(
     descricao: produto?.descricao ?? '',
     frase: produto?.frase ?? '',
     peso: produto?.peso ?? '',
+    preco: escreverPreco(produto?.preco ?? null),
     variacoes: produto?.variacoes.join('\n') ?? '',
   };
 }
@@ -152,9 +160,10 @@ function dadosDoProduto(valores: ValoresDoFormulario): DadosDoProduto {
 
   return {
     nome: valores.nome.trim(),
-    descricao: valores.descricao.trim(),
+    descricao: opcional(valores.descricao),
     frase: opcional(valores.frase),
     peso: opcional(valores.peso),
+    preco: lerPreco(valores.preco) ?? null,
     variacoes: valores.variacoes
       .split('\n')
       .map((variacao) => variacao.trim())

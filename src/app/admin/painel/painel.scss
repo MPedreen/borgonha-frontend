@@ -129,8 +129,13 @@
   font-weight: 800;
 }
 
-.item__peso {
+.item__detalhes {
   font-size: 0.8125rem;
+}
+
+.item__preco {
+  color: var(--cor-vinho);
+  font-weight: 800;
 }
 
 .item__situacao {

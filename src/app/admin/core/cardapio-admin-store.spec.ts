@@ -12,6 +12,7 @@ const NUTELLA: ProdutoAdmin = {
   descricao: 'Recheio de Nutella.',
   frase: null,
   peso: '130g',
+  preco: 15,
   variacoes: [],
   imagens: { inteiro: null, partido: null },
   situacao: 'no-cardapio',
@@ -99,6 +100,7 @@ describe('CardapioAdminStore', () => {
       descricao: 'Recheio de pistache.',
       frase: null,
       peso: '130g',
+      preco: 15,
       variacoes: [],
     });
 

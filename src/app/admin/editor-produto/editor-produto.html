@@ -74,7 +74,9 @@
 
     @let descricao = formulario.descricao();
     <div class="campo">
-      <label class="campo__rotulo" for="descricao">Descrição</label>
+      <label class="campo__rotulo" for="descricao"
+        >Descrição <span class="campo__opcional">(opcional)</span></label
+      >
       <textarea
         id="descricao"
         rows="5"
@@ -93,6 +95,28 @@
     </div>
 
     <div class="linha">
+      @let preco = formulario.preco();
+      <div class="campo">
+        <label class="campo__rotulo" for="preco">Preço (R$)</label>
+        <input
+          id="preco"
+          type="text"
+          inputmode="decimal"
+          autocomplete="off"
+          [formField]="formulario.preco"
+          [attr.aria-invalid]="preco.touched() && preco.invalid()"
+          aria-describedby="preco-ajuda preco-erro"
+        />
+        <p class="campo__ajuda" id="preco-ajuda">
+          Ex.: 15 ou 12,50. Em branco, o site não mostra preço.
+        </p>
+        <p class="campo__erro" id="preco-erro">
+          @if (preco.touched() && preco.invalid()) {
+            {{ preco.errors()[0].message }}
+          }
+        </p>
+      </div>
+
       @let peso = formulario.peso();
       <div class="campo">
         <label class="campo__rotulo" for="peso">Gramatura</label>
@@ -111,26 +135,26 @@
           }
         </p>
       </div>
+    </div>
 
-      @let frase = formulario.frase();
-      <div class="campo">
-        <label class="campo__rotulo" for="frase">Frase curta</label>
-        <input
-          id="frase"
-          type="text"
-          [formField]="formulario.frase"
-          [attr.aria-invalid]="frase.touched() && frase.invalid()"
-          aria-describedby="frase-ajuda frase-erro"
-        />
-        <p class="campo__ajuda" id="frase-ajuda">
-          Opcional. Aparece no menu de sabores (ex.: “Recheado de Nutella. Precisa dizer mais?”).
-        </p>
-        <p class="campo__erro" id="frase-erro">
-          @if (frase.touched() && frase.invalid()) {
-            {{ frase.errors()[0].message }}
-          }
-        </p>
-      </div>
+    @let frase = formulario.frase();
+    <div class="campo">
+      <label class="campo__rotulo" for="frase">Frase curta</label>
+      <input
+        id="frase"
+        type="text"
+        [formField]="formulario.frase"
+        [attr.aria-invalid]="frase.touched() && frase.invalid()"
+        aria-describedby="frase-ajuda frase-erro"
+      />
+      <p class="campo__ajuda" id="frase-ajuda">
+        Opcional. Aparece no menu de sabores (ex.: “Recheado de Nutella. Precisa dizer mais?”).
+      </p>
+      <p class="campo__erro" id="frase-erro">
+        @if (frase.touched() && frase.invalid()) {
+          {{ frase.errors()[0].message }}
+        }
+      </p>
     </div>
 
     <div class="campo">
