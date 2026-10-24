@@ -1,0 +1,42 @@
+<section id="pedido" class="secao secao--apoio" aria-labelledby="titulo-pedido" tabindex="-1">
+  <div class="container como-pedir">
+    <div>
+      <app-cabecalho-secao
+        idTitulo="titulo-pedido"
+        sobretitulo="Pedir é fácil"
+        titulo="Escolha como"
+        destaque="prefere."
+        texto="Pelo WhatsApp você garante os melhores preços e frete grátis em Santa Luzia e região."
+      />
+      <app-opcoes-pedido />
+    </div>
+
+    <aside class="loja" aria-labelledby="titulo-loja">
+      <h3 id="titulo-loja" class="loja__titulo">Nossa loja</h3>
+
+      @if (loja.endereco(); as endereco) {
+        <p class="loja__linha">
+          <app-icone nome="map-pin" /><span>{{ endereco }}</span>
+        </p>
+      }
+
+      @if (loja.horarios().length > 0) {
+        <div class="loja__linha">
+          <app-icone nome="clock" />
+          <ul>
+            @for (horario of loja.horarios(); track horario) {
+              <li>{{ horario }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      @if (loja.linkDoMapa(); as mapa) {
+        <a appBotao variante="contorno" [href]="mapa" target="_blank" rel="noopener">
+          Abrir no Google Maps <app-icone nome="external-link" />
+          <span class="visualmente-oculto">(abre em nova aba)</span>
+        </a>
+      }
+    </aside>
+  </div>
+</section>

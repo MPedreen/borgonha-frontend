@@ -1,0 +1,44 @@
+@use 'mixins' as *;
+
+.como-pedir {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+
+  @include a-partir-de($desktop) {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: end;
+  }
+}
+
+.loja {
+  display: grid;
+  justify-items: start;
+  gap: 1.1rem;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border-radius: var(--raio-g);
+  background-color: var(--cor-creme);
+  box-shadow: var(--sombra);
+}
+
+.loja__titulo {
+  font-size: var(--tamanho-titulo-card);
+  letter-spacing: var(--espacamento-titulo);
+  text-transform: uppercase;
+}
+
+.loja__linha {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  app-icone {
+    margin-top: 0.2em;
+    color: var(--cor-vinho);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}

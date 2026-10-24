@@ -1,0 +1,21 @@
+@if (duvidas().length > 0) {
+  <section id="duvidas" class="secao" aria-labelledby="titulo-duvidas" tabindex="-1">
+    <div class="container duvidas">
+      <app-cabecalho-secao
+        idTitulo="titulo-duvidas"
+        sobretitulo="Dúvidas"
+        titulo="Ficou com alguma"
+        destaque="dúvida?"
+        texto="Pergunte à vontade. Se não estiver aqui, chama no WhatsApp."
+      />
+
+      <div class="duvidas__lista">
+        @for (duvida of duvidas(); track duvida.pergunta) {
+          <app-acordeao-item grupo="duvidas" [titulo]="duvida.pergunta">
+            <p>{{ duvida.resposta }}</p>
+          </app-acordeao-item>
+        }
+      </div>
+    </div>
+  </section>
+}
