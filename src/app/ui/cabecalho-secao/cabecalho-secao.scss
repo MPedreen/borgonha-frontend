@@ -1,0 +1,48 @@
+@use 'mixins' as *;
+
+:host {
+  display: grid;
+  gap: 1rem;
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+:host([data-alinhamento='centro']) {
+  justify-items: center;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.sobretitulo {
+  @include sobretitulo;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+
+  &::before {
+    content: '';
+    width: 1.75rem;
+    height: 2px;
+    background-color: currentColor;
+  }
+}
+
+.titulo {
+  font-size: var(--tamanho-titulo);
+  letter-spacing: var(--espacamento-titulo);
+  text-transform: uppercase;
+}
+
+.texto {
+  max-width: 38rem;
+  font-size: 1.0625rem;
+}
+
+:host([data-tom='escuro']) {
+  color: var(--cor-creme);
+
+  .titulo {
+    color: var(--cor-creme);
+  }
+}
