@@ -179,7 +179,9 @@
     line-height: 1.05;
   }
 
-  .cartao__descricao {
+  .cartao__descricao,
+  .cartao__preco,
+  .cartao__peso--sozinho {
     color: var(--cor-creme);
   }
 }

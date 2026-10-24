@@ -35,6 +35,15 @@ describe('CartaoProduto', () => {
     );
   });
 
+  it('sem descrição, mostra só o nome, o preço e o botão', async () => {
+    await renderizar({ ...COOKIE_NUTELLA, descricao: null, preco: 19 });
+
+    expect(elemento.querySelector('.cartao__descricao')).toBeNull();
+    expect(elemento.querySelector('.cartao__preco')?.textContent?.replace(/\s+/g, ' ')).toContain(
+      '19,00',
+    );
+  });
+
   it('mostra a gramatura mesmo sem preço', async () => {
     await renderizar({ ...COOKIE_NUTELLA, peso: '130g' });
 

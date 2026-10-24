@@ -14,7 +14,8 @@ export interface Produto {
   nome: string;
   /** Slug da categoria: "cookies", "doces" ou "salgados". */
   categoria: string;
-  descricao: string;
+  /** Opcional: um produto novo pode estar no cardápio só com nome e preço. */
+  descricao: string | null;
   /** Frase curta usada no menu de sabores. */
   frase: string | null;
   preco: number | null;

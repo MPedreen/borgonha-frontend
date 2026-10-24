@@ -13,6 +13,7 @@ test('mostra o conceito "Parte ao meio" e os 6 sabores de cookie', async ({ page
   );
   await expect(page.locator('#cookies .grade > li')).toHaveCount(6);
   await expect(page.locator('#cookies')).toContainText('130g');
+  await expect(page.locator('#produto-tradicional')).toContainText('R$ 10,00');
   await expect(page.getByRole('heading', { name: 'Bateu fome de salgado?' })).toBeVisible();
 });
 

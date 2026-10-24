@@ -20,7 +20,9 @@
 
     <h3 class="cartao__nome" [id]="idTitulo()" tabindex="-1">{{ produto().nome }}</h3>
 
-    <p class="cartao__descricao">{{ produto().descricao }}</p>
+    @if (produto().descricao; as descricao) {
+      <p class="cartao__descricao">{{ descricao }}</p>
+    }
 
     @if (produto().variacoes.length > 0) {
       <ul class="cartao__variacoes" aria-label="Sabores disponíveis">
