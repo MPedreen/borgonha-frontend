@@ -1,0 +1,29 @@
+@use 'mixins' as *;
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 4vw, 3rem) clamp(1rem, 3vw, 2.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include a-partir-de($tablet) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include a-partir-de($desktop) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  li {
+    scroll-margin-top: calc(var(--altura-cabecalho) + 1.5rem);
+  }
+}
+
+.indisponivel {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  text-align: center;
+}

@@ -1,0 +1,32 @@
+<section id="inicio" class="hero" aria-labelledby="titulo-hero" tabindex="-1">
+  <div class="container hero__grade">
+    <div class="hero__texto">
+      <p class="hero__sobretitulo">Confeitaria artesanal · Santa Luzia, São Gonçalo</p>
+      <h1 id="titulo-hero" class="hero__titulo">
+        Parte ao meio. Deixa <app-selo>escorrer.</app-selo>
+      </h1>
+      <p class="hero__subtitulo">
+        Cookies recheados, brookies, bolos de pote e salgados feitos à mão. Peça pelo WhatsApp e
+        receba com frete grátis em Santa Luzia e região.
+      </p>
+      <div class="hero__acoes">
+        <button type="button" appBotao variante="creme" tamanho="grande" (click)="pedido.abrir()">
+          Faça seu pedido <app-icone nome="arrow-right" />
+        </button>
+        <a appBotao variante="link" href="/#cookies" (click)="navegacao.irPara($event, 'cookies')"
+          >Ver os sabores</a
+        >
+      </div>
+    </div>
+
+    <div class="hero__foto">
+      <app-imagem-produto
+        [imagem]="foto"
+        formato="retrato"
+        prioridade
+        tamanhos="(min-width: 960px) 30vw, 80vw"
+      />
+      <p class="hero__chip"><app-icone nome="bike" /> Frete grátis em Santa Luzia e região</p>
+    </div>
+  </div>
+</section>

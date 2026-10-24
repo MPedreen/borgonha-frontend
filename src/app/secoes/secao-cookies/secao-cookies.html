@@ -1,0 +1,37 @@
+<section id="cookies" class="secao" aria-labelledby="titulo-cookies" tabindex="-1">
+  <div class="container">
+    <app-cabecalho-secao
+      idTitulo="titulo-cookies"
+      [sobretitulo]="sobretitulo()"
+      titulo="Qual vai ser"
+      destaque="hoje?"
+      alinhamento="centro"
+    />
+
+    @if (catalogo.carregando()) {
+      <ul class="grade" aria-hidden="true">
+        @for (indice of esqueletos; track indice) {
+          <li><app-esqueleto /></li>
+        }
+      </ul>
+    } @else if (catalogo.indisponivel()) {
+      <div class="indisponivel" role="status">
+        <p>Não conseguimos carregar o cardápio agora.</p>
+        <button type="button" appBotao (click)="catalogo.recarregar()">Tentar de novo</button>
+      </div>
+    } @else {
+      <ul class="grade">
+        @for (cookie of catalogo.cookies(); track cookie.slug; let indice = $index) {
+          <li [id]="'produto-' + cookie.slug" [appRevelar]="(indice % 4) * 70">
+            <app-cartao-produto
+              variante="cookie"
+              [produto]="cookie"
+              [destacado]="navegacao.produtoDestacado() === cookie.slug"
+              (pedir)="pedido.abrir($event)"
+            />
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</section>

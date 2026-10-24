@@ -1,0 +1,39 @@
+<section id="por-dentro" class="por-dentro" aria-labelledby="titulo-por-dentro" tabindex="-1">
+  <div class="toldo" aria-hidden="true"></div>
+
+  <div class="container">
+    <app-cabecalho-secao
+      idTitulo="titulo-por-dentro"
+      sobretitulo="Parte ao meio"
+      titulo="Por dentro é ainda"
+      destaque="melhor."
+      tom="escuro"
+      texto="Recheio generoso de verdade: é só partir o cookie para ver."
+    />
+
+    <app-trilho-horizontal rotulo="Cookies partidos ao meio">
+      @for (cookie of catalogo.cookiesPartidos(); track cookie.slug) {
+        <li class="foto">
+          <figure class="foto__quadro">
+            <app-imagem-produto
+              formato="retrato"
+              tamanhos="(min-width: 960px) 17rem, 75vw"
+              [imagem]="cookie.imagens.partido"
+            />
+            <figcaption class="foto__legenda">{{ cookie.nome }}</figcaption>
+          </figure>
+          <button
+            type="button"
+            appBotao
+            variante="creme"
+            tamanho="compacto"
+            [attr.aria-label]="'Quero esse: Cookie ' + cookie.nome"
+            (click)="pedido.abrir(cookie)"
+          >
+            Quero esse
+          </button>
+        </li>
+      }
+    </app-trilho-horizontal>
+  </div>
+</section>

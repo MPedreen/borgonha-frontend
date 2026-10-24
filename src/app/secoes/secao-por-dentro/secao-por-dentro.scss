@@ -1,0 +1,60 @@
+@use 'mixins' as *;
+
+$listra: 2.5rem;
+$recorte: 1.25rem;
+
+.por-dentro {
+  @include fundo-escuro;
+
+  padding-bottom: var(--espaco-secao);
+  scroll-margin-top: var(--altura-cabecalho);
+}
+
+// Toldo de confeitaria: listras vinho e creme com a borda de baixo recortada em ondas.
+.toldo {
+  height: calc(3.25rem + #{$recorte});
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--cor-creme) 0 $listra,
+    var(--cor-vinho-escuro) $listra $listra * 2
+  );
+  mask:
+    linear-gradient(#000 0 0) top / 100% calc(100% - #{$recorte}) no-repeat,
+    radial-gradient(circle at 50% 0, #000 calc(#{$recorte} - 0.5px), #0000 $recorte) bottom /
+      #{$listra} $recorte repeat-x;
+}
+
+.foto {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  scroll-snap-align: start;
+}
+
+.foto__quadro {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.6rem 0.6rem 1rem;
+  border-radius: var(--raio-g);
+  background-color: var(--cor-creme);
+  box-shadow: 0 18px 36px rgb(20 4 5 / 35%);
+}
+
+.foto:nth-child(odd) .foto__quadro {
+  transform: rotate(-1.5deg);
+}
+
+.foto:nth-child(even) .foto__quadro {
+  transform: rotate(1.5deg);
+}
+
+.foto__legenda {
+  color: var(--cor-vinho);
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
