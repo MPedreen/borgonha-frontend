@@ -40,12 +40,6 @@
   }
 }
 
-.cartao__frase {
-  color: var(--cor-vinho);
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
 .cartao__descricao {
   flex: 1;
   font-size: 0.9375rem;
@@ -125,49 +119,47 @@
   }
 }
 
-// Cards com superfície (outros doces e salgados com foto).
-:host([data-variante='destaque']),
+// Item compacto de cardápio (doces e salgados com foto): miniatura ao lado do texto.
 :host([data-variante='padrao']) {
   .cartao {
-    overflow: hidden;
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    // Foto e texto centralizados: o card pode esticar para acompanhar o vizinho da mesma fileira.
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem;
     border-radius: var(--raio-g);
     background-color: var(--cor-creme);
     box-shadow: var(--sombra);
+
+    @include a-partir-de($tablet) {
+      grid-template-columns: 8.5rem minmax(0, 1fr);
+      gap: 1.25rem;
+      padding: 1rem;
+    }
   }
 
-  .cartao__imagem app-imagem-produto {
-    border-radius: 0;
+  .cartao__selo {
+    top: 0.35rem;
+    left: 0.35rem;
   }
 
   .cartao__corpo {
-    padding: clamp(1.25rem, 3vw, 1.75rem);
+    gap: 0.4rem;
   }
-}
 
-:host([data-variante='destaque']) {
   .cartao__nome {
-    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+    font-size: 1.0625rem;
   }
 
-  @include a-partir-de($tablet) {
-    .cartao {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      align-items: center;
-    }
+  .cartao__descricao {
+    flex: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
 
-    .cartao__imagem app-imagem-produto {
-      aspect-ratio: 5 / 4;
-    }
-
-    .cartao__corpo {
-      justify-content: center;
-      padding: clamp(1.75rem, 4vw, 3rem);
-    }
-
-    .cartao__descricao {
-      flex: none;
-    }
+  .cartao__acao {
+    margin-top: 0.25rem;
   }
 }
 

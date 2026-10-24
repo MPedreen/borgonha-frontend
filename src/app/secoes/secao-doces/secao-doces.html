@@ -7,17 +7,37 @@
       destaque="casa."
     />
 
-    <ul class="doces">
-      @if (emDestaque(); as doce) {
-        <li class="doces__destaque" [id]="'produto-' + doce.slug">
-          <app-cartao-produto variante="destaque" [produto]="doce" (pedir)="pedido.abrir($event)" />
-        </li>
-      }
-      @for (doce of outros(); track doce.slug; let indice = $index) {
-        <li [id]="'produto-' + doce.slug" [appRevelar]="indice * 90">
+    <ul class="doces" id="lista-de-doces" #lista>
+      @for (doce of catalogo.doces(); track doce.slug; let indice = $index) {
+        <li
+          [id]="'produto-' + doce.slug"
+          [hidden]="!expandido() && indice >= visiveis"
+          [appRevelar]="(indice % 2) * 90"
+        >
           <app-cartao-produto variante="padrao" [produto]="doce" (pedir)="pedido.abrir($event)" />
         </li>
       }
     </ul>
+
+    @if (temMais()) {
+      <div class="doces__mais">
+        <button
+          #verTodos
+          type="button"
+          appBotao
+          variante="contorno"
+          aria-controls="lista-de-doces"
+          [attr.aria-expanded]="expandido()"
+          (click)="alternar()"
+        >
+          @if (expandido()) {
+            Mostrar menos
+          } @else {
+            Ver todos os doces ({{ catalogo.doces().length }})
+          }
+          <app-icone nome="chevron-down" [class.doces__seta--aberta]="expandido()" />
+        </button>
+      </div>
+    }
   </div>
 </section>

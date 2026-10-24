@@ -1,14 +1,16 @@
 @use 'mixins' as *;
 
+// Lista compacta: uma coluna no celular e no tablet, duas no computador.
 .doces {
   display: grid;
-  gap: clamp(1.25rem, 3vw, 2rem);
+  gap: 1rem;
   margin: 0;
   padding: 0;
   list-style: none;
 
-  @include a-partir-de($tablet) {
+  @include a-partir-de($desktop) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
   }
 
   li {
@@ -16,8 +18,12 @@
   }
 }
 
-.doces__destaque {
-  @include a-partir-de($tablet) {
-    grid-column: 1 / -1;
-  }
+.doces__mais {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+}
+
+.doces__seta--aberta {
+  transform: rotate(180deg);
 }

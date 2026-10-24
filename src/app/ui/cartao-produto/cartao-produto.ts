@@ -9,30 +9,28 @@ import { FormatoImagem, ImagemProduto } from '../imagem-produto/imagem-produto';
 
 /**
  * - `cookie`: cookie visto de cima, sem caixa, centralizado (cardápio).
- * - `destaque`: card grande com foto ao lado (brookie).
- * - `padrao`: card com foto em cima (outros doces e salgados com foto).
+ * - `padrao`: item compacto de cardápio, com a foto pequena ao lado do texto (doces e salgados
+ *   com foto). Cabe uma lista longa sem a página ficar enorme.
  * - `tipografico`: sem foto, para fundo vinho (salgados enquanto as fotos não chegam).
  */
-export type VarianteCartao = 'cookie' | 'destaque' | 'padrao' | 'tipografico';
+export type VarianteCartao = 'cookie' | 'padrao' | 'tipografico';
 
 const FORMATO_DA_IMAGEM: Record<VarianteCartao, FormatoImagem> = {
   cookie: 'cookie',
-  destaque: 'retrato',
-  padrao: 'paisagem',
+  padrao: 'quadrado',
   tipografico: 'paisagem',
 };
 
 const TAMANHOS_DA_IMAGEM: Record<VarianteCartao, string> = {
   // Tamanho em que o cookie é desenhado: a caixa (até 260px) menos a margem interna de 11%.
   cookie: '(min-width: 768px) 205px, 34vw',
-  destaque: '(min-width: 960px) 28vw, 90vw',
-  padrao: '(min-width: 960px) 30vw, 90vw',
+  // Miniatura quadrada: 8.5rem a partir do tablet, 6.5rem no celular.
+  padrao: '(min-width: 768px) 136px, 104px',
   tipografico: '90vw',
 };
 
 const BOTAO_DO_CARTAO: Record<VarianteCartao, VarianteBotao> = {
   cookie: 'contorno',
-  destaque: 'primario',
   padrao: 'contorno',
   tipografico: 'creme',
 };

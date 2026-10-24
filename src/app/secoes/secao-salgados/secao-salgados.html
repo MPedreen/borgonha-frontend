@@ -11,7 +11,7 @@
 
     <ul class="salgados__lista">
       @for (salgado of catalogo.salgados(); track salgado.slug; let indice = $index) {
-        <li [id]="'produto-' + salgado.slug" [appRevelar]="indice * 90">
+        <li [id]="'produto-' + salgado.slug" [appRevelar]="(indice % 2) * 90">
           <app-cartao-produto
             [variante]="salgado.imagens.inteiro ? 'padrao' : 'tipografico'"
             [produto]="salgado"
