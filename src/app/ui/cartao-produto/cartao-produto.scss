@@ -81,6 +81,13 @@
   font-weight: 500;
 }
 
+// Sem preço, o peso aparece sozinho, como uma etiqueta discreta.
+.cartao__peso--sozinho {
+  color: var(--cor-vinho);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
 .cartao__acao {
   align-self: flex-start;
   margin-top: 0.4rem;

@@ -41,6 +41,8 @@
           <span class="cartao__peso">· {{ produto().peso }}</span>
         }
       </p>
+    } @else if (produto().peso; as peso) {
+      <p class="cartao__peso cartao__peso--sozinho">{{ peso }}</p>
     }
 
     <button

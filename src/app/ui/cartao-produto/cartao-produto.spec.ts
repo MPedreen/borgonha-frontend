@@ -35,6 +35,21 @@ describe('CartaoProduto', () => {
     );
   });
 
+  it('mostra a gramatura mesmo sem preço', async () => {
+    await renderizar({ ...COOKIE_NUTELLA, peso: '130g' });
+
+    expect(elemento.querySelector('.cartao__peso')?.textContent?.trim()).toBe('130g');
+    expect(elemento.querySelector('.cartao__preco')).toBeNull();
+  });
+
+  it('com preço, mostra a gramatura ao lado dele', async () => {
+    await renderizar({ ...COOKIE_NUTELLA, preco: 14, peso: '130g' });
+
+    const preco = elemento.querySelector('.cartao__preco')?.textContent?.replace(/\s+/g, ' ');
+    expect(preco).toContain('130g');
+    expect(elemento.querySelectorAll('.cartao__peso')).toHaveLength(1);
+  });
+
   it('avisa quando a pessoa clica em "Quero esse"', async () => {
     await renderizar(COOKIE_NUTELLA);
     const pedidos: Produto[] = [];
