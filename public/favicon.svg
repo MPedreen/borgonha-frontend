@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Ícone provisório (cookie). PENDENTE: substituir pelo símbolo do novo logo. Desenho do cookie: Lucide (ISC). -->
+  <rect width="32" height="32" rx="8" fill="#852224"/>
+  <g transform="translate(4 4)" fill="none" stroke="#fff8e7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.496 2c.324-.016.558.292.529.615a4 4 0 004.235 4.368.713.713 0 01.758.757 4 4 0 004.366 4.237c.323-.03.63.204.614.527a10 10 0 01-2.915 6.566A1 1 0 114.93 4.918 10 10 0 0111.496 2"/>
+    <path d="M11 17h.01M12 12h.01M16 16h.01M7 14h.01M9 8h.01"/>
+  </g>
+</svg>

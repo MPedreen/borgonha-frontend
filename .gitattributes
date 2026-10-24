@@ -1,0 +1,9 @@
+# LF em todos os arquivos de texto, como pedem o .editorconfig e o Prettier
+* text=auto eol=lf
+
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.woff2 binary
+*.ico   binary
