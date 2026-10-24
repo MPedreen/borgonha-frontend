@@ -1,0 +1,88 @@
+.opcoes {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opcao {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 4.5rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid var(--cor-linha);
+  border-radius: var(--raio-m);
+  background-color: var(--cor-creme);
+  color: var(--cor-texto);
+  text-decoration: none;
+  transition:
+    border-color var(--duracao-rapida),
+    transform var(--duracao-rapida) var(--curva),
+    box-shadow var(--duracao-rapida);
+
+  &:hover {
+    border-color: var(--cor-vinho);
+    box-shadow: var(--sombra);
+    transform: translateY(-2px);
+  }
+}
+
+.opcao__icone {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background-color: var(--cor-creme-escuro);
+  color: var(--cor-vinho);
+}
+
+.opcao__texto {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.opcao__titulo {
+  color: var(--cor-vinho);
+  font-size: 1.0625rem;
+  font-weight: 800;
+}
+
+.opcao__descricao {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.opcao__seta {
+  color: var(--cor-vinho);
+}
+
+// WhatsApp: o canal recomendado (melhores preços e frete grátis).
+.opcao--destaque {
+  --cor-foco: var(--cor-vinho-escuro);
+
+  border-color: var(--cor-vinho);
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+
+  .opcao__icone {
+    background-color: var(--cor-creme);
+  }
+
+  .opcao__titulo,
+  .opcao__seta {
+    color: var(--cor-creme);
+  }
+
+  .opcao__descricao {
+    font-weight: 700;
+  }
+
+  &:hover {
+    border-color: var(--cor-vinho-hover);
+    background-color: var(--cor-vinho-hover);
+  }
+}

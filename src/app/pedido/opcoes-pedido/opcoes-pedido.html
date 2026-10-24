@@ -1,0 +1,23 @@
+<ul class="opcoes">
+  @for (opcao of opcoes(); track opcao.tipo) {
+    <li>
+      <a
+        class="opcao"
+        [class.opcao--destaque]="opcao.destaque"
+        [attr.data-canal]="opcao.tipo"
+        [href]="opcao.link"
+        target="_blank"
+        rel="noopener"
+        (click)="escolheu.emit(opcao.tipo)"
+      >
+        <span class="opcao__icone"><app-icone [nome]="iconeDoCanal[opcao.tipo]" /></span>
+        <span class="opcao__texto">
+          <span class="opcao__titulo">{{ opcao.titulo }}</span>
+          <span class="opcao__descricao">{{ opcao.descricao }}</span>
+        </span>
+        <app-icone nome="arrow-right" class="opcao__seta" />
+        <span class="visualmente-oculto">(abre em nova aba)</span>
+      </a>
+    </li>
+  }
+</ul>

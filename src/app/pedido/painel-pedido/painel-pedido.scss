@@ -1,0 +1,69 @@
+@use 'mixins' as *;
+
+.painel {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.painel__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.painel__titulo {
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  letter-spacing: var(--espacamento-titulo);
+  text-transform: uppercase;
+}
+
+.painel__fechar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--cor-creme-escuro);
+  color: var(--cor-vinho);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--cor-linha);
+  }
+}
+
+.painel__escolha {
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-m);
+  background-color: var(--cor-creme-escuro);
+
+  strong {
+    color: var(--cor-vinho);
+  }
+}
+
+.painel__instrucao {
+  @include sobretitulo;
+}
+
+.painel__horarios {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+
+  app-icone {
+    margin-top: 0.15em;
+    color: var(--cor-vinho);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}

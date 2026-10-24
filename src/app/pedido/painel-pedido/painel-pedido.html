@@ -1,0 +1,31 @@
+<app-dialogo [aberto]="pedido.aberto()" idTitulo="titulo-painel-pedido" (fechado)="pedido.fechar()">
+  <div class="painel">
+    <div class="painel__topo">
+      <h2 id="titulo-painel-pedido" class="painel__titulo">Faça seu pedido</h2>
+      <button type="button" class="painel__fechar" (click)="pedido.fechar()">
+        <app-icone nome="x" /><span class="visualmente-oculto">Fechar</span>
+      </button>
+    </div>
+
+    @if (produtoEscolhido(); as produto) {
+      <p class="painel__escolha">
+        Você escolheu: <strong>{{ produto }}</strong>
+      </p>
+    }
+
+    <p class="painel__instrucao">Escolha como prefere pedir:</p>
+
+    <app-opcoes-pedido [produto]="pedido.produto()" (escolheu)="pedido.fechar()" />
+
+    @if (loja.horarios().length > 0) {
+      <div class="painel__horarios">
+        <app-icone nome="clock" />
+        <ul>
+          @for (horario of loja.horarios(); track horario) {
+            <li>{{ horario }}</li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</app-dialogo>
