@@ -1,0 +1,23 @@
+<section id="doces" class="secao secao--apoio" aria-labelledby="titulo-doces" tabindex="-1">
+  <div class="container">
+    <app-cabecalho-secao
+      idTitulo="titulo-doces"
+      sobretitulo="Não é só cookie"
+      titulo="Mais doces da"
+      destaque="casa."
+    />
+
+    <ul class="doces">
+      @if (emDestaque(); as doce) {
+        <li class="doces__destaque" [id]="'produto-' + doce.slug">
+          <app-cartao-produto variante="destaque" [produto]="doce" (pedir)="pedido.abrir($event)" />
+        </li>
+      }
+      @for (doce of outros(); track doce.slug; let indice = $index) {
+        <li [id]="'produto-' + doce.slug" [appRevelar]="indice * 90">
+          <app-cartao-produto variante="padrao" [produto]="doce" (pedir)="pedido.abrir($event)" />
+        </li>
+      }
+    </ul>
+  </div>
+</section>

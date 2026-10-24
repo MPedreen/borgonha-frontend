@@ -1,0 +1,25 @@
+<section
+  id="diferenciais"
+  class="secao diferenciais"
+  aria-labelledby="titulo-diferenciais"
+  tabindex="-1"
+>
+  <div class="container">
+    <app-cabecalho-secao
+      idTitulo="titulo-diferenciais"
+      sobretitulo="Por que a Borgonha"
+      titulo="O que faz um cookie Borgonha ser diferente?"
+      alinhamento="centro"
+    />
+
+    <ul class="diferenciais__lista">
+      @for (item of diferenciais; track item.titulo; let indice = $index) {
+        <li class="diferencial" [appRevelar]="indice * 80">
+          <span class="diferencial__icone"><app-icone [nome]="item.icone" /></span>
+          <h3 class="diferencial__titulo">{{ item.titulo }}</h3>
+          <p>{{ item.texto }}</p>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

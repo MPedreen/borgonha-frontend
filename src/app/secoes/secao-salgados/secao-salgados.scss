@@ -1,0 +1,21 @@
+@use 'mixins' as *;
+
+.salgados {
+  @include fundo-escuro;
+}
+
+.salgados__lista {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include a-partir-de($tablet) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  li {
+    scroll-margin-top: calc(var(--altura-cabecalho) + 1.5rem);
+  }
+}

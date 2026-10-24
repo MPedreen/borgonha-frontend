@@ -1,0 +1,24 @@
+<section id="salgados" class="secao salgados" aria-labelledby="titulo-salgados" tabindex="-1">
+  <div class="container">
+    <app-cabecalho-secao
+      idTitulo="titulo-salgados"
+      sobretitulo="Salgados"
+      titulo="Bateu fome de"
+      destaque="salgado?"
+      tom="escuro"
+      texto="Nem só de doce vive a fome: salgados feitos com o mesmo capricho."
+    />
+
+    <ul class="salgados__lista">
+      @for (salgado of catalogo.salgados(); track salgado.slug; let indice = $index) {
+        <li [id]="'produto-' + salgado.slug" [appRevelar]="indice * 90">
+          <app-cartao-produto
+            [variante]="salgado.imagens.inteiro ? 'padrao' : 'tipografico'"
+            [produto]="salgado"
+            (pedir)="pedido.abrir($event)"
+          />
+        </li>
+      }
+    </ul>
+  </div>
+</section>
