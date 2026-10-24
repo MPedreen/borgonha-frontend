@@ -4,7 +4,8 @@ import { LARGURAS_IMAGEM } from '../../core/imagens/larguras-imagem';
 import { Imagem } from '../../core/modelos/catalogo';
 import { Icone } from '../icone/icone';
 
-export type FormatoImagem = 'cookie' | 'miniatura' | 'retrato' | 'paisagem';
+/** `quadrado`: recorte quadrado pequeno, para listas (ex.: área do administrador). */
+export type FormatoImagem = 'cookie' | 'miniatura' | 'retrato' | 'paisagem' | 'quadrado';
 
 /** As mesmas larguras geradas por `npm run imagens` (ex.: "160w, 320w, ..."). */
 const SRCSET = LARGURAS_IMAGEM.map((largura) => `${largura}w`).join(', ');

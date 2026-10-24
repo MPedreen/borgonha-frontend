@@ -14,6 +14,15 @@
   aspect-ratio: 4 / 3;
 }
 
+:host([data-formato='quadrado']) {
+  aspect-ratio: 1;
+  border-radius: var(--raio-m);
+
+  .pendente {
+    font-size: 1.75rem;
+  }
+}
+
 img {
   object-fit: cover;
 }

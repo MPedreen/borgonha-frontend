@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { carregadorDeImagens } from './carregador-de-imagens';
 
 describe('carregadorDeImagens', () => {
@@ -18,5 +19,11 @@ describe('carregadorDeImagens', () => {
 
   it('usa uma largura média quando nenhuma é informada', () => {
     expect(carregadorDeImagens({ src: 'doces/brookie' })).toBe('/imagens/doces/brookie-640.webp');
+  });
+
+  it('busca na API as fotos enviadas pela área do administrador', () => {
+    expect(
+      carregadorDeImagens({ src: 'envios/9f1c2b3a4d5e6f708192a3b4c5d6e7f8', width: 300 }),
+    ).toBe(`${environment.apiUrl}/imagens/envios/9f1c2b3a4d5e6f708192a3b4c5d6e7f8-320.webp`);
   });
 });
