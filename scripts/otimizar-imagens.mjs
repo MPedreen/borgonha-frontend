@@ -57,7 +57,8 @@ const FOTOS = [
 
 /**
  * Cookies vistos de cima, recortados das placas do cardápio (faixa vertical de cada um).
- * Provisórios: as placas têm baixa resolução; trocar pelos recortes originais em alta.
+ * Provisórios: as placas têm baixa resolução (~170 px por cookie), então os recortes são ampliados
+ * (veja ampliarCookie). O ideal é trocar pelas fotos originais em alta resolução.
  */
 const PLACAS_DO_CARDAPIO = [
   {
@@ -88,17 +89,28 @@ const LARGURA_COLUNA_DOS_COOKIES = 210; // o texto das placas começa depois des
 const FUNDO_DAS_PLACAS = [255, 252, 235];
 const TOLERANCIA_FUNDO = 40;
 
+/**
+ * Os recortes das placas têm só ~170 px. São ampliados 4× aqui, com um filtro que só interpola os
+ * pixels reais (nada de IA, que inventaria detalhes que o cookie não tem), para o navegador não
+ * precisar esticar a foto na tela.
+ */
+const AMPLIACAO_DOS_RECORTES = 4;
+
+// Qualidade alta e smartSubsample, que preserva a cor nas bordas (o vermelho do Red Velvet).
+const WEBP_FOTOS = { quality: 82, smartSubsample: true };
+const WEBP_RECORTES = { quality: 82, alphaQuality: 100, smartSubsample: true };
+
 await rm(PASTA_IMAGENS, { recursive: true, force: true });
 
 for (const foto of FOTOS) {
   const base = await sharp(join(PASTA_ORIGINAIS, foto.origem)).extract(foto.recorte).toBuffer();
-  await salvarEmTodasAsLarguras(base, foto.destino, { quality: 78 });
+  await salvarEmTodasAsLarguras(base, foto.destino, WEBP_FOTOS);
 }
 
 for (const placa of PLACAS_DO_CARDAPIO) {
   for (const cookie of placa.cookies) {
-    const recorte = await recortarCookieSemFundo(join(PASTA_ORIGINAIS, placa.origem), cookie.faixa);
-    await salvarEmTodasAsLarguras(recorte, cookie.destino, { quality: 86, alphaQuality: 90 });
+    const isolado = await isolarCookie(join(PASTA_ORIGINAIS, placa.origem), cookie.faixa);
+    await salvarEmTodasAsLarguras(await ampliarCookie(isolado), cookie.destino, WEBP_RECORTES);
   }
 }
 
@@ -123,9 +135,10 @@ async function salvarEmTodasAsLarguras(imagem, destino, opcoesWebp) {
 
 /**
  * Isola o cookie de uma faixa da placa: fica o maior bloco de pixels que não são do fundo creme,
- * e tudo o que está fora dele (ligado às bordas) vira transparente.
+ * e tudo o que está fora dele (ligado às bordas) fica de fora. Devolve os pixels na resolução
+ * original, a máscara do cookie (1 = cookie) e a caixa que o contém.
  */
-async function recortarCookieSemFundo(arquivo, [topo, base]) {
+async function isolarCookie(arquivo, [topo, base]) {
   const { data, info } = await sharp(arquivo)
     .extract({ left: 0, top: topo, width: LARGURA_COLUNA_DOS_COOKIES, height: base - topo })
     .ensureAlpha()
@@ -183,7 +196,7 @@ async function recortarCookieSemFundo(arquivo, [topo, base]) {
     }
   }
 
-  // 2. Tudo que não é o cookie e encosta nas bordas fica transparente (buracos internos continuam opacos).
+  // 2. Tudo que não é o cookie e encosta nas bordas fica de fora (buracos internos continuam no cookie).
   const fora = new Uint8Array(total);
   for (let p = 0; p < total; p++) {
     const naBorda =
@@ -197,23 +210,15 @@ async function recortarCookieSemFundo(arquivo, [topo, base]) {
     }
   }
 
-  // 3. Canal alfa com borda suavizada (média 3×3) e corte justo com margem.
-  const alfa = new Float32Array(total);
-  for (let p = 0; p < total; p++) alfa[p] = fora[p] ? 0 : 1;
-  let minX = largura,
-    minY = altura,
-    maxX = 0,
-    maxY = 0;
+  // 3. Máscara do cookie e a caixa justa em volta dele.
+  const mascara = new Uint8Array(total);
+  let minX = largura;
+  let minY = altura;
+  let maxX = 0;
+  let maxY = 0;
   for (let p = 0; p < total; p++) {
-    let soma = 0;
-    let quantidade = 0;
-    for (const v of [p, ...vizinhos(p)]) {
-      soma += alfa[v];
-      quantidade++;
-    }
-    const valor = Math.round((soma / quantidade) * 255);
-    data[p * 4 + 3] = valor;
-    if (valor > 0) {
+    if (!fora[p]) {
+      mascara[p] = 1;
       const x = p % largura;
       const y = Math.floor(p / largura);
       minX = Math.min(minX, x);
@@ -223,17 +228,135 @@ async function recortarCookieSemFundo(arquivo, [topo, base]) {
     }
   }
 
-  const lado = Math.max(maxX - minX, maxY - minY) + 9;
-  const recortado = await sharp(data, { raw: { width: largura, height: altura, channels: 4 } })
-    .extract({ left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 })
+  return {
+    pixels: data,
+    largura,
+    altura,
+    mascara,
+    caixa: { left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 },
+  };
+}
+
+/**
+ * Amplia o cookie isolado sem inventar detalhes:
+ * - antes de ampliar, as cores da borda do cookie se estendem para fora, para o creme da placa
+ *   não vazar no contorno;
+ * - a ampliação usa o filtro Lanczos, que só interpola os pixels que existem, seguida de uma
+ *   nitidez leve, que realça as bordas que a foto já tem;
+ * - o contorno é refeito na escala final: liso, sem serrilhado e sem a franja creme da placa.
+ * Devolve um PNG quadrado e transparente, com o cookie centralizado.
+ */
+async function ampliarCookie({ pixels, largura, altura, mascara, caixa }) {
+  const fator = AMPLIACAO_DOS_RECORTES;
+  const larguraFinal = largura * fator;
+  const alturaFinal = altura * fator;
+
+  const cores = await sharp(estenderCoresDaBorda(pixels, largura, altura, mascara), {
+    raw: { width: largura, height: altura, channels: 3 },
+  })
+    .resize(larguraFinal, alturaFinal, { kernel: 'lanczos3' })
+    .sharpen({ sigma: 1.2, m1: 0.6, m2: 1.2 })
+    .raw()
+    .toBuffer();
+  const alfa = await contornoLiso(mascara, largura, altura, fator);
+
+  // O sharp aplica o extract antes do joinChannel: junta o alfa numa etapa e recorta na seguinte.
+  const comAlfa = await sharp(cores, {
+    raw: { width: larguraFinal, height: alturaFinal, channels: 3 },
+  })
+    .joinChannel(alfa, { raw: { width: larguraFinal, height: alturaFinal, channels: 1 } })
+    .png()
+    .toBuffer();
+  const recortado = await sharp(comAlfa)
+    .extract({
+      left: caixa.left * fator,
+      top: caixa.top * fator,
+      width: caixa.width * fator,
+      height: caixa.height * fator,
+    })
     .png()
     .toBuffer();
 
   // Centraliza num quadrado transparente para todos os cookies ficarem do mesmo tamanho nos cards.
+  const lado = (Math.max(caixa.width, caixa.height) + 8) * fator;
   return sharp({
     create: { width: lado, height: lado, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
   })
     .composite([{ input: recortado, gravity: 'center' }])
     .png()
     .toBuffer();
+}
+
+/**
+ * RGB do recorte em que os pixels de fora do cookie (até alguns pixels de distância) recebem a
+ * média das cores vizinhas do próprio cookie, e não o creme da placa.
+ */
+function estenderCoresDaBorda(pixels, largura, altura, mascara, passos = 6) {
+  const total = largura * altura;
+  const rgb = new Float32Array(total * 3);
+  const conhecido = new Uint8Array(total);
+  for (let p = 0; p < total; p++) {
+    for (let canal = 0; canal < 3; canal++) rgb[p * 3 + canal] = pixels[p * 4 + canal];
+    conhecido[p] = mascara[p];
+  }
+
+  for (let passo = 0; passo < passos; passo++) {
+    const novos = [];
+    for (let p = 0; p < total; p++) {
+      if (conhecido[p]) continue;
+      const x = p % largura;
+      const y = Math.floor(p / largura);
+      const soma = [0, 0, 0];
+      let quantidade = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const vx = x + dx;
+          const vy = y + dy;
+          if (vx < 0 || vy < 0 || vx >= largura || vy >= altura) continue;
+          const v = vy * largura + vx;
+          if (!conhecido[v]) continue;
+          for (let canal = 0; canal < 3; canal++) soma[canal] += rgb[v * 3 + canal];
+          quantidade++;
+        }
+      }
+      if (quantidade > 0) novos.push([p, soma.map((valor) => valor / quantidade)]);
+    }
+    for (const [p, cor] of novos) {
+      for (let canal = 0; canal < 3; canal++) rgb[p * 3 + canal] = cor[canal];
+      conhecido[p] = 1;
+    }
+  }
+
+  return Buffer.from(rgb.map((valor) => Math.round(valor)));
+}
+
+/**
+ * Canal alfa na escala final: a máscara é ampliada e suavizada, e a borda ganha uma transição
+ * curta (sem serrilhado), um pouco para dentro, para tirar a franja creme que a placa deixou.
+ */
+async function contornoLiso(mascara, largura, altura, fator) {
+  const binaria = Buffer.from(mascara.map((dentro) => (dentro ? 255 : 0)));
+  const { data, info } = await sharp(binaria, {
+    raw: { width: largura, height: altura, channels: 1 },
+  })
+    .resize(largura * fator, altura * fator, { kernel: 'cubic' })
+    .blur(fator / 2.5)
+    .extractChannel(0)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  if (info.channels !== 1) {
+    throw new Error(`Máscara com ${info.channels} canais; esperado 1.`);
+  }
+
+  const LIMITE = 0.58;
+  const MEIA_TRANSICAO = 0.12;
+  const alfa = Buffer.alloc(data.length);
+  for (let i = 0; i < data.length; i++) {
+    const t = Math.min(
+      1,
+      Math.max(0, (data[i] / 255 - (LIMITE - MEIA_TRANSICAO)) / (2 * MEIA_TRANSICAO)),
+    );
+    alfa[i] = Math.round(t * t * (3 - 2 * t) * 255);
+  }
+  return alfa;
 }
