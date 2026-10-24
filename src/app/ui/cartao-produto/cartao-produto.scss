@@ -100,6 +100,12 @@
     text-align: center;
   }
 
+  // As fotos dos cookies vistos de cima têm pouca resolução: maiores que isso, ficariam borradas.
+  .cartao__imagem {
+    inline-size: min(100%, 16.25rem);
+    margin-inline: auto;
+  }
+
   .cartao__corpo {
     align-items: center;
   }

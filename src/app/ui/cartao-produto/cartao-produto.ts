@@ -23,7 +23,8 @@ const FORMATO_DA_IMAGEM: Record<VarianteCartao, FormatoImagem> = {
 };
 
 const TAMANHOS_DA_IMAGEM: Record<VarianteCartao, string> = {
-  cookie: '(min-width: 1200px) 370px, (min-width: 768px) 30vw, 45vw',
+  // Tamanho em que o cookie é desenhado: a caixa (até 260px) menos a margem interna de 11%.
+  cookie: '(min-width: 768px) 205px, 34vw',
   destaque: '(min-width: 960px) 28vw, 90vw',
   padrao: '(min-width: 960px) 30vw, 90vw',
   tipografico: '90vw',
