@@ -1,7 +1,7 @@
 import { IMAGE_LOADER } from '@angular/common';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { COOKIE_NUTELLA, COOKIE_PISTACHE } from '../../../../testing/dados-de-teste';
+import { COOKIE_NUTELLA, COOKIE_RED_VELVET } from '../../../../testing/dados-de-teste';
 import { CatalogoStore } from '../../../core/estado/catalogo-store';
 import { carregadorDeImagens } from '../../../core/imagens/carregador-de-imagens';
 import { Navegacao } from '../../../core/navegacao/navegacao';
@@ -21,7 +21,7 @@ describe('MenuSabores', () => {
       providers: [
         {
           provide: CatalogoStore,
-          useValue: { cookies: signal([COOKIE_NUTELLA, COOKIE_PISTACHE]) },
+          useValue: { cookies: signal([COOKIE_NUTELLA, COOKIE_RED_VELVET]) },
         },
         { provide: Navegacao, useValue: navegacao },
         { provide: IMAGE_LOADER, useValue: carregadorDeImagens },
@@ -40,7 +40,7 @@ describe('MenuSabores', () => {
       nome.textContent?.trim(),
     );
 
-    expect(sabores).toEqual(['Nutella', 'Pistache']);
+    expect(sabores).toEqual(['Nutella', 'Red Velvet']);
     expect(painel().textContent).toContain('Recheado de Nutella. Precisa dizer mais?');
   });
 
@@ -63,10 +63,10 @@ describe('MenuSabores', () => {
     gatilho().click();
     await fixture.whenStable();
 
-    painel().querySelector<HTMLAnchorElement>('a[href="/#produto-pistache"]')!.click();
+    painel().querySelector<HTMLAnchorElement>('a[href="/#produto-red-velvet"]')!.click();
     await fixture.whenStable();
 
-    expect(navegacao.irParaProduto).toHaveBeenCalledWith(expect.any(Event), 'pistache');
+    expect(navegacao.irParaProduto).toHaveBeenCalledWith(expect.any(Event), 'red-velvet');
     expect(painel().hidden).toBe(true);
   });
 });

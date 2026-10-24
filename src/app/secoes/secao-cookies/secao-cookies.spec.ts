@@ -1,7 +1,7 @@
 import { IMAGE_LOADER } from '@angular/common';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { COOKIE_NUTELLA, COOKIE_PISTACHE } from '../../../testing/dados-de-teste';
+import { COOKIE_NUTELLA, COOKIE_RED_VELVET } from '../../../testing/dados-de-teste';
 import { CatalogoStore } from '../../core/estado/catalogo-store';
 import { carregadorDeImagens } from '../../core/imagens/carregador-de-imagens';
 import { Produto } from '../../core/modelos/catalogo';
@@ -14,7 +14,7 @@ describe('SecaoCookies', () => {
   let elemento: HTMLElement;
 
   const catalogo = {
-    cookies: signal<Produto[]>([COOKIE_NUTELLA, COOKIE_PISTACHE]),
+    cookies: signal<Produto[]>([COOKIE_NUTELLA, COOKIE_RED_VELVET]),
     carregando: signal(false),
     indisponivel: signal(false),
     recarregar: vi.fn(),
@@ -43,7 +43,7 @@ describe('SecaoCookies', () => {
   it('mostra um card por sabor, cada um com a sua âncora', () => {
     expect(Array.from(elemento.querySelectorAll('.grade li'), (item) => item.id)).toEqual([
       'produto-nutella',
-      'produto-pistache',
+      'produto-red-velvet',
     ]);
     expect(elemento.textContent).toContain('2 sabores recheados');
   });

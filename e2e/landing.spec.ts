@@ -7,11 +7,12 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('mostra o conceito "Parte ao meio" e os 8 sabores de cookie', async ({ page }) => {
+test('mostra o conceito "Parte ao meio" e os 6 sabores de cookie', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'Parte ao meio. Deixa escorrer.',
   );
-  await expect(page.locator('#cookies .grade > li')).toHaveCount(8);
+  await expect(page.locator('#cookies .grade > li')).toHaveCount(6);
+  await expect(page.locator('#cookies')).toContainText('130g');
   await expect(page.getByRole('heading', { name: 'Bateu fome de salgado?' })).toBeVisible();
 });
 
@@ -79,12 +80,12 @@ test.describe('no computador', () => {
     await expect(gatilho).toHaveAttribute('aria-expanded', 'true');
 
     const painel = page.locator('#painel-sabores');
-    await expect(painel.getByRole('link')).toHaveCount(9); // 8 sabores + "Ver o cardápio completo"
+    await expect(painel.getByRole('link')).toHaveCount(7); // 6 sabores + "Ver o cardápio completo"
 
-    await painel.getByRole('link', { name: /Bala Baiana/ }).click();
+    await painel.getByRole('link', { name: /M&M/ }).click();
     await expect(painel).toBeHidden();
-    await expect(page.locator('#titulo-produto-bala-baiana')).toBeFocused();
-    await expect(page.locator('#titulo-produto-bala-baiana')).toBeInViewport();
+    await expect(page.locator('#titulo-produto-mms')).toBeFocused();
+    await expect(page.locator('#titulo-produto-mms')).toBeInViewport();
   });
 });
 
@@ -97,7 +98,7 @@ test.describe('no celular', () => {
   test('o menu em tela cheia lista os sabores e leva até os salgados', async ({ page }) => {
     await page.getByRole('button', { name: 'Abrir menu' }).click();
     const menu = page.getByRole('dialog', { name: 'Menu' });
-    await expect(menu.getByRole('link', { name: /Pistache/ })).toBeVisible();
+    await expect(menu.getByRole('link', { name: /Kinder Bueno/ })).toBeVisible();
 
     await menu.getByRole('link', { name: /Salgados/ }).click();
     await expect(menu).toBeHidden();

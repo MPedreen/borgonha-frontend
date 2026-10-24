@@ -32,7 +32,7 @@ export class SecaoDiferenciais {
     {
       icone: 'sparkles',
       titulo: 'Ingredientes de primeira',
-      texto: 'Nutella, pistache, Ninho e chocolate de verdade.',
+      texto: 'Nutella, Kinder Bueno, Galak e chocolate de verdade.',
     },
     {
       icone: 'bike',

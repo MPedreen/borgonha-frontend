@@ -22,7 +22,7 @@ describe('CatalogoStore', () => {
   it('separa os produtos por categoria', () => {
     http.expectOne('/api/catalogo').flush(CATALOGO);
 
-    expect(store.cookies().map((produto) => produto.slug)).toEqual(['nutella', 'pistache']);
+    expect(store.cookies().map((produto) => produto.slug)).toEqual(['nutella', 'red-velvet']);
     expect(store.doces().map((produto) => produto.slug)).toEqual(['bolo-de-pote']);
     expect(store.salgados().map((produto) => produto.slug)).toEqual(['coxinha']);
   });

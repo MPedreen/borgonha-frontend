@@ -73,8 +73,6 @@ const PLACAS_DO_CARDAPIO = [
     origem: 'Untitled Project - Coffee shop Sidewalk Sign 7.png',
     cookies: [
       { destino: 'cookies/red-velvet-inteiro', faixa: [130, 300] },
-      { destino: 'cookies/pistache-inteiro', faixa: [300, 465] },
-      { destino: 'cookies/bala-baiana-inteiro', faixa: [465, 620] },
       { destino: 'cookies/mms-inteiro', faixa: [620, 800] },
     ],
   },

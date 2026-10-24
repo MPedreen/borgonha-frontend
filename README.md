@@ -64,5 +64,5 @@ Os estilos globais (tokens de cor, tipografia, mixins e botões) ficam em `src/s
 
 - **Logo**: espaço em branco reservado em `src/app/ui/logo/logo.ts`; o favicon é provisório.
 - **Fonte Pacaembu**: comprar a licença web, colocar os `.woff2` em `public/fontes/` e descomentar o bloco em `src/styles/_fontes.scss`. Até lá, o site usa a Gabarito.
-- **Fotos**: salgados; cookies partidos de Tradicional, Pistache e Bala Baiana; brookie, brownie e bolos de pote sem texto; recortes dos cookies em alta resolução; fachada da loja.
+- **Fotos**: salgados; cookie Tradicional partido; brookie, brownie e bolos de pote sem texto; recortes dos cookies em alta resolução; fachada da loja.
 - **Domínio e hospedagem**: definir `siteUrl` e `apiUrl` em `src/environments/environment.ts`, as origens do CORS na API e o `Sitemap` em `public/robots.txt`.

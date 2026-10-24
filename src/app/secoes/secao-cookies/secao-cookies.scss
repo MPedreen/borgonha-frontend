@@ -8,12 +8,9 @@
   padding: 0;
   list-style: none;
 
+  // 6 sabores: 3 colunas fecham duas fileiras completas.
   @include a-partir-de($tablet) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  @include a-partir-de($desktop) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   li {

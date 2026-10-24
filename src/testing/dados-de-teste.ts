@@ -27,7 +27,7 @@ export const COOKIE_NUTELLA = criarProduto({
   },
 });
 
-export const COOKIE_PISTACHE = criarProduto({ slug: 'pistache', nome: 'Pistache' });
+export const COOKIE_RED_VELVET = criarProduto({ slug: 'red-velvet', nome: 'Red Velvet' });
 
 export const BOLO_DE_POTE = criarProduto({
   slug: 'bolo-de-pote',
@@ -44,7 +44,7 @@ export const COXINHA = criarProduto({
 
 export const CATALOGO: Catalogo = {
   categorias: [
-    { slug: 'cookies', nome: 'Cookies', produtos: [COOKIE_NUTELLA, COOKIE_PISTACHE] },
+    { slug: 'cookies', nome: 'Cookies', produtos: [COOKIE_NUTELLA, COOKIE_RED_VELVET] },
     { slug: 'doces', nome: 'Doces', produtos: [BOLO_DE_POTE] },
     { slug: 'salgados', nome: 'Salgados', produtos: [COXINHA] },
   ],

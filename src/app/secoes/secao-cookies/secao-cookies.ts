@@ -8,7 +8,7 @@ import { CartaoProduto } from '../../ui/cartao-produto/cartao-produto';
 import { Esqueleto } from '../../ui/esqueleto/esqueleto';
 import { Revelar } from '../../ui/revelar/revelar';
 
-const CARDS_DO_ESQUELETO = 8;
+const CARDS_DO_ESQUELETO = 6;
 
 /** O cardápio de cookies (todos os sabores à vista, sem carrossel). */
 @Component({
