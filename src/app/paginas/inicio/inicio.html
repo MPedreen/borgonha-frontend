@@ -1,0 +1,38 @@
+<app-hero />
+<app-secao-cookies />
+
+@defer (on viewport; hydrate on viewport) {
+  <app-secao-por-dentro />
+} @placeholder {
+  <div id="por-dentro" class="reserva"></div>
+}
+
+@defer (on viewport; hydrate on viewport) {
+  <app-secao-doces />
+} @placeholder {
+  <div id="doces" class="reserva"></div>
+}
+
+@defer (on viewport; hydrate on viewport) {
+  <app-secao-salgados />
+} @placeholder {
+  <div id="salgados" class="reserva"></div>
+}
+
+@defer (on viewport; hydrate on viewport) {
+  <app-secao-diferenciais />
+} @placeholder {
+  <div id="diferenciais" class="reserva"></div>
+}
+
+@defer (on viewport; hydrate on viewport) {
+  <app-secao-como-pedir />
+} @placeholder {
+  <div id="pedido" class="reserva"></div>
+}
+
+@defer (on viewport; hydrate on viewport) {
+  <app-secao-duvidas />
+} @placeholder {
+  <div id="duvidas" class="reserva"></div>
+}

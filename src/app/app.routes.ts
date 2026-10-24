@@ -1,3 +1,16 @@
 import { Routes } from '@angular/router';
+import { Inicio } from './paginas/inicio/inicio';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    component: Inicio,
+    title: 'Borgonha Confeitaria | Cookies recheados em Santa Luzia, São Gonçalo',
+  },
+  {
+    path: '**',
+    title: 'Página não encontrada | Borgonha Confeitaria',
+    loadComponent: () =>
+      import('./paginas/nao-encontrada/nao-encontrada').then((m) => m.NaoEncontrada),
+  },
+];
