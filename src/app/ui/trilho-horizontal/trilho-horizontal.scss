@@ -1,0 +1,50 @@
+@use 'mixins' as *;
+
+:host {
+  display: grid;
+  gap: 1rem;
+}
+
+.controles {
+  display: none;
+  justify-content: flex-end;
+  gap: 0.5rem;
+
+  @include a-partir-de($tablet) {
+    display: flex;
+  }
+}
+
+.controle {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--duracao-rapida),
+    color var(--duracao-rapida);
+
+  &:hover {
+    background-color: var(--cor-creme);
+    color: var(--cor-vinho);
+  }
+}
+
+.lista {
+  display: grid;
+  grid-auto-columns: var(--largura-item, min(78%, 17rem));
+  grid-auto-flow: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  margin: 0;
+  padding: 0.25rem 0.25rem 1rem;
+  overflow-x: auto;
+  list-style: none;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--cor-creme) transparent;
+  scrollbar-width: thin;
+}

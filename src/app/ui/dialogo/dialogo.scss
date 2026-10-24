@@ -1,0 +1,64 @@
+@use 'mixins' as *;
+
+.dialogo {
+  width: min(100% - 2rem, 34rem);
+  max-height: min(100dvh - 2rem, 46rem);
+  padding: 0;
+  overflow: auto;
+  border: 0;
+  border-radius: var(--raio-g);
+  background-color: var(--cor-creme);
+  color: var(--cor-texto);
+  box-shadow: var(--sombra-forte);
+  overscroll-behavior: contain;
+
+  &::backdrop {
+    background-color: rgb(46 12 13 / 55%);
+    backdrop-filter: blur(3px);
+  }
+
+  &[open] {
+    animation: aparecer var(--duracao-media) var(--curva);
+  }
+}
+
+@include ate($tablet) {
+  :host([data-formato='painel']) .dialogo {
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    border-radius: var(--raio-g) var(--raio-g) 0 0;
+
+    &[open] {
+      animation-name: subir;
+    }
+  }
+}
+
+:host([data-formato='tela-cheia']) .dialogo {
+  width: 100%;
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  border-radius: 0;
+  background-color: var(--cor-creme-escuro);
+
+  &[open] {
+    animation-name: subir;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes subir {
+  from {
+    transform: translateY(100%);
+  }
+}

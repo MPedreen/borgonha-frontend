@@ -1,0 +1,59 @@
+<article class="cartao" [attr.aria-labelledby]="idTitulo()">
+  @if (variante() !== 'tipografico') {
+    <div class="cartao__imagem">
+      <app-imagem-produto
+        [imagem]="produto().imagens.inteiro"
+        [formato]="formatoImagem()"
+        [tamanhos]="tamanhosImagem()"
+        [anel]="variante() === 'cookie'"
+      />
+      @if (produto().selo; as selo) {
+        <app-etiqueta class="cartao__selo">{{ selo }}</app-etiqueta>
+      }
+    </div>
+  }
+
+  <div class="cartao__corpo">
+    @if (!produto().disponivel) {
+      <app-etiqueta tom="contorno">Esgotado hoje</app-etiqueta>
+    }
+
+    <h3 class="cartao__nome" [id]="idTitulo()" tabindex="-1">{{ produto().nome }}</h3>
+
+    @if (variante() === 'destaque' && produto().frase) {
+      <p class="cartao__frase">{{ produto().frase }}</p>
+    }
+
+    <p class="cartao__descricao">{{ produto().descricao }}</p>
+
+    @if (produto().variacoes.length > 0) {
+      <ul class="cartao__variacoes" aria-label="Sabores disponíveis">
+        @for (variacao of produto().variacoes; track variacao) {
+          <li>{{ variacao }}</li>
+        }
+      </ul>
+    }
+
+    @if (preco(); as valor) {
+      <p class="cartao__preco">
+        {{ valor }}
+        @if (produto().peso) {
+          <span class="cartao__peso">· {{ produto().peso }}</span>
+        }
+      </p>
+    }
+
+    <button
+      type="button"
+      appBotao
+      class="cartao__acao"
+      [variante]="varianteBotao()"
+      [tamanho]="variante() === 'destaque' ? 'normal' : 'compacto'"
+      [disabled]="!produto().disponivel"
+      [attr.aria-label]="'Quero esse: ' + nomeNoPedido()"
+      (click)="pedir.emit(produto())"
+    >
+      Quero esse <app-icone nome="arrow-right" />
+    </button>
+  </div>
+</article>

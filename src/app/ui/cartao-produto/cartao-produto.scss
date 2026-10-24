@@ -1,0 +1,197 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  height: 100%;
+  scroll-margin-top: calc(var(--altura-cabecalho) + 1.5rem);
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cartao__imagem {
+  position: relative;
+}
+
+.cartao__selo {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+}
+
+.cartao__corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cartao__nome {
+  font-size: var(--tamanho-titulo-card);
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  text-transform: uppercase;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.cartao__frase {
+  color: var(--cor-vinho);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.cartao__descricao {
+  flex: 1;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.cartao__variacoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 0.3em 0.75em;
+    border-radius: var(--raio-pilula);
+    background-color: var(--cor-creme-escuro);
+    color: var(--cor-vinho);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+}
+
+.cartao__preco {
+  color: var(--cor-vinho);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.cartao__peso {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.cartao__acao {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+}
+
+// Cookie do cardápio: aberto, centralizado e com o cookie girando no hover.
+:host([data-variante='cookie']) {
+  .cartao {
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .cartao__corpo {
+    align-items: center;
+  }
+
+  .cartao__descricao {
+    font-size: 0.875rem;
+  }
+
+  .cartao__acao {
+    align-self: center;
+  }
+
+  .cartao:hover {
+    --giro-anel: 30deg;
+    --giro-cookie: -8deg;
+    --sobe-cookie: -4px;
+  }
+}
+
+// Cards com superfície (outros doces e salgados com foto).
+:host([data-variante='destaque']),
+:host([data-variante='padrao']) {
+  .cartao {
+    overflow: hidden;
+    border-radius: var(--raio-g);
+    background-color: var(--cor-creme);
+    box-shadow: var(--sombra);
+  }
+
+  .cartao__imagem app-imagem-produto {
+    border-radius: 0;
+  }
+
+  .cartao__corpo {
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+  }
+}
+
+:host([data-variante='destaque']) {
+  .cartao__nome {
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  }
+
+  @include a-partir-de($tablet) {
+    .cartao {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .cartao__imagem app-imagem-produto {
+      aspect-ratio: 5 / 4;
+    }
+
+    .cartao__corpo {
+      justify-content: center;
+      padding: clamp(1.75rem, 4vw, 3rem);
+    }
+
+    .cartao__descricao {
+      flex: none;
+    }
+  }
+}
+
+// Sem foto, sobre fundo vinho (salgados enquanto as fotos não chegam).
+:host([data-variante='tipografico']) {
+  .cartao {
+    justify-content: space-between;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border: 2px solid rgb(255 248 231 / 35%);
+    border-radius: var(--raio-g);
+    color: var(--cor-creme);
+  }
+
+  .cartao__nome {
+    color: var(--cor-creme);
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem);
+    line-height: 1.05;
+  }
+
+  .cartao__descricao {
+    color: var(--cor-creme);
+  }
+}
+
+// Destaque rápido quando a pessoa chega pelo menu de sabores.
+:host(.destacado) .cartao {
+  animation: destaque 2.4s var(--curva);
+}
+
+@keyframes destaque {
+  0%,
+  100% {
+    filter: none;
+  }
+
+  15%,
+  60% {
+    filter: drop-shadow(0 0 0.65rem rgb(133 34 36 / 45%));
+  }
+}
