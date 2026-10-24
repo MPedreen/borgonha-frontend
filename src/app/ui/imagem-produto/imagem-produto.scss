@@ -1,0 +1,72 @@
+:host {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--raio-g);
+  background-color: var(--cor-creme-escuro);
+}
+
+:host([data-formato='retrato']) {
+  aspect-ratio: 4 / 5;
+}
+
+:host([data-formato='paisagem']) {
+  aspect-ratio: 4 / 3;
+}
+
+img {
+  object-fit: cover;
+}
+
+// Cookies vistos de cima: o recorte "flutua" sobre uma silhueta ondulada de cookie.
+:host([data-formato='cookie']),
+:host([data-formato='miniatura']) {
+  aspect-ratio: 1;
+  overflow: visible;
+  border-radius: 0;
+  background-color: transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 4%;
+    background-color: var(--cor-creme-escuro);
+    mask: url('/formas/cookie.svg') center / contain no-repeat;
+  }
+
+  img {
+    padding: 11%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 12px rgb(var(--cor-sombra) / 22%));
+    transition: transform var(--duracao-media) var(--curva);
+  }
+}
+
+:host([data-formato='miniatura']) img {
+  padding: 8%;
+  filter: drop-shadow(0 4px 6px rgb(var(--cor-sombra) / 20%));
+}
+
+// O card controla o giro do anel e do cookie pelas variáveis --giro-anel e --giro-cookie.
+:host(.com-anel)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/formas/cookie-anel.svg') center / contain no-repeat;
+  transform: rotate(var(--giro-anel, 0deg));
+  transition: transform var(--duracao-lenta) var(--curva);
+  pointer-events: none;
+}
+
+:host(.com-anel) img {
+  transform: rotate(var(--giro-cookie, 0deg)) translateY(var(--sobe-cookie, 0));
+}
+
+.pendente {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgb(var(--cor-sombra) / 35%);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+}
