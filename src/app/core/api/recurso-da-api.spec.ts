@@ -36,9 +36,11 @@ describe('recursoDaApi', () => {
     const recurso = TestBed.runInInjectionContext(() => recursoDaApi<string[]>('duvidas'));
 
     expect(recurso.dados()).toEqual(['do build']);
+    expect(recurso.atualizado()).toBe(false);
     TestBed.tick();
     http.expectOne('https://api.test/api/duvidas').flush(['atualizado']);
     expect(recurso.dados()).toEqual(['atualizado']);
+    expect(recurso.atualizado()).toBe(true);
   });
 
   it('mantém o conteúdo anterior quando a atualização falha', () => {

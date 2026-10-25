@@ -1,5 +1,6 @@
 import { LOJA } from '../../../testing/dados-de-teste';
 import {
+  diaNaLoja,
   formatarDia,
   formatarEndereco,
   formatarHora,
@@ -44,6 +45,12 @@ describe('formatacao', () => {
   it('escreve valores redondos sem centavos nos textos', () => {
     expect(formatarPrecoCurto(30).replace(/\s/g, ' ')).toBe('R$ 30');
     expect(formatarPrecoCurto(12.5).replace(/\s/g, ' ')).toBe('R$ 12,50');
+  });
+
+  it('dá o dia no fuso da loja, para comparar datas', () => {
+    expect(diaNaLoja(new Date('2026-10-25T15:00:00Z'))).toBe('2026-10-25');
+    // 2h da manhã em UTC ainda é dia 24 (23h) em São Gonçalo.
+    expect(diaNaLoja(new Date('2026-10-25T02:00:00Z'))).toBe('2026-10-24');
   });
 
   it('escreve o dia da semana e a data no fuso da loja', () => {

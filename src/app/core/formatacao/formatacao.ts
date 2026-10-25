@@ -64,6 +64,18 @@ const formatoDia = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'America/Sao_Paulo',
 });
 
+const formatoDiaIso = new Intl.DateTimeFormat('en-CA', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'America/Sao_Paulo',
+});
+
+/** Dia no fuso da loja, para comparar datas. Ex.: "2026-10-25". */
+export function diaNaLoja(data: Date): string {
+  return formatoDiaIso.format(data);
+}
+
 /** Data no fuso da loja. Ex.: "sexta-feira, 23 de outubro". */
 export function formatarDia(data: Date): string {
   return formatoDia.format(data);

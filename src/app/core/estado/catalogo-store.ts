@@ -13,6 +13,14 @@ export class CatalogoStore {
   /** Não foi possível carregar o cardápio e não há uma versão anterior. */
   readonly indisponivel = computed(() => this.recurso.falhou() && !this.recurso.dados());
 
+  /** O cardápio que está na tela já veio da API nesta visita (não é só o da pré-renderização). */
+  readonly atualizado = this.recurso.atualizado;
+
+  /** Todos os produtos, na ordem do cardápio (categoria por categoria). */
+  readonly produtos = computed(() =>
+    (this.recurso.dados()?.categorias ?? []).flatMap((categoria) => categoria.produtos),
+  );
+
   readonly cookies = computed(() => this.produtosDa('cookies'));
   readonly doces = computed(() => this.produtosDa('doces'));
   readonly salgados = computed(() => this.produtosDa('salgados'));

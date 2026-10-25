@@ -17,6 +17,8 @@ export interface RecursoDaApi<T> {
   readonly carregando: Signal<boolean>;
   /** A última tentativa falhou (os dados anteriores, se houver, continuam valendo). */
   readonly falhou: Signal<boolean>;
+  /** Já chegou uma resposta da API nesta página (não só os dados embutidos na pré-renderização). */
+  readonly atualizado: Signal<boolean>;
   recarregar(): void;
 }
 
@@ -38,6 +40,7 @@ export function recursoDaApi<T>(caminho: string): RecursoDaApi<T> {
   const dados = signal<T | undefined>(estadoTransferido.get(chave, undefined));
   const carregando = signal(false);
   const falhou = signal(false);
+  const atualizado = signal(false);
 
   const recarregar = () => {
     carregando.set(true);
@@ -45,6 +48,7 @@ export function recursoDaApi<T>(caminho: string): RecursoDaApi<T> {
       next: (valor) => {
         dados.set(valor);
         falhou.set(false);
+        atualizado.set(true);
         carregando.set(false);
         if (noServidor) {
           estadoTransferido.set(chave, valor);
@@ -67,6 +71,7 @@ export function recursoDaApi<T>(caminho: string): RecursoDaApi<T> {
     dados: dados.asReadonly(),
     carregando: carregando.asReadonly(),
     falhou: falhou.asReadonly(),
+    atualizado: atualizado.asReadonly(),
     recarregar,
   };
 }
