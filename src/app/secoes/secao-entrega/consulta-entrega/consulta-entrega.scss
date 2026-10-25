@@ -208,3 +208,28 @@
     animation: none;
   }
 }
+
+.busca__carregando {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.95rem;
+  color: var(--cor-vinho);
+  translate: 0 -50%;
+}
+
+.resultado__endereco {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+
+  app-icone {
+    margin-block-start: 0.1em;
+    color: var(--cor-vinho);
+  }
+}
+
+.aviso__botao {
+  margin-block-start: 0.75rem;
+}

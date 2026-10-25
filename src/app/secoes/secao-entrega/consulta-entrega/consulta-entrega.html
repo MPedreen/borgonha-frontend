@@ -1,7 +1,7 @@
 <div class="consulta">
   <h3 class="consulta__titulo" id="titulo-consulta-entrega">Confira o seu endereço</h3>
   <p class="consulta__texto">
-    Digite sua rua ou seu bairro e veja se a entrega é sem pedido mínimo ou a partir de
+    Digite seu endereço e veja na hora se a entrega é sem pedido mínimo ou a partir de
     {{ pedidoMinimo() }}.
   </p>
 
@@ -11,7 +11,7 @@
     aria-labelledby="titulo-consulta-entrega"
     (submit)="conferir($event)"
   >
-    <label class="busca__rotulo" for="endereco-entrega">Sua rua ou bairro</label>
+    <label class="busca__rotulo" for="endereco-entrega">Rua e número</label>
     <div class="busca__linha">
       <div class="busca__campo">
         <app-icone nome="search" class="busca__lupa" />
@@ -21,38 +21,41 @@
           role="combobox"
           autocomplete="off"
           spellcheck="false"
-          placeholder="Ex.: Rua Afrânio Peixoto"
+          placeholder="Ex.: Rua Afrânio Peixoto, 40"
           aria-autocomplete="list"
           aria-controls="sugestoes-entrega"
           aria-describedby="ajuda-endereco-entrega"
           [attr.aria-expanded]="mostrarSugestoes()"
           [attr.aria-activedescendant]="idDaSugestaoAtiva()"
+          [attr.aria-busy]="buscandoEnderecos()"
           [formField]="formulario.endereco"
-          (focus)="carregarMapa()"
-          (input)="digitou()"
+          (input)="digitou($event)"
           (keydown)="teclou($event)"
           (blur)="saiuDoCampo()"
         />
+        @if (buscandoEnderecos()) {
+          <app-icone nome="loader-circle" class="busca__carregando girando" />
+        }
 
         <ul
           id="sugestoes-entrega"
           class="sugestoes"
           role="listbox"
-          aria-label="Ruas e bairros encontrados"
+          aria-label="Endereços encontrados"
           [hidden]="!mostrarSugestoes()"
         >
-          @for (lugar of sugestoes(); track lugar.chave; let indice = $index) {
+          @for (opcao of opcoes(); track opcao.chave; let indice = $index) {
             <li
               class="sugestao"
               role="option"
-              [id]="'sugestao-' + lugar.chave"
+              [id]="'sugestao-' + opcao.chave"
               [class.sugestao--ativa]="indice === indiceAtivo()"
               [attr.aria-selected]="indice === indiceAtivo()"
-              (mousedown)="$event.preventDefault(); escolher(lugar)"
+              (mousedown)="$event.preventDefault(); escolher(opcao)"
             >
-              <span class="sugestao__nome">{{ lugar.nome }}</span>
-              @if (lugar.detalhe) {
-                <span class="sugestao__detalhe">{{ lugar.detalhe }}</span>
+              <span class="sugestao__nome">{{ opcao.titulo }}</span>
+              @if (opcao.detalhe) {
+                <span class="sugestao__detalhe">{{ opcao.detalhe }}</span>
               }
             </li>
           }
@@ -61,8 +64,9 @@
       <button appBotao type="submit">Conferir</button>
     </div>
     <p class="busca__ajuda" id="ajuda-endereco-entrega">
-      Só o nome da rua, sem o número. As sugestões aparecem enquanto você digita.
+      Digite a rua e o número e escolha o seu endereço na lista.
     </p>
+    <p class="visualmente-oculto" aria-live="polite">{{ anuncio() }}</p>
   </form>
 
   <div class="ou" aria-hidden="true"><span>ou</span></div>
@@ -82,15 +86,57 @@
     {{ buscandoLocalizacao() ? 'Buscando sua localização…' : 'Usar minha localização' }}
   </button>
   <p class="consulta__nota">
-    Use quando estiver no endereço da entrega. Sua localização fica só no seu aparelho: não é
-    enviada nem guardada.
+    Use quando estiver no endereço da entrega. Sua localização fica só no seu aparelho: ela é usada
+    para calcular a distância e não é guardada.
   </p>
 
   <div class="resultado" aria-live="polite">
+    @if (falhaVisivel(); as motivo) {
+      <div class="aviso aviso--atencao" data-teste="aviso-de-falha">
+        <app-icone nome="circle-alert" class="aviso__icone" />
+        <div>
+          @if (motivo === 'muitas-consultas') {
+            <p class="aviso__titulo">Muitas consultas seguidas</p>
+            <p>
+              Espere alguns instantes e tente de novo. Enquanto isso, você pode procurar pelo nome
+              da rua: o resultado é uma estimativa em linha reta.
+            </p>
+          } @else {
+            <p class="aviso__titulo">Conferência de endereço temporariamente indisponível</p>
+            <p>
+              Fale com a gente pelo WhatsApp e informe seu endereço para saber se há pedido mínimo.
+              Enquanto isso, você pode procurar pelo nome da rua: o resultado é uma estimativa em
+              linha reta.
+            </p>
+          }
+          @if (linkDoWhatsApp(null); as whatsapp) {
+            <a
+              appBotao
+              class="aviso__botao"
+              tamanho="compacto"
+              [href]="whatsapp"
+              target="_blank"
+              rel="noopener"
+            >
+              Chamar no WhatsApp <app-icone nome="whatsapp" />
+              <span class="visualmente-oculto">(abre em nova aba)</span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+
     @if (resultado(); as resultado) {
       @switch (resultado.tipo) {
-        @case ('lugar') {
-          @let lugar = resultado.lugar;
+        @case ('entrega') {
+          @if (resultado.endereco; as endereco) {
+            <p class="resultado__endereco">
+              <app-icone nome="map-pin" />
+              <span>{{ endereco.titulo }} · {{ endereco.detalhe }}</span>
+            </p>
+          }
+          @let quem = resultado.endereco ? 'Esse endereço fica' : 'Você está';
+
           @switch (resultado.situacao) {
             @case ('sem-minimo') {
               <div class="aviso aviso--bom">
@@ -98,8 +144,10 @@
                 <div>
                   <p class="aviso__titulo">Sem pedido mínimo</p>
                   <p>
-                    {{ sujeito(lugar) }} fica a até {{ raio() }} da loja. A entrega é grátis e você
-                    pede o quanto quiser.
+                    {{ quem }} a cerca de
+                    {{ distancia(resultado.distancia ?? resultado.linhaReta) }} da loja pelo trajeto
+                    de entrega, dentro do raio de {{ raio() }}. A entrega é grátis e você pede o
+                    quanto quiser.
                   </p>
                 </div>
               </div>
@@ -110,9 +158,157 @@
                 <div>
                   <p class="aviso__titulo">Pedido mínimo de {{ pedidoMinimo() }}</p>
                   <p>
-                    {{ sujeito(lugar) }} fica a mais de {{ raio() }} da loja (a partir de
-                    {{ distancia(lugar.minimo) }}). A entrega é grátis para pedidos a partir de
-                    {{ pedidoMinimo() }}.
+                    @if (resultado.distancia !== null) {
+                      {{ quem }} a cerca de {{ distancia(resultado.distancia) }} da loja pelo
+                      trajeto de entrega, mais que {{ raio() }}.
+                    } @else {
+                      {{ quem }} a mais de {{ raio() }} da loja ({{
+                        distancia(resultado.linhaReta)
+                      }}
+                      em linha reta).
+                    }
+                    A entrega é grátis para pedidos a partir de {{ pedidoMinimo() }}.
+                  </p>
+                </div>
+              </div>
+            }
+            @case ('incerta') {
+              <div class="aviso aviso--atencao">
+                <app-icone nome="circle-alert" class="aviso__icone" />
+                <div>
+                  <p class="aviso__titulo">Perto do limite de {{ raio() }}</p>
+                  <p>
+                    {{ quem }} perto do limite do pedido mínimo, e o mapa não tem precisão
+                    suficiente para decidir. Confirme com a gente pelo WhatsApp
+                    @if (resultado.endereco) {
+                      ou use sua localização quando estiver no endereço.
+                    } @else {
+                      ou digite o seu endereço acima.
+                    }
+                  </p>
+                  @if (linkDoWhatsApp(resultado.endereco); as whatsapp) {
+                    <a
+                      appBotao
+                      class="aviso__botao"
+                      tamanho="compacto"
+                      [href]="whatsapp"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Confirmar no WhatsApp <app-icone nome="whatsapp" />
+                      <span class="visualmente-oculto">(abre em nova aba)</span>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+            @default {
+              <div class="aviso aviso--atencao">
+                <app-icone nome="circle-alert" class="aviso__icone" />
+                <div>
+                  <p class="aviso__titulo">Mais longe que Santa Luzia e região</p>
+                  <p>
+                    {{ quem }} a cerca de {{ distancia(resultado.linhaReta) }} da loja, longe demais
+                    para a conferência automática. Fale com a gente pelo WhatsApp para saber se
+                    entregamos aí.
+                  </p>
+                  @if (linkDoWhatsApp(resultado.endereco); as whatsapp) {
+                    <a
+                      appBotao
+                      class="aviso__botao"
+                      tamanho="compacto"
+                      [href]="whatsapp"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Perguntar no WhatsApp <app-icone nome="whatsapp" />
+                      <span class="visualmente-oculto">(abre em nova aba)</span>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+          }
+
+          @if (resultado.precisaoRuim) {
+            <p class="resultado__nota">
+              A localização do seu aparelho está imprecisa agora. Se puder, digite o seu endereço
+              acima para conferir melhor.
+            </p>
+          }
+          @if (resultado.situacao === 'sem-minimo' || resultado.situacao === 'com-minimo') {
+            <button appBotao type="button" class="resultado__pedido" (click)="fazerPedido()">
+              Fazer meu pedido <app-icone nome="arrow-right" />
+            </button>
+          }
+        }
+
+        @case ('carregando') {
+          <p class="resultado__carregando">
+            <app-icone nome="loader-circle" class="girando" /> {{ resultado.rotulo }}
+          </p>
+        }
+
+        @case ('curto') {
+          <div class="aviso aviso--atencao">
+            <app-icone nome="circle-alert" class="aviso__icone" />
+            <div>
+              <p class="aviso__titulo">Faltou um pedaço do endereço</p>
+              <p>Digite pelo menos 4 letras, de preferência a rua e o número.</p>
+            </div>
+          </div>
+        }
+
+        @case ('sem-endereco') {
+          <div class="aviso aviso--atencao">
+            <app-icone nome="circle-alert" class="aviso__icone" />
+            <div>
+              <p class="aviso__titulo">Não encontramos “{{ resultado.texto }}”</p>
+              <p>
+                Confira o nome da rua e o número, ou use sua localização. Se o endereço não
+                aparecer, fale com a gente pelo WhatsApp.
+              </p>
+              @if (linkDoWhatsApp(null); as whatsapp) {
+                <a
+                  appBotao
+                  class="aviso__botao"
+                  tamanho="compacto"
+                  [href]="whatsapp"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Perguntar no WhatsApp <app-icone nome="whatsapp" />
+                  <span class="visualmente-oculto">(abre em nova aba)</span>
+                </a>
+              }
+            </div>
+          </div>
+        }
+
+        @case ('lugar') {
+          @let lugar = resultado.lugar;
+          @switch (resultado.situacao) {
+            @case ('sem-minimo') {
+              <div class="aviso aviso--bom">
+                <app-icone nome="circle-check" class="aviso__icone" />
+                <div>
+                  <p class="aviso__titulo">Sem pedido mínimo (estimativa)</p>
+                  <p>
+                    {{ sujeito(lugar) }} fica a até {{ raio() }} da loja, em linha reta. A entrega é
+                    grátis e você pede o quanto quiser.
+                  </p>
+                </div>
+              </div>
+            }
+            @case ('com-minimo') {
+              <div class="aviso">
+                <app-icone nome="bike" class="aviso__icone" />
+                <div>
+                  <p class="aviso__titulo">Pedido mínimo de {{ pedidoMinimo() }} (estimativa)</p>
+                  <p>
+                    {{ sujeito(lugar) }} fica a mais de {{ raio() }} da loja, em linha reta (a
+                    partir de {{ distancia(lugar.minimo) }}). A entrega é grátis para pedidos a
+                    partir de {{ pedidoMinimo() }}.
                   </p>
                 </div>
               </div>
@@ -151,16 +347,16 @@
           </button>
         }
 
-        @case ('localizacao') {
+        @case ('localizacao-local') {
           @switch (resultado.situacao) {
             @case ('sem-minimo') {
               <div class="aviso aviso--bom">
                 <app-icone nome="circle-check" class="aviso__icone" />
                 <div>
-                  <p class="aviso__titulo">Sem pedido mínimo</p>
+                  <p class="aviso__titulo">Sem pedido mínimo (estimativa)</p>
                   <p>
-                    Você está a cerca de {{ distancia(resultado.distancia) }} da loja, dentro do
-                    raio de {{ raio() }}. A entrega é grátis e você pede o quanto quiser.
+                    Você está a cerca de {{ distancia(resultado.distancia) }} da loja em linha reta,
+                    dentro do raio de {{ raio() }}. A entrega é grátis e você pede o quanto quiser.
                   </p>
                 </div>
               </div>
@@ -169,10 +365,11 @@
               <div class="aviso">
                 <app-icone nome="bike" class="aviso__icone" />
                 <div>
-                  <p class="aviso__titulo">Pedido mínimo de {{ pedidoMinimo() }}</p>
+                  <p class="aviso__titulo">Pedido mínimo de {{ pedidoMinimo() }} (estimativa)</p>
                   <p>
-                    Você está a cerca de {{ distancia(resultado.distancia) }} da loja, mais que
-                    {{ raio() }}. A entrega é grátis para pedidos a partir de {{ pedidoMinimo() }}.
+                    Você está a cerca de {{ distancia(resultado.distancia) }} da loja em linha reta,
+                    mais que {{ raio() }}. A entrega é grátis para pedidos a partir de
+                    {{ pedidoMinimo() }}.
                   </p>
                 </div>
               </div>
@@ -238,10 +435,10 @@
               <p class="aviso__titulo">Não conseguimos sua localização</p>
               <p>
                 @if (resultado.motivo === 'negada') {
-                  O acesso à localização não foi permitido. Digite o nome da sua rua acima ou libere
-                  a localização nas configurações do navegador.
+                  O acesso à localização não foi permitido. Digite o seu endereço acima ou libere a
+                  localização nas configurações do navegador.
                 } @else {
-                  O aparelho não informou onde você está. Digite o nome da sua rua acima.
+                  O aparelho não informou onde você está. Digite o seu endereço acima.
                 }
               </p>
             </div>
@@ -252,11 +449,15 @@
   </div>
 
   <p class="consulta__rodape">
-    Distâncias em linha reta a partir da loja.
-    @if (fonteDoMapa(); as fonte) {
-      <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
-        >{{ fonte }}<span class="visualmente-oculto"> (abre em nova aba)</span></a
-      >.
-    }
+    Distância pelo trajeto de entrega a partir da loja. Endereços e trajetos por
+    <a href="https://www.geoapify.com/" target="_blank" rel="noopener"
+      >Geoapify<span class="visualmente-oculto"> (abre em nova aba)</span></a
+    >
+    e
+    <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
+      >© colaboradores do OpenStreetMap<span class="visualmente-oculto">
+        (abre em nova aba)</span
+      ></a
+    >.
   </p>
 </div>

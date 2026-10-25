@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
+import { ENDERECO_AFRANIO, ENDERECO_LONGE, simularEntrega } from './entrega-simulada';
 
 const LINK_DO_WHATSAPP =
   'https://wa.me/5521974509789?text=Ol%C3%A1!%0ADesejo%20fazer%20meu%20pedido!';
@@ -144,43 +145,135 @@ test.describe('no celular', () => {
   });
 });
 
-test('confere o endereço da entrega sem chamar nenhuma API de mapas', async ({ page }) => {
-  const pedidosDeMapa: string[] = [];
-  page.on('request', (requisicao) => {
-    if (/google|openstreetmap|overpass|nominatim/.test(new URL(requisicao.url()).hostname)) {
-      pedidosDeMapa.push(requisicao.url());
-    }
+test.describe('entrega e pedido mínimo', () => {
+  const resultado = (page: Page) => page.locator('#entrega .resultado');
+  const campo = (page: Page) => page.getByRole('combobox', { name: 'Rua e número' });
+
+  test('explica a regra da entrega', async ({ page }) => {
+    const secao = page.locator('#entrega');
+    await secao.scrollIntoViewIfNeeded();
+
+    await expect(secao).toContainText('Até 1,5 km da loja');
+    await expect(secao).toContainText('Entrega grátis, sem pedido mínimo.');
+    await expect(secao).toContainText('Entrega grátis com pedido mínimo de R$ 30.');
+    await expect(secao).toContainText('pelo trajeto de entrega');
   });
 
-  const secao = page.locator('#entrega');
-  await secao.scrollIntoViewIfNeeded();
-  await expect(secao).toContainText('Entrega grátis, sem pedido mínimo.');
-  await expect(secao).toContainText('Entrega grátis com pedido mínimo de R$ 30.');
+  test('confere o endereço escolhido sem chamar o serviço de mapas direto do navegador', async ({
+    page,
+  }) => {
+    const chamadas = await simularEntrega(page);
+    const externas: string[] = [];
+    page.on('request', (requisicao) => {
+      if (/geoapify|google|openstreetmap|nominatim/.test(new URL(requisicao.url()).hostname)) {
+        externas.push(requisicao.url());
+      }
+    });
 
-  const campo = page.getByRole('combobox', { name: 'Sua rua ou bairro' });
-  await campo.pressSequentially('afranio');
-  await page.getByRole('option', { name: /Rua Afrânio Peixoto/ }).click();
-  await expect(secao.locator('.resultado')).toContainText('Sem pedido mínimo');
+    await page.locator('#entrega').scrollIntoViewIfNeeded();
+    await campo(page).pressSequentially('rua afranio peixoto 40');
+    await page.getByRole('option', { name: /Rua Afrânio Peixoto 40/ }).click();
 
-  await campo.fill('');
-  await campo.pressSequentially('alcantara');
-  await campo.press('ArrowDown');
-  await campo.press('Enter');
-  await expect(secao.locator('.resultado')).toContainText('Pedido mínimo de R$ 30');
+    await expect(resultado(page)).toContainText(ENDERECO_AFRANIO.titulo);
+    await expect(resultado(page)).toContainText('Sem pedido mínimo');
+    await expect(resultado(page)).toContainText(
+      'a cerca de 1,2 km da loja pelo trajeto de entrega',
+    );
+    expect(chamadas.filter((chamada) => chamada.includes('/enderecos'))).toHaveLength(1);
+    expect(externas).toEqual([]);
+  });
 
-  expect(pedidosDeMapa).toEqual([]);
-});
+  test('um endereço longe da loja tem pedido mínimo de R$ 30', async ({ page }) => {
+    await simularEntrega(page, {
+      conferir: () => ({
+        situacao: 'com-minimo',
+        distanciaEmMetros: null,
+        distanciaEmLinhaRetaEmMetros: 2500,
+      }),
+    });
 
-test('a localização do aparelho diz se precisa de pedido mínimo', async ({ page, context }) => {
-  await context.grantPermissions(['geolocation']);
-  // ~930 m da loja
-  await context.setGeolocation({ latitude: -22.8105, longitude: -42.9805 });
+    await page.locator('#entrega').scrollIntoViewIfNeeded();
+    await campo(page).pressSequentially('avenida brasil 1000');
+    await expect(
+      page.getByRole('option', { name: new RegExp(ENDERECO_LONGE.titulo) }),
+    ).toBeVisible();
+    await campo(page).press('ArrowDown');
+    await campo(page).press('Enter');
 
-  await page.locator('#entrega').scrollIntoViewIfNeeded();
-  await page.getByRole('button', { name: 'Usar minha localização' }).click();
+    await expect(resultado(page)).toContainText('Pedido mínimo de R$ 30');
+    await expect(resultado(page)).toContainText('a mais de 1,5 km da loja');
+  });
 
-  await expect(page.locator('#entrega .resultado')).toContainText(
-    'Você está a cerca de 950 m da loja',
-  );
-  await expect(page.locator('#entrega .resultado')).toContainText('Sem pedido mínimo');
+  test('perto do limite, manda confirmar pelo WhatsApp com o endereço na mensagem', async ({
+    page,
+  }) => {
+    await simularEntrega(page, {
+      conferir: () => ({
+        situacao: 'incerta',
+        distanciaEmMetros: 1500,
+        distanciaEmLinhaRetaEmMetros: 1150,
+      }),
+    });
+
+    await page.locator('#entrega').scrollIntoViewIfNeeded();
+    await campo(page).pressSequentially('rua afranio peixoto 40');
+    await campo(page).press('Enter');
+
+    await expect(resultado(page)).toContainText('Perto do limite de 1,5 km');
+    const link = await page
+      .getByRole('link', { name: /Confirmar no WhatsApp/ })
+      .getAttribute('href');
+    expect(decodeURIComponent(link ?? '')).toContain('Rua Afrânio Peixoto 40, Santa Luzia');
+  });
+
+  test('com o serviço de mapas indisponível, pede para falar no WhatsApp e ainda deixa procurar a rua', async ({
+    page,
+  }) => {
+    await simularEntrega(page, { status: 503 });
+
+    await page.locator('#entrega').scrollIntoViewIfNeeded();
+    await campo(page).pressSequentially('afranio peixoto');
+
+    const aviso = page.locator('#entrega [data-teste="aviso-de-falha"]');
+    await expect(aviso).toContainText('temporariamente indisponível');
+    await expect(aviso).toContainText('Fale com a gente pelo WhatsApp');
+    await expect(aviso.getByRole('link', { name: /Chamar no WhatsApp/ })).toHaveAttribute(
+      'href',
+      /^https:\/\/wa\.me\/5521974509789\?text=/,
+    );
+
+    // A lista de ruas que vai junto com o site continua funcionando, como estimativa.
+    await campo(page).fill('');
+    await campo(page).pressSequentially('afranio peixoto');
+    await page.getByRole('option', { name: /Rua Afrânio Peixoto/ }).click();
+    await expect(resultado(page)).toContainText('Sem pedido mínimo (estimativa)');
+  });
+
+  test('a localização do aparelho confere o trajeto', async ({ page, context }) => {
+    await simularEntrega(page);
+    await context.grantPermissions(['geolocation']);
+    await context.setGeolocation({ latitude: -22.8105, longitude: -42.9805 });
+
+    await page.locator('#entrega').scrollIntoViewIfNeeded();
+    await page.getByRole('button', { name: 'Usar minha localização' }).click();
+
+    await expect(resultado(page)).toContainText('Você está a cerca de 1,2 km da loja pelo trajeto');
+    await expect(resultado(page)).toContainText('Sem pedido mínimo');
+  });
+
+  test('se o serviço falhar, a localização ainda é conferida no aparelho, em linha reta', async ({
+    page,
+    context,
+  }) => {
+    await simularEntrega(page, { status: 503 });
+    await context.grantPermissions(['geolocation']);
+    await context.setGeolocation({ latitude: -22.8105, longitude: -42.9805 });
+
+    await page.locator('#entrega').scrollIntoViewIfNeeded();
+    await page.getByRole('button', { name: 'Usar minha localização' }).click();
+
+    await expect(resultado(page)).toContainText('Sem pedido mínimo (estimativa)');
+    await expect(resultado(page)).toContainText('em linha reta');
+    await expect(resultado(page)).toContainText('temporariamente indisponível');
+  });
 });
