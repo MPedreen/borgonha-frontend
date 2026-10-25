@@ -27,6 +27,20 @@
     </nav>
 
     <div class="acoes">
+      <button
+        type="button"
+        class="acoes__cestinha"
+        [class.acoes__cestinha--pulando]="pulando()"
+        aria-haspopup="dialog"
+        [attr.aria-label]="rotuloDaCestinha()"
+        (click)="cestinha.abrir()"
+      >
+        <app-icone nome="shopping-basket" />
+        @if (cestinha.quantidadeTotal() > 0) {
+          <span class="acoes__contagem" aria-hidden="true">{{ cestinha.quantidadeTotal() }}</span>
+          <span class="acoes__total" aria-hidden="true">{{ totalDaCestinha() }}</span>
+        }
+      </button>
       <button type="button" appBotao tamanho="compacto" (click)="pedido.abrir()">
         <span class="acoes__texto-curto">Pedir</span>
         <span class="acoes__texto-longo">Faça seu pedido</span>

@@ -1,6 +1,7 @@
 import { ViewportScroller } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { GavetaCestinha } from '../../cestinha/gaveta-cestinha/gaveta-cestinha';
 import { PainelPedido } from '../../pedido/painel-pedido/painel-pedido';
 import { BarraAviso } from '../barra-aviso/barra-aviso';
 import { BarraPedidoCelular } from '../barra-pedido-celular/barra-pedido-celular';
@@ -11,12 +12,20 @@ import { Rodape } from '../rodape/rodape';
 const ESPACO_DO_CABECALHO_PX = 96;
 
 /**
- * Estrutura das páginas do site: aviso, cabeçalho, conteúdo, rodapé, barra fixa e painel de pedido.
+ * Estrutura das páginas do site: aviso, cabeçalho, conteúdo, rodapé, barra fixa, painel de pedido e cestinha.
  * A área do administrador tem a própria estrutura.
  */
 @Component({
   selector: 'app-layout-site',
-  imports: [BarraAviso, BarraPedidoCelular, Cabecalho, PainelPedido, Rodape, RouterOutlet],
+  imports: [
+    BarraAviso,
+    BarraPedidoCelular,
+    Cabecalho,
+    GavetaCestinha,
+    PainelPedido,
+    Rodape,
+    RouterOutlet,
+  ],
   templateUrl: './layout-site.html',
   styleUrl: './layout-site.scss',
 })

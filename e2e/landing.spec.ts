@@ -76,18 +76,83 @@ test('"Faça seu pedido" oferece WhatsApp, iFood e a loja física', async ({ pag
   await expect(painel).toBeHidden();
 });
 
-test('"Quero esse" já leva o sabor escolhido para a mensagem do WhatsApp', async ({ page }) => {
-  await page
-    .locator('#cookies')
-    .getByRole('button', { name: 'Quero esse: Cookie Red Velvet' })
-    .click();
+test.describe('cestinha', () => {
+  const MENSAGEM_DO_PEDIDO = [
+    'Olá!',
+    'Desejo fazer meu pedido!',
+    '',
+    '2x Cookie Nutella (R$ 30,00)',
+    '1x Brookie (R$ 15,00)',
+    '',
+    'Valor total: R$ 45,00',
+    'Forma de pagamento: Pix',
+  ].join('\n');
 
-  const painel = page.getByRole('dialog', { name: 'Faça seu pedido' });
-  await expect(painel.getByText('Você escolheu: Cookie Red Velvet')).toBeVisible();
-  await expect(painel.getByRole('link', { name: /Pedir pelo WhatsApp/ })).toHaveAttribute(
-    'href',
-    `${LINK_DO_WHATSAPP}%0AQuero%3A%20Cookie%20Red%20Velvet`,
-  );
+  async function montarCestinha(page: Page) {
+    const nutella = page.locator('#produto-nutella');
+    await nutella.getByRole('button', { name: 'Adicionar Cookie Nutella à cestinha' }).click();
+    await nutella.getByRole('button', { name: 'Aumentar a quantidade de Cookie Nutella' }).click();
+    await page
+      .locator('#produto-brookie')
+      .getByRole('button', { name: 'Adicionar Brookie à cestinha' })
+      .click();
+    // Os cards hidratam quando aparecem; o clique é repetido depois da hidratação.
+    await expect(page.getByRole('button', { name: 'Cestinha: 3 itens, R$ 45,00' })).toBeVisible();
+  }
+
+  test('monta a cestinha e manda o pedido pronto para o WhatsApp da loja', async ({
+    page,
+    context,
+  }) => {
+    await context.route('https://wa.me/**', (rota) => rota.fulfill({ body: 'WhatsApp' }));
+    await montarCestinha(page);
+
+    await page.getByRole('button', { name: 'Cestinha: 3 itens, R$ 45,00' }).click();
+    const cestinha = page.getByRole('dialog', { name: 'Sua cestinha' });
+    await expect(cestinha.locator('.item')).toHaveCount(2);
+    await expect(cestinha.locator('.total')).toContainText('R$ 45,00');
+
+    // Sem a forma de pagamento, nada abre e a cestinha avisa.
+    await cestinha.getByRole('link', { name: /Enviar pelo WhatsApp/ }).click();
+    await expect(cestinha.getByRole('alert')).toHaveText('Escolha a forma de pagamento.');
+
+    await cestinha.getByRole('radio', { name: 'Pix' }).check();
+    const [whatsApp] = await Promise.all([
+      context.waitForEvent('page'),
+      cestinha.getByRole('link', { name: /Enviar pelo WhatsApp/ }).click(),
+    ]);
+    await whatsApp.waitForURL(/wa\.me/);
+    const link = new URL(whatsApp.url());
+
+    expect(link.origin + link.pathname).toBe('https://wa.me/5521974509789');
+    expect(link.searchParams.get('text')).toBe(MENSAGEM_DO_PEDIDO);
+    await expect(cestinha).toContainText('Agora é só enviar no WhatsApp');
+  });
+
+  test('continua lá depois de recarregar a página', async ({ page }) => {
+    await montarCestinha(page);
+    await page.reload();
+
+    await expect(page.getByRole('button', { name: 'Cestinha: 3 itens, R$ 45,00' })).toBeVisible();
+    await expect(
+      page.locator('#produto-nutella').getByRole('group', { name: /Quantidade de Cookie Nutella/ }),
+    ).toContainText('2');
+  });
+
+  test('o painel "Faça seu pedido" mostra a cestinha e leva até ela', async ({ page }) => {
+    await montarCestinha(page);
+    // O botão do cabeçalho fixo está sempre à mão ("Pedir" no celular).
+    await page
+      .locator('app-cabecalho')
+      .getByRole('button', { name: /^(Pedir|Faça seu pedido)$/ })
+      .click();
+
+    const painel = page.getByRole('dialog', { name: 'Faça seu pedido' });
+    await expect(painel).toContainText('Na sua cestinha: 3 itens · R$ 45,00');
+    await painel.getByRole('button', { name: 'Revisar e enviar' }).click();
+
+    await expect(page.getByRole('dialog', { name: 'Sua cestinha' })).toBeVisible();
+  });
 });
 
 test('mostra endereço e horários da loja', async ({ page }) => {
@@ -144,6 +209,18 @@ test.describe('no celular', () => {
 
     await barra.getByRole('button', { name: /Faça seu pedido/ }).click();
     await expect(page.getByRole('dialog', { name: 'Faça seu pedido' })).toBeVisible();
+  });
+
+  test('com itens na cestinha, a barra fixa vira "Ver cestinha"', async ({ page }) => {
+    await page
+      .locator('#produto-brookie')
+      .getByRole('button', { name: 'Adicionar Brookie à cestinha' })
+      .click();
+
+    const barra = page.locator('app-barra-pedido-celular');
+    await expect(barra.getByRole('button')).toHaveText(/Ver cestinha \(1\) · R\$ 15,00/);
+    await barra.getByRole('button').click();
+    await expect(page.getByRole('dialog', { name: 'Sua cestinha' })).toBeVisible();
   });
 
   test('a barra fixa some no rodapé, que já tem o próprio botão de pedido', async ({ page }) => {

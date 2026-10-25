@@ -22,16 +22,20 @@
             />
             <figcaption class="foto__legenda">{{ cookie.nome }}</figcaption>
           </figure>
-          <button
-            type="button"
-            appBotao
-            variante="creme"
-            tamanho="compacto"
-            [attr.aria-label]="'Quero esse: Cookie ' + cookie.nome"
-            (click)="pedido.abrir(cookie)"
-          >
-            Quero esse
-          </button>
+          @if (cookie.preco !== null) {
+            <app-botao-cestinha [produto]="cookie" tom="escuro" />
+          } @else {
+            <button
+              type="button"
+              appBotao
+              variante="creme"
+              tamanho="compacto"
+              [attr.aria-label]="'Quero esse: Cookie ' + cookie.nome"
+              (click)="pedido.abrir(cookie)"
+            >
+              Quero esse
+            </button>
+          }
         </li>
       }
     </app-trilho-horizontal>

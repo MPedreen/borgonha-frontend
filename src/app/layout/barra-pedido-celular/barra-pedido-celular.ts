@@ -1,5 +1,7 @@
 import { DOCUMENT } from '@angular/common';
-import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core';
+import { afterNextRender, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Cestinha } from '../../core/cestinha/cestinha';
+import { emReais } from '../../core/cestinha/mensagem-do-pedido';
 import { Pedido } from '../../core/pedido/pedido';
 import { Botao } from '../../ui/botao/botao';
 import { Icone } from '../../ui/icone/icone';
@@ -7,7 +9,7 @@ import { Icone } from '../../ui/icone/icone';
 /** Seções que já têm o próprio botão de pedido: enquanto aparecem na tela, a barra some. */
 const SECOES_COM_BOTAO = ['#inicio', '#pedido', 'app-rodape > footer'];
 
-/** Botão fixo "Faça seu pedido" no rodapé da tela do celular. */
+/** Botão fixo no rodapé da tela do celular: "Faça seu pedido" ou, com itens na cestinha, "Ver cestinha". */
 @Component({
   selector: 'app-barra-pedido-celular',
   imports: [Botao, Icone],
@@ -18,15 +20,24 @@ const SECOES_COM_BOTAO = ['#inicio', '#pedido', 'app-rodape > footer'];
       [attr.aria-hidden]="!visivel()"
       [inert]="!visivel()"
     >
-      <button type="button" appBotao largo tamanho="grande" (click)="pedido.abrir()">
-        Faça seu pedido <app-icone nome="arrow-right" />
-      </button>
+      @if (cestinha.quantidadeTotal() > 0) {
+        <button type="button" appBotao largo tamanho="grande" (click)="cestinha.abrir()">
+          <app-icone nome="shopping-basket" />
+          Ver cestinha ({{ cestinha.quantidadeTotal() }}) · {{ total() }}
+        </button>
+      } @else {
+        <button type="button" appBotao largo tamanho="grande" (click)="pedido.abrir()">
+          Faça seu pedido <app-icone nome="arrow-right" />
+        </button>
+      }
     </div>
   `,
   styleUrl: './barra-pedido-celular.scss',
 })
 export class BarraPedidoCelular {
   protected readonly pedido = inject(Pedido);
+  protected readonly cestinha = inject(Cestinha);
+  protected readonly total = computed(() => emReais(this.cestinha.totalEmCentavos()));
   protected readonly visivel = signal(false);
 
   constructor() {

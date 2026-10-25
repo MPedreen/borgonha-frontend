@@ -25,11 +25,40 @@
     }
 
     @if (produto().variacoes.length > 0) {
-      <ul class="cartao__variacoes" aria-label="Sabores disponíveis">
-        @for (variacao of produto().variacoes; track variacao) {
-          <li>{{ variacao }}</li>
-        }
-      </ul>
+      @if (temPreco()) {
+        <fieldset
+          class="cartao__sabores"
+          [attr.aria-describedby]="faltouSabor() ? idAvisoDoSabor() : null"
+        >
+          <legend class="cartao__sabores-titulo">Escolha o sabor</legend>
+          <div class="cartao__sabores-opcoes">
+            @for (variacao of produto().variacoes; track variacao) {
+              <label class="sabor">
+                <input
+                  #sabor
+                  type="radio"
+                  [name]="'sabor-' + produto().slug"
+                  [value]="variacao"
+                  [checked]="variacaoEscolhida() === variacao"
+                  (change)="escolherSabor(variacao)"
+                />
+                <span>{{ variacao }}</span>
+              </label>
+            }
+          </div>
+          @if (faltouSabor()) {
+            <p class="cartao__aviso" [id]="idAvisoDoSabor()" role="alert">
+              Escolha um sabor para adicionar à cestinha.
+            </p>
+          }
+        </fieldset>
+      } @else {
+        <ul class="cartao__variacoes" aria-label="Sabores disponíveis">
+          @for (variacao of produto().variacoes; track variacao) {
+            <li>{{ variacao }}</li>
+          }
+        </ul>
+      }
     }
 
     @if (preco(); as valor) {
@@ -43,17 +72,27 @@
       <p class="cartao__peso cartao__peso--sozinho">{{ peso }}</p>
     }
 
-    <button
-      type="button"
-      appBotao
-      class="cartao__acao"
-      [variante]="varianteBotao()"
-      tamanho="compacto"
-      [disabled]="!produto().disponivel"
-      [attr.aria-label]="'Quero esse: ' + nomeNoPedido()"
-      (click)="pedir.emit(produto())"
-    >
-      Quero esse <app-icone nome="arrow-right" />
-    </button>
+    @if (temPreco()) {
+      <app-botao-cestinha
+        class="cartao__acao"
+        [produto]="produto()"
+        [variacao]="variacaoEscolhida()"
+        [tom]="tomDoBotao()"
+        (faltouVariacao)="pedirSabor()"
+      />
+    } @else {
+      <button
+        type="button"
+        appBotao
+        class="cartao__acao"
+        [variante]="varianteBotao()"
+        tamanho="compacto"
+        [disabled]="!produto().disponivel"
+        [attr.aria-label]="'Quero esse: ' + nomeNoPedido()"
+        (click)="pedir.emit(produto())"
+      >
+        Quero esse <app-icone nome="arrow-right" />
+      </button>
+    }
   </div>
 </article>

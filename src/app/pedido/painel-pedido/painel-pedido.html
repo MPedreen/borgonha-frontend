@@ -7,6 +7,26 @@
       </button>
     </div>
 
+    @if (cestinha.vazia()) {
+      <p class="painel__dica">
+        <app-icone nome="shopping-basket" />
+        <span>
+          Dica: toque em <strong>Adicionar</strong> nos produtos para montar sua cestinha e mandar o
+          pedido completo, com o total, pelo WhatsApp.
+        </span>
+      </p>
+    } @else {
+      <div class="painel__cestinha">
+        <app-icone nome="shopping-basket" />
+        <p>
+          Na sua cestinha: <strong>{{ resumoDaCestinha() }}</strong> · {{ totalDaCestinha() }}
+        </p>
+        <button type="button" appBotao tamanho="compacto" (click)="revisarCestinha()">
+          Revisar e enviar
+        </button>
+      </div>
+    }
+
     @if (produtoEscolhido(); as produto) {
       <p class="painel__escolha">
         Você escolheu: <strong>{{ produto }}</strong>

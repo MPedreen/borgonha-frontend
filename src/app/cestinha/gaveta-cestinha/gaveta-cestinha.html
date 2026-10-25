@@ -1,0 +1,215 @@
+<p class="visualmente-oculto" aria-live="polite">{{ cestinha.anuncio() }}</p>
+
+<app-dialogo [aberto]="cestinha.aberta()" idTitulo="titulo-cestinha" (fechado)="aoFechar()">
+  <div class="gaveta">
+    <div class="gaveta__topo">
+      <h2 #titulo id="titulo-cestinha" class="gaveta__titulo" tabindex="-1">
+        <app-icone nome="shopping-basket" /> Sua cestinha
+      </h2>
+      <button type="button" class="gaveta__fechar" (click)="fechar()">
+        <app-icone nome="x" /><span class="visualmente-oculto">Fechar</span>
+      </button>
+    </div>
+
+    @if (cestinha.removidos().length > 0) {
+      <div class="aviso" role="status">
+        <app-icone nome="circle-alert" class="aviso__icone" />
+        <p>
+          Saíram do cardápio de hoje e foram tirados da cestinha:
+          <strong>{{ cestinha.removidos().join(', ') }}</strong
+          >.
+        </p>
+        <button
+          type="button"
+          appBotao
+          variante="link"
+          class="aviso__dispensar"
+          (click)="cestinha.dispensarAvisoDeRemovidos()"
+        >
+          Entendi
+        </button>
+      </div>
+    }
+
+    @if (enviado()) {
+      <div class="enviado">
+        <app-icone nome="circle-check" class="enviado__icone" />
+        <p class="enviado__titulo">Agora é só enviar no WhatsApp</p>
+        <p>
+          Abrimos o WhatsApp com a mensagem do seu pedido. Toque em enviar por lá para a Borgonha
+          receber; a resposta vem pelo próprio WhatsApp.
+        </p>
+        @if (cestinha.linkDoPedido(); as link) {
+          <p class="enviado__ajuda">
+            O WhatsApp não abriu?
+            <a [href]="link" target="_blank" rel="noopener"
+              >Abrir de novo<span class="visualmente-oculto"> (abre em nova aba)</span></a
+            >
+          </p>
+        }
+        <div class="enviado__acoes">
+          <button type="button" appBotao (click)="novoPedido()">Esvaziar a cestinha</button>
+          <button type="button" appBotao variante="contorno" (click)="voltarParaACestinha()">
+            Voltar para a cestinha
+          </button>
+        </div>
+      </div>
+    } @else if (cestinha.vazia()) {
+      <div class="vazia">
+        <app-icone nome="shopping-basket" class="vazia__icone" />
+        <p class="vazia__titulo">Sua cestinha está vazia</p>
+        <p>
+          Toque em <strong>Adicionar</strong> nos cookies, doces e salgados que você quiser. Depois,
+          é só enviar o pedido pelo WhatsApp.
+        </p>
+        <a appBotao href="/#cookies" (click)="irPara($event, 'cookies')">Ver o cardápio</a>
+      </div>
+    } @else {
+      <ul class="itens" aria-label="Itens da cestinha">
+        @for (item of cestinha.itens(); track item.chave) {
+          <li class="item">
+            <app-imagem-produto
+              class="item__foto"
+              [formato]="formatoDaImagem(item)"
+              tamanhos="64px"
+              [imagem]="item.produto.imagens.inteiro"
+            />
+            <div class="item__texto">
+              <p class="item__nome">{{ item.nome }}</p>
+              <p class="item__unitario">{{ emReais(item.precoEmCentavos) }} cada</p>
+              @if (item.quantidade >= maximo) {
+                <p class="item__limite">Mais que {{ maximo }}? Combine pelo WhatsApp.</p>
+              }
+            </div>
+            <div class="item__lado">
+              <app-botao-cestinha [produto]="item.produto" [variacao]="item.variacao" />
+              <p class="item__subtotal">{{ emReais(item.subtotalEmCentavos) }}</p>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <p class="total">
+        <span
+          >Total <span class="total__resumo">({{ resumo() }})</span
+          ><span class="visualmente-oculto">: </span></span
+        >
+        <strong class="total__valor">{{ emReais(cestinha.totalEmCentavos()) }}</strong>
+      </p>
+
+      <div class="minimo-regiao" aria-live="polite">
+        @if (avisoDoMinimo(); as aviso) {
+          @if (aviso.tipo === 'sem-minimo') {
+            <p class="minimo minimo--bom">
+              <app-icone nome="circle-check" />
+              <span>Para o endereço que você conferiu, não tem pedido mínimo.</span>
+            </p>
+          } @else if (aviso.tipo === 'atingido') {
+            <p class="minimo minimo--bom">
+              <app-icone nome="circle-check" />
+              <span
+                >Pedido mínimo de {{ aviso.minimo }} atingido para o endereço que você
+                conferiu.</span
+              >
+            </p>
+          } @else if (aviso.tipo === 'faltando') {
+            <p class="minimo minimo--atencao">
+              <app-icone nome="circle-alert" />
+              <span
+                >Para o endereço que você conferiu, o pedido mínimo é de {{ aviso.minimo }}. Faltam
+                <strong>{{ aviso.falta }}</strong
+                >.</span
+              >
+            </p>
+          } @else {
+            <p class="minimo">
+              <app-icone nome="bike" />
+              <span
+                >Até {{ aviso.raio }} da loja, não tem pedido mínimo; mais longe, o mínimo é de
+                {{ aviso.minimo }}.
+                <a href="/#entrega" (click)="irPara($event, 'entrega')"
+                  >Conferir meu endereço</a
+                ></span
+              >
+            </p>
+          }
+        }
+      </div>
+
+      @let pagamento = formulario.pagamento();
+      <fieldset
+        class="pagamento"
+        id="forma-de-pagamento"
+        [attr.aria-describedby]="
+          pagamento.touched() && pagamento.invalid() ? 'erro-pagamento' : null
+        "
+      >
+        <legend class="pagamento__titulo">Forma de pagamento</legend>
+        <div class="pagamento__opcoes">
+          @for (forma of formas; track forma.valor) {
+            <label class="pagamento__opcao">
+              <input
+                #opcaoDePagamento
+                type="radio"
+                [value]="forma.valor"
+                [formField]="formulario.pagamento"
+              />
+              <span>{{ forma.rotulo }}</span>
+            </label>
+          }
+        </div>
+        @if (pagamento.touched() && pagamento.invalid()) {
+          <p class="pagamento__erro" id="erro-pagamento" role="alert">
+            {{ pagamento.errors()[0].message }}
+          </p>
+        }
+      </fieldset>
+
+      @if (cestinha.temWhatsApp()) {
+        <a
+          appBotao
+          largo
+          tamanho="grande"
+          class="enviar"
+          [href]="linkParaEnviar()"
+          target="_blank"
+          rel="noopener"
+          (click)="enviar($event)"
+        >
+          <app-icone nome="whatsapp" /> Enviar pelo WhatsApp
+          <span class="visualmente-oculto">(abre o WhatsApp)</span>
+        </a>
+        <p class="gaveta__ajuda">
+          O pedido vai como mensagem para o WhatsApp da Borgonha, com os itens, o total e a forma de
+          pagamento. Você confere tudo antes de enviar.
+        </p>
+      } @else {
+        <p class="gaveta__ajuda">
+          O WhatsApp da loja está fora do ar no site agora. Tente de novo em instantes.
+        </p>
+      }
+
+      <div class="esvaziar">
+        @if (confirmandoEsvaziar()) {
+          <p>Tirar todos os itens da cestinha?</p>
+          <button
+            type="button"
+            appBotao
+            variante="contorno"
+            tamanho="compacto"
+            (click)="esvaziar()"
+          >
+            Sim, esvaziar
+          </button>
+          <button type="button" appBotao variante="link" (click)="confirmandoEsvaziar.set(false)">
+            Cancelar
+          </button>
+        } @else {
+          <button type="button" appBotao variante="link" (click)="confirmandoEsvaziar.set(true)">
+            Esvaziar cestinha
+          </button>
+        }
+      </div>
+    }
+  </div>
+</app-dialogo>

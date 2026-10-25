@@ -30,6 +30,28 @@ test('o painel "Faça seu pedido" aberto não tem problemas de acessibilidade', 
   expect(resultado.violations).toEqual([]);
 });
 
+test('a cestinha aberta, com itens e o aviso da forma de pagamento, não tem problemas de acessibilidade', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page
+    .locator('#produto-nutella')
+    .getByRole('button', { name: 'Adicionar Cookie Nutella à cestinha' })
+    .click();
+  await page.getByRole('button', { name: /^Cestinha: 1 item/ }).click();
+  const cestinha = page.getByRole('dialog', { name: 'Sua cestinha' });
+  await cestinha.getByRole('link', { name: /Enviar pelo WhatsApp/ }).click();
+  await expect(cestinha.getByRole('alert')).toBeVisible();
+
+  const resultado = await new AxeBuilder({ page })
+    .withTags(REGRAS_WCAG_AA)
+    .include('dialog')
+    .analyze();
+
+  expect(resultado.violations).toEqual([]);
+});
+
 test('a consulta de entrega, com sugestões e resultado, não tem problemas de acessibilidade', async ({
   page,
 }) => {

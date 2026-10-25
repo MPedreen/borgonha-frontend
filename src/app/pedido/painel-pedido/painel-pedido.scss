@@ -50,6 +50,37 @@
   @include sobretitulo;
 }
 
+.painel__dica,
+.painel__cestinha {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-m);
+  background-color: var(--cor-creme-escuro);
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  app-icone {
+    flex-shrink: 0;
+    color: var(--cor-vinho);
+  }
+}
+
+.painel__cestinha {
+  flex-wrap: wrap;
+  border-inline-start: 4px solid var(--cor-vinho);
+
+  p {
+    flex: 1;
+    min-inline-size: 10rem;
+  }
+
+  strong {
+    color: var(--cor-vinho);
+  }
+}
+
 .painel__entrega {
   display: flex;
   align-items: flex-start;

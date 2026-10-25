@@ -1,0 +1,43 @@
+@if (quantidade() === 0) {
+  <button
+    #botaoAdicionar
+    type="button"
+    appBotao
+    class="adicionar"
+    [variante]="tom() === 'escuro' ? 'creme' : 'contorno'"
+    tamanho="compacto"
+    [disabled]="!produto().disponivel"
+    [attr.aria-label]="'Adicionar ' + nome() + ' à cestinha'"
+    (click)="adicionar()"
+  >
+    <app-icone nome="shopping-basket" /> Adicionar
+  </button>
+} @else {
+  <div class="seletor" role="group" [attr.aria-label]="'Quantidade de ' + nome() + ' na cestinha'">
+    <button
+      type="button"
+      class="seletor__botao"
+      [attr.aria-label]="
+        quantidade() === 1
+          ? 'Tirar ' + nome() + ' da cestinha'
+          : 'Diminuir a quantidade de ' + nome()
+      "
+      (click)="diminuir()"
+    >
+      <app-icone [nome]="quantidade() === 1 ? 'trash-2' : 'minus'" />
+    </button>
+    <span class="seletor__quantidade" aria-live="polite">
+      {{ quantidade() }}<span class="visualmente-oculto"> na cestinha</span>
+    </span>
+    <button
+      #botaoMais
+      type="button"
+      class="seletor__botao"
+      [disabled]="quantidade() >= maximo"
+      [attr.aria-label]="'Aumentar a quantidade de ' + nome()"
+      (click)="aumentar()"
+    >
+      <app-icone nome="plus" />
+    </button>
+  </div>
+}

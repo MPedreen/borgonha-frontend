@@ -84,6 +84,75 @@
   display: none;
 }
 
+.acoes__cestinha {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-inline-size: 2.75rem;
+  block-size: 2.75rem;
+  padding-inline: 0.7rem;
+  border: 2px solid var(--cor-vinho);
+  border-radius: var(--raio-pilula);
+  background-color: transparent;
+  color: var(--cor-vinho);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color var(--duracao-rapida);
+
+  &:hover {
+    background-color: var(--cor-creme-escuro);
+  }
+
+  app-icone {
+    font-size: 1.15rem;
+  }
+}
+
+.acoes__contagem {
+  position: absolute;
+  inset-block-start: -0.4rem;
+  inset-inline-end: -0.4rem;
+  display: grid;
+  place-items: center;
+  min-inline-size: 1.4rem;
+  block-size: 1.4rem;
+  padding-inline: 0.3rem;
+  border-radius: var(--raio-pilula);
+  background-color: var(--cor-vinho);
+  color: var(--cor-creme);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+// O total só cabe a partir do tablet; no celular fica o número de itens.
+.acoes__total {
+  display: none;
+
+  @include a-partir-de($tablet) {
+    display: inline;
+  }
+}
+
+.acoes__cestinha--pulando {
+  animation: pulo 450ms var(--curva);
+}
+
+@keyframes pulo {
+  40% {
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acoes__cestinha--pulando {
+    animation: none;
+  }
+}
+
 @include a-partir-de($tablet) {
   .acoes__texto-curto {
     display: none;

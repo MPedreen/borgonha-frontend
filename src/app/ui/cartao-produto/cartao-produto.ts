@@ -1,4 +1,14 @@
-import { booleanAttribute, Component, computed, input, output } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  ElementRef,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { BotaoCestinha } from '../../cestinha/botao-cestinha/botao-cestinha';
 import { formatarPreco } from '../../core/formatacao/formatacao';
 import { Produto } from '../../core/modelos/catalogo';
 import { nomeNoPedido } from '../../core/pedido/mensagem-whatsapp';
@@ -37,7 +47,7 @@ const BOTAO_DO_CARTAO: Record<VarianteCartao, VarianteBotao> = {
 
 @Component({
   selector: 'app-cartao-produto',
-  imports: [Botao, Etiqueta, Icone, ImagemProduto],
+  imports: [Botao, BotaoCestinha, Etiqueta, Icone, ImagemProduto],
   templateUrl: './cartao-produto.html',
   styleUrl: './cartao-produto.scss',
   host: {
@@ -51,16 +61,38 @@ export class CartaoProduto {
   /** Pisca o card quando a pessoa chega nele pelo menu de sabores. */
   readonly destacado = input(false, { transform: booleanAttribute });
 
-  /** "Quero esse": abre o painel de pedido com este produto. */
+  /** "Quero esse" dos produtos sem preço (que não entram na cestinha): abre o painel de pedido. */
   readonly pedir = output<Produto>();
+
+  /** Sabor escolhido, nos produtos com variações. */
+  protected readonly variacaoEscolhida = signal<string | null>(null);
+  protected readonly faltouSabor = signal(false);
+  private readonly primeiroSabor = viewChild<ElementRef<HTMLInputElement>>('sabor');
 
   protected readonly idTitulo = computed(() => `titulo-produto-${this.produto().slug}`);
   protected readonly formatoImagem = computed(() => FORMATO_DA_IMAGEM[this.variante()]);
   protected readonly tamanhosImagem = computed(() => TAMANHOS_DA_IMAGEM[this.variante()]);
   protected readonly varianteBotao = computed(() => BOTAO_DO_CARTAO[this.variante()]);
   protected readonly nomeNoPedido = computed(() => nomeNoPedido(this.produto()));
+  protected readonly idAvisoDoSabor = computed(() => `aviso-sabor-${this.produto().slug}`);
+  /** Com preço, o produto entra na cestinha; sem preço, o pedido é combinado pelo WhatsApp. */
+  protected readonly temPreco = computed(() => this.produto().preco !== null);
+  protected readonly tomDoBotao = computed(() =>
+    this.variante() === 'tipografico' ? 'escuro' : 'claro',
+  );
   protected readonly preco = computed(() => {
     const valor = this.produto().preco;
     return valor === null ? null : formatarPreco(valor);
   });
+
+  protected escolherSabor(variacao: string): void {
+    this.variacaoEscolhida.set(variacao);
+    this.faltouSabor.set(false);
+  }
+
+  /** "Adicionar" sem sabor escolhido: avisa e leva o foco para os sabores. */
+  protected pedirSabor(): void {
+    this.faltouSabor.set(true);
+    this.primeiroSabor()?.nativeElement.focus();
+  }
 }

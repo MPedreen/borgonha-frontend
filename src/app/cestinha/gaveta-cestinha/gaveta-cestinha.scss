@@ -1,0 +1,332 @@
+@use 'mixins' as *;
+
+.gaveta {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.gaveta__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.gaveta__titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  letter-spacing: var(--espacamento-titulo);
+  text-transform: uppercase;
+
+  &:focus {
+    outline: none;
+  }
+
+  app-icone {
+    color: var(--cor-vinho);
+  }
+}
+
+.gaveta__fechar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--cor-creme-escuro);
+  color: var(--cor-vinho);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--cor-linha);
+  }
+}
+
+.gaveta__ajuda {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+// Itens que saíram do cardápio do dia.
+.aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-inline-start: 4px dashed var(--cor-vinho);
+  border-radius: var(--raio-m);
+  background-color: var(--cor-creme-escuro);
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  p {
+    flex: 1;
+    min-inline-size: 12rem;
+  }
+}
+
+.aviso__icone {
+  margin-block-start: 0.15em;
+  color: var(--cor-vinho);
+}
+
+.aviso__dispensar {
+  margin-inline-start: auto;
+}
+
+.itens {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding-block: 0.85rem;
+  border-bottom: 1px solid var(--cor-linha);
+
+  &:first-child {
+    padding-block-start: 0;
+  }
+}
+
+.item__foto {
+  inline-size: 4rem;
+}
+
+.item__texto {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.item__nome {
+  color: var(--cor-vinho);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.item__unitario,
+.item__limite {
+  font-size: 0.8125rem;
+}
+
+.item__limite {
+  font-weight: 700;
+}
+
+.item__lado {
+  display: grid;
+  justify-items: end;
+  gap: 0.35rem;
+}
+
+.item__subtotal {
+  color: var(--cor-vinho);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+// No celular estreito, o seletor desce para baixo do nome.
+@include ate(380px) {
+  .item {
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+  }
+
+  .item__foto {
+    inline-size: 3.25rem;
+  }
+
+  .item__lado {
+    grid-column: 2;
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
+.total__resumo {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.total__valor {
+  color: var(--cor-vinho);
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.minimo-regiao:empty {
+  display: none;
+}
+
+.minimo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-m);
+  background-color: var(--cor-creme-escuro);
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  app-icone {
+    margin-block-start: 0.15em;
+    color: var(--cor-vinho);
+  }
+
+  a {
+    color: var(--cor-vinho);
+    font-weight: 700;
+  }
+}
+
+.minimo--bom {
+  background-color: #fff;
+}
+
+.minimo--atencao {
+  border-inline-start: 4px solid var(--cor-vinho);
+}
+
+.pagamento {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.pagamento__titulo {
+  @include sobretitulo;
+
+  margin-block-end: 0.6rem;
+  padding: 0;
+  color: var(--cor-vinho);
+}
+
+.pagamento__opcoes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+// Cada opção é um cartão inteiro clicável; o rádio de verdade continua lá, para teclado e leitores de tela.
+.pagamento__opcao {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-block-size: 3rem;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--cor-linha);
+  border-radius: var(--raio-m);
+  background-color: #fff;
+  color: var(--cor-vinho);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--duracao-rapida),
+    background-color var(--duracao-rapida);
+
+  &:hover {
+    border-color: var(--cor-vinho);
+  }
+
+  &:has(input:checked) {
+    border-color: var(--cor-vinho);
+    background-color: var(--cor-vinho);
+    color: var(--cor-creme);
+  }
+
+  &:has(input:focus-visible) {
+    outline: 3px solid var(--cor-foco);
+    outline-offset: 2px;
+  }
+
+  input {
+    accent-color: var(--cor-creme);
+    margin: 0;
+  }
+}
+
+.pagamento__erro {
+  color: var(--cor-vinho);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.enviar app-icone {
+  font-size: 1.35em;
+}
+
+.esvaziar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.vazia,
+.enviado {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding-block: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.vazia__icone,
+.enviado__icone {
+  font-size: 3rem;
+  color: var(--cor-vinho);
+}
+
+.vazia__titulo,
+.enviado__titulo {
+  color: var(--cor-vinho);
+  font-size: var(--tamanho-titulo-card);
+  font-weight: 800;
+}
+
+.enviado__ajuda {
+  font-size: 0.875rem;
+
+  a {
+    color: var(--cor-vinho);
+    font-weight: 700;
+  }
+}
+
+.enviado__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}

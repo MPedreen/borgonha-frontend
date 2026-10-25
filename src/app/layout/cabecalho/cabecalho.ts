@@ -1,5 +1,15 @@
 import { DOCUMENT } from '@angular/common';
-import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { Cestinha } from '../../core/cestinha/cestinha';
+import { emReais } from '../../core/cestinha/mensagem-do-pedido';
 import { Navegacao } from '../../core/navegacao/navegacao';
 import { Pedido } from '../../core/pedido/pedido';
 import { Botao } from '../../ui/botao/botao';
@@ -25,9 +35,33 @@ export class Cabecalho {
   protected readonly rolou = signal(false);
   protected readonly menuCelularAberto = signal(false);
 
+  protected readonly cestinha = inject(Cestinha);
+  protected readonly totalDaCestinha = computed(() => emReais(this.cestinha.totalEmCentavos()));
+  protected readonly rotuloDaCestinha = computed(() => {
+    const quantidade = this.cestinha.quantidadeTotal();
+    return quantidade === 0
+      ? 'Cestinha (vazia)'
+      : `Cestinha: ${quantidade} ${quantidade === 1 ? 'item' : 'itens'}, ${this.totalDaCestinha()}`;
+  });
+  /** O botão da cestinha dá um pulinho quando entra um item. */
+  protected readonly pulando = signal(false);
+
   constructor() {
     const documento = inject(DOCUMENT);
     const destroyRef = inject(DestroyRef);
+
+    let quantidadeAntes = 0;
+    let fimDoPulo: ReturnType<typeof setTimeout> | undefined;
+    effect(() => {
+      const quantidade = this.cestinha.quantidadeTotal();
+      if (quantidade > quantidadeAntes) {
+        clearTimeout(fimDoPulo);
+        this.pulando.set(true);
+        fimDoPulo = setTimeout(() => this.pulando.set(false), 450);
+      }
+      quantidadeAntes = quantidade;
+    });
+    destroyRef.onDestroy(() => clearTimeout(fimDoPulo));
 
     afterNextRender(() => {
       const janela = documento.defaultView;

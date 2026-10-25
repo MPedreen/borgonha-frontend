@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, input, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { form, FormField, maxLength } from '@angular/forms/signals';
 import {
@@ -31,6 +31,7 @@ import {
   situacaoDaDistancia,
   situacaoDoLugar,
 } from '../../../core/entrega/consulta-entrega';
+import { EntregaDoCliente } from '../../../core/entrega/entrega-do-cliente';
 import { MapaDeEntrega } from '../../../core/entrega/mapa-de-entrega';
 import { LojaStore } from '../../../core/estado/loja-store';
 import { formatarPrecoCurto } from '../../../core/formatacao/formatacao';
@@ -263,6 +264,20 @@ export class ConsultaEntrega {
 
   constructor() {
     const destroyRef = inject(DestroyRef);
+    const entregaDoCliente = inject(EntregaDoCliente);
+
+    // A cestinha lembra o resultado para avisar quanto falta para o pedido mínimo.
+    effect(() => {
+      const resultado = this.resultado();
+      if (
+        (resultado?.tipo === 'entrega' ||
+          resultado?.tipo === 'lugar' ||
+          resultado?.tipo === 'localizacao-local') &&
+        (resultado.situacao === 'sem-minimo' || resultado.situacao === 'com-minimo')
+      ) {
+        entregaDoCliente.registrar(resultado.situacao);
+      }
+    });
 
     this.digitacao
       .pipe(

@@ -1,0 +1,60 @@
+:host {
+  --seletor-fundo: var(--cor-vinho);
+  --seletor-texto: var(--cor-creme);
+
+  display: inline-flex;
+}
+
+:host([data-tom='escuro']) {
+  --seletor-fundo: var(--cor-creme);
+  --seletor-texto: var(--cor-vinho);
+}
+
+.seletor {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding: 0.2rem;
+  border-radius: var(--raio-pilula);
+  background-color: var(--seletor-fundo);
+  color: var(--seletor-texto);
+}
+
+.seletor__botao {
+  --cor-foco: var(--seletor-texto);
+
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--duracao-rapida);
+
+  &:hover:not(:disabled) {
+    background-color: rgb(255 255 255 / 16%);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  app-icone {
+    font-size: 1.05rem;
+  }
+}
+
+:host([data-tom='escuro']) .seletor__botao:hover:not(:disabled) {
+  background-color: rgb(133 34 36 / 10%);
+}
+
+.seletor__quantidade {
+  min-inline-size: 1.75rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
