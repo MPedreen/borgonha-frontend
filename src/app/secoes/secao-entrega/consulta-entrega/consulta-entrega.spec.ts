@@ -171,16 +171,14 @@ describe('ConsultaEntrega', () => {
       expect(resultadoNaTela()).toContain('a mais de 1,5 km da loja (2,5 km em linha reta)');
     });
 
-    it('perto do limite, manda confirmar pelo WhatsApp com o endereço na mensagem', async () => {
-      api.conferir.mockReturnValue(of(resultado('incerta', 1271, 929)));
+    it('perto de 1,5 km, ainda não tem pedido mínimo', async () => {
+      api.conferir.mockReturnValue(of(resultado('sem-minimo', 1700, 1300)));
       await digitar('rua afranio peixoto 40');
       await conferir();
 
-      expect(resultadoNaTela()).toContain('Perto do limite de 1,5 km');
-      const whatsapp = botao('Confirmar no WhatsApp') as HTMLAnchorElement;
-      expect(whatsapp.href).toContain('https://wa.me/5521974509789?text=');
-      expect(decodeURIComponent(whatsapp.href)).toContain('Rua Afrânio Peixoto 40, Santa Luzia');
-      expect(botao('Fazer meu pedido')).toBeUndefined();
+      expect(resultadoNaTela()).toContain('Sem pedido mínimo');
+      expect(resultadoNaTela()).toContain('a cerca de 1,7 km da loja pelo trajeto de entrega');
+      expect(resultadoNaTela()).not.toContain('Pedido mínimo de');
     });
 
     it('além do alcance, pede para perguntar no WhatsApp', async () => {
@@ -189,7 +187,10 @@ describe('ConsultaEntrega', () => {
       await conferir();
 
       expect(resultadoNaTela()).toContain('Mais longe que Santa Luzia e região');
-      expect(botao('Perguntar no WhatsApp')).toBeDefined();
+      const whatsapp = botao('Perguntar no WhatsApp') as HTMLAnchorElement;
+      expect(whatsapp.href).toContain('https://wa.me/5521974509789?text=');
+      expect(decodeURIComponent(whatsapp.href)).toContain('Rua Afrânio Peixoto 40, Santa Luzia');
+      expect(botao('Fazer meu pedido')).toBeUndefined();
     });
 
     it('com Enter direto, usa a primeira sugestão sem buscar de novo', async () => {

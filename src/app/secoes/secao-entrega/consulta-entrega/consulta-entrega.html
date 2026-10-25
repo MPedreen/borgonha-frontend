@@ -146,8 +146,8 @@
                   <p>
                     {{ quem }} a cerca de
                     {{ distancia(resultado.distancia ?? resultado.linhaReta) }} da loja pelo trajeto
-                    de entrega, dentro do raio de {{ raio() }}. A entrega é grátis e você pede o
-                    quanto quiser.
+                    de entrega, perto o bastante para não ter pedido mínimo. A entrega é grátis e
+                    você pede o quanto quiser.
                   </p>
                 </div>
               </div>
@@ -169,36 +169,6 @@
                     }
                     A entrega é grátis para pedidos a partir de {{ pedidoMinimo() }}.
                   </p>
-                </div>
-              </div>
-            }
-            @case ('incerta') {
-              <div class="aviso aviso--atencao">
-                <app-icone nome="circle-alert" class="aviso__icone" />
-                <div>
-                  <p class="aviso__titulo">Perto do limite de {{ raio() }}</p>
-                  <p>
-                    {{ quem }} perto do limite do pedido mínimo, e o mapa não tem precisão
-                    suficiente para decidir. Confirme com a gente pelo WhatsApp
-                    @if (resultado.endereco) {
-                      ou use sua localização quando estiver no endereço.
-                    } @else {
-                      ou digite o seu endereço acima.
-                    }
-                  </p>
-                  @if (linkDoWhatsApp(resultado.endereco); as whatsapp) {
-                    <a
-                      appBotao
-                      class="aviso__botao"
-                      tamanho="compacto"
-                      [href]="whatsapp"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      Confirmar no WhatsApp <app-icone nome="whatsapp" />
-                      <span class="visualmente-oculto">(abre em nova aba)</span>
-                    </a>
-                  }
                 </div>
               </div>
             }

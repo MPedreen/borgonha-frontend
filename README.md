@@ -74,7 +74,7 @@ A consulta funciona de três jeitos:
 - **Localização do aparelho:** o navegador informa onde a pessoa está e a API confere o trajeto. A localização não é guardada.
 - **Quando a API não consegue** (serviço de mapas fora do ar, sem chave ou limite do dia): o site mostra o aviso "Conferência de endereço temporariamente indisponível" com o botão do WhatsApp e, enquanto isso, deixa procurar pelo nome da rua em `public/entrega/ruas.json` (ruas e bairros até 5 km da loja, do OpenStreetMap; cerca de 80 KB, só baixado nessa situação). O resultado vira uma estimativa em linha reta. Depois de um minuto, o site volta a tentar a API.
 
-Perto do limite de 1,5 km o mapa não tem precisão para decidir, e o site manda confirmar pelo WhatsApp com o endereço já escrito na mensagem. Os limites de uso, a chave e as regras de decisão estão no README do [borgonha-backend](https://github.com/MPedreen/borgonha-backend).
+Como o mapa gratuito não tem precisão de casa em casa, a API dá 250 m de tolerância a favor do cliente: até 1,75 km pelo trajeto, sem pedido mínimo. Além de 5 km em linha reta, o site manda perguntar pelo WhatsApp, com o endereço já escrito na mensagem. Os limites de uso, a chave e as regras de decisão estão no README do [borgonha-backend](https://github.com/MPedreen/borgonha-backend).
 
 O arquivo de ruas é gerado por `npm run ruas-entrega` (precisa da API rodando). Rode de novo se a loja mudar de endereço ou se o raio mudar. Os testes de ponta a ponta simulam `/api/entrega/*` no navegador (`e2e/entrega-simulada.ts`), então não gastam crédito do Geoapify.
 

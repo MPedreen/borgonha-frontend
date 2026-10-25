@@ -35,9 +35,9 @@ test('a consulta de entrega, com sugestões e resultado, não tem problemas de a
 }) => {
   await simularEntrega(page, {
     conferir: () => ({
-      situacao: 'incerta',
-      distanciaEmMetros: 1500,
-      distanciaEmLinhaRetaEmMetros: 1150,
+      situacao: 'fora-da-regiao',
+      distanciaEmMetros: null,
+      distanciaEmLinhaRetaEmMetros: 9000,
     }),
   });
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -55,7 +55,7 @@ test('a consulta de entrega, com sugestões e resultado, não tem problemas de a
   expect(comSugestoes.violations).toEqual([]);
 
   await campo.press('Enter');
-  await expect(page.locator('#entrega .resultado')).toContainText('Perto do limite');
+  await expect(page.locator('#entrega .resultado')).toContainText('Mais longe que Santa Luzia');
   const comResultado = await new AxeBuilder({ page })
     .withTags(REGRAS_WCAG_AA)
     .include('#entrega')

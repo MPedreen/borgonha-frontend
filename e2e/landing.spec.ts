@@ -204,14 +204,14 @@ test.describe('entrega e pedido mínimo', () => {
     await expect(resultado(page)).toContainText('a mais de 1,5 km da loja');
   });
 
-  test('perto do limite, manda confirmar pelo WhatsApp com o endereço na mensagem', async ({
+  test('além de 5 km, manda perguntar pelo WhatsApp com o endereço na mensagem', async ({
     page,
   }) => {
     await simularEntrega(page, {
       conferir: () => ({
-        situacao: 'incerta',
-        distanciaEmMetros: 1500,
-        distanciaEmLinhaRetaEmMetros: 1150,
+        situacao: 'fora-da-regiao',
+        distanciaEmMetros: null,
+        distanciaEmLinhaRetaEmMetros: 9000,
       }),
     });
 
@@ -219,9 +219,9 @@ test.describe('entrega e pedido mínimo', () => {
     await campo(page).pressSequentially('rua afranio peixoto 40');
     await campo(page).press('Enter');
 
-    await expect(resultado(page)).toContainText('Perto do limite de 1,5 km');
+    await expect(resultado(page)).toContainText('Mais longe que Santa Luzia e região');
     const link = await page
-      .getByRole('link', { name: /Confirmar no WhatsApp/ })
+      .getByRole('link', { name: /Perguntar no WhatsApp/ })
       .getAttribute('href');
     expect(decodeURIComponent(link ?? '')).toContain('Rua Afrânio Peixoto 40, Santa Luzia');
   });

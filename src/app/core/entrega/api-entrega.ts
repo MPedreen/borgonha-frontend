@@ -15,10 +15,9 @@ export interface EnderecoSugerido {
 /**
  * - `sem-minimo`: dentro do raio, sem pedido mínimo;
  * - `com-minimo`: mais longe que o raio, com pedido mínimo;
- * - `incerta`: perto demais do limite para o mapa decidir;
  * - `fora-da-regiao`: longe demais para a consulta automática.
  */
-export type SituacaoDaEntrega = 'sem-minimo' | 'com-minimo' | 'incerta' | 'fora-da-regiao';
+export type SituacaoDaEntrega = 'sem-minimo' | 'com-minimo' | 'fora-da-regiao';
 
 export interface ResultadoDaEntrega {
   situacao: SituacaoDaEntrega;
