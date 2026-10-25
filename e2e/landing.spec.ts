@@ -177,7 +177,7 @@ test.describe('entrega e pedido mínimo', () => {
     await expect(resultado(page)).toContainText(ENDERECO_AFRANIO.titulo);
     await expect(resultado(page)).toContainText('Sem pedido mínimo');
     await expect(resultado(page)).toContainText(
-      'a cerca de 1,2 km da loja pelo trajeto de entrega',
+      'a cerca de 1,2 km da loja. Pode pedir o valor que quiser',
     );
     expect(chamadas.filter((chamada) => chamada.includes('/enderecos'))).toHaveLength(1);
     expect(externas).toEqual([]);
@@ -257,7 +257,7 @@ test.describe('entrega e pedido mínimo', () => {
     await page.locator('#entrega').scrollIntoViewIfNeeded();
     await page.getByRole('button', { name: 'Usar minha localização' }).click();
 
-    await expect(resultado(page)).toContainText('Você está a cerca de 1,2 km da loja pelo trajeto');
+    await expect(resultado(page)).toContainText('Você está a cerca de 1,2 km da loja');
     await expect(resultado(page)).toContainText('Sem pedido mínimo');
   });
 

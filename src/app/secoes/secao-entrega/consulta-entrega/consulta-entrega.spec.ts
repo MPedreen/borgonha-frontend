@@ -141,7 +141,9 @@ describe('ConsultaEntrega', () => {
       expect(campo().getAttribute('aria-expanded')).toBe('false');
       expect(resultadoNaTela()).toContain('Rua Afrânio Peixoto 40 · Santa Luzia');
       expect(resultadoNaTela()).toContain('Sem pedido mínimo');
-      expect(resultadoNaTela()).toContain('a cerca de 1,2 km da loja pelo trajeto de entrega');
+      expect(resultadoNaTela()).toContain(
+        'a cerca de 1,2 km da loja. Pode pedir o valor que quiser',
+      );
       expect(botao('Fazer meu pedido')).toBeDefined();
     });
 
@@ -160,7 +162,9 @@ describe('ConsultaEntrega', () => {
       await conferir();
 
       expect(resultadoNaTela()).toContain('Pedido mínimo de');
-      expect(resultadoNaTela()).toContain('a cerca de 1,9 km da loja pelo trajeto de entrega');
+      expect(resultadoNaTela()).toContain(
+        'a cerca de 1,9 km da loja. A entrega é grátis a partir de',
+      );
     });
 
     it('longe da loja, diz só que passa do raio, sem inventar um trajeto', async () => {
@@ -168,7 +172,9 @@ describe('ConsultaEntrega', () => {
       await digitar('rua afranio peixoto 40');
       await conferir();
 
-      expect(resultadoNaTela()).toContain('a mais de 1,5 km da loja (2,5 km em linha reta)');
+      expect(resultadoNaTela()).toContain(
+        'a mais de 1,5 km da loja. A entrega é grátis a partir de',
+      );
     });
 
     it('perto de 1,5 km, ainda não tem pedido mínimo', async () => {
@@ -177,7 +183,9 @@ describe('ConsultaEntrega', () => {
       await conferir();
 
       expect(resultadoNaTela()).toContain('Sem pedido mínimo');
-      expect(resultadoNaTela()).toContain('a cerca de 1,7 km da loja pelo trajeto de entrega');
+      expect(resultadoNaTela()).toContain(
+        'a cerca de 1,7 km da loja. Pode pedir o valor que quiser',
+      );
       expect(resultadoNaTela()).not.toContain('Pedido mínimo de');
     });
 
@@ -326,7 +334,7 @@ describe('ConsultaEntrega', () => {
 
       expect(api.conferir).toHaveBeenCalledWith(-22.8105, -42.9805);
       expect(resultadoNaTela()).toContain('Sem pedido mínimo');
-      expect(resultadoNaTela()).toContain('Você está a cerca de 1,2 km da loja pelo trajeto');
+      expect(resultadoNaTela()).toContain('Você está a cerca de 1,2 km da loja. Pode pedir');
     });
 
     it('avisa da imprecisão do aparelho', async () => {

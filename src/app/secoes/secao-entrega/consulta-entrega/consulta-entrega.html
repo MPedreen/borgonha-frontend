@@ -145,9 +145,8 @@
                   <p class="aviso__titulo">Sem pedido mínimo</p>
                   <p>
                     {{ quem }} a cerca de
-                    {{ distancia(resultado.distancia ?? resultado.linhaReta) }} da loja pelo trajeto
-                    de entrega, perto o bastante para não ter pedido mínimo. A entrega é grátis e
-                    você pede o quanto quiser.
+                    {{ distancia(resultado.distancia ?? resultado.linhaReta) }} da loja. Pode pedir
+                    o valor que quiser.
                   </p>
                 </div>
               </div>
@@ -159,15 +158,11 @@
                   <p class="aviso__titulo">Pedido mínimo de {{ pedidoMinimo() }}</p>
                   <p>
                     @if (resultado.distancia !== null) {
-                      {{ quem }} a cerca de {{ distancia(resultado.distancia) }} da loja pelo
-                      trajeto de entrega, mais que {{ raio() }}.
+                      {{ quem }} a cerca de {{ distancia(resultado.distancia) }} da loja.
                     } @else {
-                      {{ quem }} a mais de {{ raio() }} da loja ({{
-                        distancia(resultado.linhaReta)
-                      }}
-                      em linha reta).
+                      {{ quem }} a mais de {{ raio() }} da loja.
                     }
-                    A entrega é grátis para pedidos a partir de {{ pedidoMinimo() }}.
+                    A entrega é grátis a partir de {{ pedidoMinimo() }}.
                   </p>
                 </div>
               </div>
@@ -417,17 +412,4 @@
       }
     }
   </div>
-
-  <p class="consulta__rodape">
-    Distância pelo trajeto de entrega a partir da loja. Endereços e trajetos por
-    <a href="https://www.geoapify.com/" target="_blank" rel="noopener"
-      >Geoapify<span class="visualmente-oculto"> (abre em nova aba)</span></a
-    >
-    e
-    <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener"
-      >© colaboradores do OpenStreetMap<span class="visualmente-oculto">
-        (abre em nova aba)</span
-      ></a
-    >.
-  </p>
 </div>
