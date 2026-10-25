@@ -50,6 +50,24 @@
   @include sobretitulo;
 }
 
+.painel__entrega {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  app-icone {
+    margin-top: 0.15em;
+    color: var(--cor-vinho);
+  }
+
+  a {
+    color: var(--cor-vinho);
+    font-weight: 700;
+  }
+}
+
 .painel__horarios {
   display: flex;
   align-items: flex-start;

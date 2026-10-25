@@ -17,6 +17,17 @@
 
     <app-opcoes-pedido [produto]="pedido.produto()" (escolheu)="pedido.fechar()" />
 
+    @if (entrega(); as entrega) {
+      <p class="painel__entrega">
+        <app-icone nome="bike" />
+        <span>
+          Entrega grátis pelo WhatsApp: sem pedido mínimo até {{ entrega.raio }} da loja; mais
+          longe, pedido mínimo de {{ entrega.pedidoMinimo }}.
+          <a href="/#entrega" (click)="conferirEndereco($event)">Confira seu endereço</a>
+        </span>
+      </p>
+    }
+
     @if (loja.horarios().length > 0) {
       <div class="painel__horarios">
         <app-icone nome="clock" />
