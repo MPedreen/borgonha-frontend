@@ -70,6 +70,21 @@ describe('GavetaCestinha', () => {
   it('vazia, explica como montar a cestinha', () => {
     expect(texto('.vazia')).toContain('Sua cestinha está vazia');
     expect(botao('Ver o cardápio')).toBeDefined();
+    const enviarVazia = botao('Enviar pelo WhatsApp') as HTMLButtonElement;
+    expect(enviarVazia.disabled).toBe(true);
+    expect(texto('#ajuda-enviar-vazia')).toContain('pelo menos um item');
+  });
+
+  it('o botão de enviar habilita com o primeiro item e desabilita quando a cestinha esvazia', async () => {
+    expect((botao('Enviar pelo WhatsApp') as HTMLButtonElement).disabled).toBe(true);
+
+    cestinha.adicionar(NUTELLA);
+    await fixture.whenStable();
+    expect(enviar().tagName).toBe('A');
+
+    cestinha.remover(NUTELLA);
+    await fixture.whenStable();
+    expect((botao('Enviar pelo WhatsApp') as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('lista os itens com o preço de cada, os subtotais e o total', async () => {

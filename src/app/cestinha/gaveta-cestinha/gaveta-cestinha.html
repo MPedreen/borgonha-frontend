@@ -64,6 +64,21 @@
         </p>
         <a appBotao href="/#cookies" (click)="irPara($event, 'cookies')">Ver o cardápio</a>
       </div>
+
+      <button
+        type="button"
+        appBotao
+        largo
+        tamanho="grande"
+        class="enviar"
+        disabled
+        aria-describedby="ajuda-enviar-vazia"
+      >
+        <app-icone nome="whatsapp" /> Enviar pelo WhatsApp
+      </button>
+      <p class="gaveta__ajuda" id="ajuda-enviar-vazia">
+        Escolha pelo menos um item do cardápio para poder enviar o pedido.
+      </p>
     } @else {
       <ul class="itens" aria-label="Itens da cestinha">
         @for (item of cestinha.itens(); track item.chave) {
