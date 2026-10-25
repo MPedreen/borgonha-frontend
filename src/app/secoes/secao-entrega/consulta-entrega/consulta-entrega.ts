@@ -244,11 +244,7 @@ export class ConsultaEntrega {
           tipo: 'localizacao-local',
           distancia: consulta.distancia,
           precisaoRuim: consulta.precisao > PRECISAO_RUIM_EM_METROS,
-          situacao: situacaoDaDistancia(
-            consulta.distancia,
-            raio,
-            this.mapa.arquivo()?.alcanceEmMetros ?? 5000,
-          ),
+          situacao: situacaoDaDistancia(consulta.distancia, raio),
         };
       case 'texto': {
         if (this.mapa.estado() === 'falhou') return { tipo: 'sem-mapa' };

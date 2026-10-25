@@ -41,11 +41,10 @@ export interface Lugar {
 
 /**
  * - `sem-minimo`: tudo a até o raio da loja;
- * - `com-minimo`: tudo mais longe que o raio, mas dentro da região;
+ * - `com-minimo`: tudo mais longe que o raio, a qualquer distância;
  * - `depende`: a rua (ou o bairro) tem partes dos dois lados do limite;
- * - `fora-da-regiao`: longe demais para a consulta automática.
  */
-export type Situacao = 'sem-minimo' | 'com-minimo' | 'depende' | 'fora-da-regiao';
+export type Situacao = 'sem-minimo' | 'com-minimo' | 'depende';
 
 const TIPOS_DE_LOGRADOURO =
   /^(rua|r|avenida|av|travessa|trav|tv|estrada|estr|est|praca|pca|alameda|al|rodovia|rod|beco|largo|lgo|ladeira|servidao|caminho|via|vila|condominio|cond|loteamento)\b\s*/;
@@ -152,13 +151,8 @@ export function situacaoDoLugar(lugar: Lugar, raioEmMetros: number): Situacao {
   return 'depende';
 }
 
-export function situacaoDaDistancia(
-  distanciaEmMetros: number,
-  raioEmMetros: number,
-  alcanceEmMetros: number,
-): Situacao {
-  if (distanciaEmMetros <= raioEmMetros) return 'sem-minimo';
-  return distanciaEmMetros <= alcanceEmMetros ? 'com-minimo' : 'fora-da-regiao';
+export function situacaoDaDistancia(distanciaEmMetros: number, raioEmMetros: number): Situacao {
+  return distanciaEmMetros <= raioEmMetros ? 'sem-minimo' : 'com-minimo';
 }
 
 /** Distância em linha reta entre dois pontos da Terra (fórmula de haversine). */

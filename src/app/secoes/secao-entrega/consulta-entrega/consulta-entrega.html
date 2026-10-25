@@ -202,32 +202,6 @@
                 </div>
               </div>
             }
-            @default {
-              <div class="aviso aviso--atencao">
-                <app-icone nome="circle-alert" class="aviso__icone" />
-                <div>
-                  <p class="aviso__titulo">Mais longe que Santa Luzia e região</p>
-                  <p>
-                    {{ quem }} a cerca de {{ distancia(resultado.linhaReta) }} da loja, longe demais
-                    para a conferência automática. Fale com a gente pelo WhatsApp para saber se
-                    entregamos aí.
-                  </p>
-                  @if (linkDoWhatsApp(resultado.endereco); as whatsapp) {
-                    <a
-                      appBotao
-                      class="aviso__botao"
-                      tamanho="compacto"
-                      [href]="whatsapp"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      Perguntar no WhatsApp <app-icone nome="whatsapp" />
-                      <span class="visualmente-oculto">(abre em nova aba)</span>
-                    </a>
-                  }
-                </div>
-              </div>
-            }
           }
 
           @if (resultado.precisaoRuim) {
@@ -374,18 +348,6 @@
                 </div>
               </div>
             }
-            @default {
-              <div class="aviso aviso--atencao">
-                <app-icone nome="circle-alert" class="aviso__icone" />
-                <div>
-                  <p class="aviso__titulo">Mais longe que Santa Luzia e região</p>
-                  <p>
-                    Você está a cerca de {{ distancia(resultado.distancia) }} da loja. Fale com a
-                    gente pelo WhatsApp para saber se entregamos aí.
-                  </p>
-                </div>
-              </div>
-            }
           }
           @if (resultado.precisaoRuim) {
             <p class="resultado__nota">
@@ -405,8 +367,9 @@
               <p class="aviso__titulo">Não encontramos “{{ resultado.texto }}”</p>
               <p>
                 Confira o nome, tente só uma parte dele (ex.: “Afrânio”) ou use sua localização.
-                Nossa lista cobre até {{ alcance() }} da loja; mais longe que isso, fale com a gente
-                pelo WhatsApp.
+                Nossa lista cobre as ruas até {{ alcance() }} da loja: uma rua que não está nela
+                fica mais longe, e a partir de {{ raio() }} o pedido mínimo é de
+                {{ pedidoMinimo() }}.
               </p>
             </div>
           </div>
