@@ -25,6 +25,19 @@ test('avisa que o cardápio é semanal: o que está no site é o que tem hoje', 
   await expect(aviso).toContainText(/hoje, (\S+-feira|sábado|domingo), \d+ de /);
 });
 
+test('o rodapé traz os créditos dos mapas', async ({ page }) => {
+  const creditos = page.locator('app-rodape .creditos');
+
+  await expect(creditos.getByRole('link', { name: /Geoapify/ })).toHaveAttribute(
+    'href',
+    'https://www.geoapify.com/',
+  );
+  await expect(creditos.getByRole('link', { name: /OpenStreetMap/ })).toHaveAttribute(
+    'href',
+    'https://www.openstreetmap.org/copyright',
+  );
+});
+
 test('o rodapé leva à área do administrador, que pede login', async ({ page }) => {
   await page.getByRole('link', { name: 'Área do administrador' }).click();
 

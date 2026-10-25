@@ -83,6 +83,19 @@
   font-size: 0.8125rem;
 }
 
+// Créditos exigidos pelo serviço de mapas: pequenos, no fim da página.
+.creditos {
+  margin-block-start: 1.25rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  text-align: center;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
 // Acesso dos proprietários: discreto, no fim da página.
 .admin {
   display: inline-flex;
