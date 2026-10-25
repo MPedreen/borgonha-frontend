@@ -64,6 +64,36 @@ O botão **Área do administrador**, no fim do rodapé, leva a `/admin`. Depois 
 
 As mudanças valem na hora. O código da área do administrador fica em `src/app/admin/`, carregado só quando alguém abre `/admin`, e as páginas não são indexadas pelos buscadores. O usuário e a senha ficam só na API: veja o README do [borgonha-backend](https://github.com/MPedreen/borgonha-backend).
 
+## Cestinha e pedido pelo WhatsApp
+
+O cliente monta o pedido no próprio site e manda tudo pronto para o WhatsApp da loja:
+
+1. Em cada cookie, doce ou salgado com preço, o botão **Adicionar** põe o item na cestinha e vira o seletor de quantidade (− 2 +); no 1, o "−" vira a lixeira. Produtos com sabores pedem o sabor antes (pílulas "Escolha o sabor"). Até 20 de cada item; mais que isso, combina-se pelo WhatsApp.
+2. A cestinha fica no cabeçalho (com o número de itens e, a partir do tablet, o total), na barra fixa do celular ("Ver cestinha (3) · R$ 45,00") e no painel "Faça seu pedido".
+3. Aberta, ela mostra os itens com o preço de cada e o subtotal, o total, a forma de pagamento (Pix, Crédito ou Débito, obrigatória) e o botão **Enviar pelo WhatsApp**, que abre a conversa com a loja já com a mensagem:
+
+   ```
+   Olá!
+   Desejo fazer meu pedido!
+
+   2x Cookie Nutella (R$ 30,00)
+   1x Brookie (R$ 15,00)
+
+   Valor total: R$ 45,00
+   Forma de pagamento: Pix
+   ```
+
+   A saudação é a mensagem padrão do WhatsApp cadastrada na loja. O cliente ainda confere a mensagem e toca em enviar no WhatsApp.
+
+Outros cuidados:
+
+- **Pedido mínimo:** se o cliente já conferiu o endereço na seção Entrega, a cestinha diz se ele tem pedido mínimo e quanto falta; sem o endereço conferido e com o total abaixo do mínimo, ela explica a regra e leva até a consulta. O aviso não bloqueia o envio.
+- **Guardada no navegador:** a cestinha e a forma de pagamento ficam no `localStorage` do aparelho (só no mesmo dia, porque o cardápio muda). Quando o cardápio do dia chega da API, o que esgotou, saiu do cardápio ou ficou sem preço sai da cestinha, com um aviso.
+- **Produtos sem preço** continuam com o "Quero esse", que abre o painel de pedido com o produto escolhido.
+- **Hidratação:** as seções com botões da cestinha ou campos (por dentro, doces, salgados e entrega) hidratam quando o navegador fica livre, logo depois de carregar. Hidratando só ao aparecer na tela, um toque dado enquanto a seção ainda hidratava às vezes se perdia. O Lighthouse no celular ficou igual (nota 86 nas duas formas).
+
+O estado da cestinha fica em `src/app/core/cestinha/` (a mensagem do pedido em `mensagem-do-pedido.ts`); os componentes, em `src/app/cestinha/`.
+
 ## Entrega e pedido mínimo
 
 A seção **Entrega** explica a regra e deixa o cliente conferir o endereço: até 1,5 km da loja, pelo trajeto de entrega, a entrega é grátis e sem pedido mínimo; mais longe, grátis com pedido mínimo de R$ 30. O raio e o valor vêm da API (`entrega` em `/api/loja`), e o painel "Faça seu pedido" também mostra a regra.
@@ -82,9 +112,10 @@ O arquivo de ruas é gerado por `npm run ruas-entrega` (precisa da API rodando).
 
 | Pasta | Conteúdo |
 |---|---|
-| `core/` | Sem interface: modelos, acesso à API, estado com signals, pedido (links do WhatsApp), consulta de entrega (API, busca de ruas e distâncias), navegação, SEO e imagens |
+| `core/` | Sem interface: modelos, acesso à API, estado com signals, pedido (links do WhatsApp), cestinha (itens, total e mensagem do pedido), consulta de entrega (API, busca de ruas e distâncias), navegação, SEO e imagens |
 | `ui/` | Componentes visuais reutilizáveis: botão, ícone, selo, etiqueta, cartão e imagem de produto, diálogo, acordeão, trilho, esqueleto, revelação e logo |
 | `layout/` | Estrutura das páginas do site: barra de aviso, cabeçalho (menu de sabores e menu do celular), rodapé e barra fixa de pedido do celular |
+| `cestinha/` | Botão de adicionar (com o seletor de quantidade) e a cestinha aberta, com o envio do pedido pelo WhatsApp |
 | `pedido/` | Painel e opções de "Faça seu pedido" |
 | `secoes/` | As seções da página inicial, na ordem: hero, cookies (com o aviso de cardápio semanal), por dentro, doces, salgados, diferenciais, entrega (com a consulta de endereço), como pedir e dúvidas |
 | `paginas/` | Página inicial e página não encontrada |
