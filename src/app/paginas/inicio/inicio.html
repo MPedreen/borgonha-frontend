@@ -1,19 +1,25 @@
 <app-hero />
 <app-secao-cookies />
 
-@defer (on viewport; hydrate on viewport) {
+<!--
+  Seções com botões da cestinha ou campos (por dentro, doces, salgados e entrega) hidratam assim que o
+  navegador fica livre, logo depois de a página carregar: hidratando só ao aparecer na tela, um toque dado
+  no instante em que a seção ainda estava hidratando às vezes se perdia. As demais continuam hidratando
+  quando aparecem.
+-->
+@defer (on viewport; hydrate on idle) {
   <app-secao-por-dentro />
 } @placeholder {
   <div id="por-dentro" class="reserva"></div>
 }
 
-@defer (on viewport; hydrate on viewport) {
+@defer (on viewport; hydrate on idle) {
   <app-secao-doces />
 } @placeholder {
   <div id="doces" class="reserva"></div>
 }
 
-@defer (on viewport; hydrate on viewport) {
+@defer (on viewport; hydrate on idle) {
   <app-secao-salgados />
 } @placeholder {
   <div id="salgados" class="reserva"></div>
@@ -25,7 +31,7 @@
   <div id="diferenciais" class="reserva"></div>
 }
 
-@defer (on viewport; hydrate on viewport) {
+@defer (on viewport; hydrate on idle) {
   <app-secao-entrega />
 } @placeholder {
   <div id="entrega" class="reserva"></div>
