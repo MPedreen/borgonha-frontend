@@ -40,6 +40,7 @@ npm start
 | `npm run build` | Build de produção (veja abaixo) |
 | `npm run imagens` | Gera as fotos em WebP (7 larguras) a partir de `design/originais/`; os recortes ficam configurados em `scripts/otimizar-imagens.mjs` |
 | `npm run icones` | Gera o sprite de ícones (Lucide e Simple Icons) |
+| `npm run ruas-entrega` | Gera `public/entrega/ruas.json`, a lista de ruas e bairros da consulta de entrega (precisa da API rodando; veja abaixo) |
 
 O CI (`.github/workflows/ci.yml`) roda formatação, lint, testes unitários, build e testes de ponta a ponta a cada push na `main` e em cada pull request.
 
@@ -63,15 +64,26 @@ O botão **Área do administrador**, no fim do rodapé, leva a `/admin`. Depois 
 
 As mudanças valem na hora. O código da área do administrador fica em `src/app/admin/`, carregado só quando alguém abre `/admin`, e as páginas não são indexadas pelos buscadores. O usuário e a senha ficam só na API: veja o README do [borgonha-backend](https://github.com/MPedreen/borgonha-backend).
 
+## Entrega e pedido mínimo
+
+A seção **Entrega** explica a regra e deixa o cliente conferir o endereço: até 1,5 km da loja, em linha reta, a entrega é grátis e sem pedido mínimo; mais longe, grátis com pedido mínimo de R$ 30. O raio e o valor vêm da API (`entrega` em `/api/loja`), e o painel "Faça seu pedido" também mostra a regra.
+
+Nenhuma API de mapas é chamada quando o cliente confere o endereço:
+
+- **Rua ou bairro:** o cliente digita e escolhe nas sugestões. A lista vem de `public/entrega/ruas.json`, com as ruas e os bairros até 5 km da loja e a distância do ponto mais perto e do mais longe de cada um. O arquivo tem cerca de 80 KB (27 KB compactado) e só é baixado quando alguém usa a busca. Se a rua cruza o limite de 1,5 km, o site avisa que depende do trecho e mostra o cruzamento de cada lado.
+- **Localização do aparelho:** o navegador informa onde a pessoa está e a distância até a loja é calculada ali mesmo. A localização não é enviada para lugar nenhum.
+
+O arquivo é gerado por `npm run ruas-entrega` a partir do OpenStreetMap (licença ODbL; o crédito aparece embaixo da busca). Rode de novo se a loja mudar de endereço ou se o raio mudar, e para pegar ruas novas do mapa.
+
 ## Organização de `src/app`
 
 | Pasta | Conteúdo |
 |---|---|
-| `core/` | Sem interface: modelos, acesso à API, estado com signals, pedido (links do WhatsApp), navegação, SEO e imagens |
+| `core/` | Sem interface: modelos, acesso à API, estado com signals, pedido (links do WhatsApp), consulta de entrega (busca de ruas e distâncias), navegação, SEO e imagens |
 | `ui/` | Componentes visuais reutilizáveis: botão, ícone, selo, etiqueta, cartão e imagem de produto, diálogo, acordeão, trilho, esqueleto, revelação e logo |
 | `layout/` | Estrutura das páginas do site: barra de aviso, cabeçalho (menu de sabores e menu do celular), rodapé e barra fixa de pedido do celular |
 | `pedido/` | Painel e opções de "Faça seu pedido" |
-| `secoes/` | As seções da página inicial, na ordem: hero, cookies (com o aviso de cardápio semanal), por dentro, doces, salgados, diferenciais, como pedir e dúvidas |
+| `secoes/` | As seções da página inicial, na ordem: hero, cookies (com o aviso de cardápio semanal), por dentro, doces, salgados, diferenciais, entrega (com a consulta de endereço), como pedir e dúvidas |
 | `paginas/` | Página inicial e página não encontrada |
 | `admin/` | Área do administrador: login, lista de produtos, editor e envio de fotos |
 
