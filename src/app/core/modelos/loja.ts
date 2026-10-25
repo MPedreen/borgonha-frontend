@@ -8,6 +8,8 @@ export interface Loja {
   /** Perfil do Instagram, sem o "@". */
   instagram: string | null;
   avisoTopo: string | null;
+  /** Pedido mínimo da entrega conforme a distância; `null` se a loja não tiver regra. */
+  entrega: RegraDeEntrega | null;
   horarios: Horario[];
   canaisPedido: CanalPedido[];
 }
@@ -19,6 +21,13 @@ export interface Endereco {
   cidade: string;
   uf: string;
   cep: string | null;
+}
+
+export interface RegraDeEntrega {
+  /** Até essa distância da loja, em linha reta, não há pedido mínimo. */
+  raioSemPedidoMinimoEmMetros: number;
+  /** Valor mínimo do pedido, em reais, para endereços mais distantes. */
+  pedidoMinimo: number;
 }
 
 export interface Coordenadas {

@@ -8,6 +8,7 @@ import { SecaoCookies } from '../../secoes/secao-cookies/secao-cookies';
 import { SecaoDiferenciais } from '../../secoes/secao-diferenciais/secao-diferenciais';
 import { SecaoDoces } from '../../secoes/secao-doces/secao-doces';
 import { SecaoDuvidas } from '../../secoes/secao-duvidas/secao-duvidas';
+import { SecaoEntrega } from '../../secoes/secao-entrega/secao-entrega';
 import { SecaoPorDentro } from '../../secoes/secao-por-dentro/secao-por-dentro';
 import { SecaoSalgados } from '../../secoes/secao-salgados/secao-salgados';
 
@@ -21,6 +22,7 @@ import { SecaoSalgados } from '../../secoes/secao-salgados/secao-salgados';
     SecaoDiferenciais,
     SecaoDoces,
     SecaoDuvidas,
+    SecaoEntrega,
     SecaoPorDentro,
     SecaoSalgados,
   ],

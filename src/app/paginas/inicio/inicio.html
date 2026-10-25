@@ -26,6 +26,12 @@
 }
 
 @defer (on viewport; hydrate on viewport) {
+  <app-secao-entrega />
+} @placeholder {
+  <div id="entrega" class="reserva"></div>
+}
+
+@defer (on viewport; hydrate on viewport) {
   <app-secao-como-pedir />
 } @placeholder {
   <div id="pedido" class="reserva"></div>

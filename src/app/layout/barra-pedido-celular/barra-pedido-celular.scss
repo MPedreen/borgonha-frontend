@@ -21,3 +21,8 @@
 button {
   box-shadow: var(--sombra-forte);
 }
+
+// Enquanto a pessoa digita o endereço da entrega, a barra cobriria as sugestões (e fica junto do teclado).
+:host-context(body:has(#endereco-entrega:focus)) .barra {
+  transform: translateY(110%);
+}

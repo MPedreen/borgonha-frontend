@@ -1,0 +1,45 @@
+@if (loja.entrega(); as regra) {
+  <section id="entrega" class="secao entrega" aria-labelledby="titulo-entrega" tabindex="-1">
+    <div class="container entrega__grade">
+      <div class="entrega__regra">
+        <app-cabecalho-secao
+          idTitulo="titulo-entrega"
+          sobretitulo="Entrega"
+          titulo="Entregamos em Santa Luzia e"
+          destaque="região."
+          tom="escuro"
+          texto="Pedindo pelo WhatsApp, a entrega é grátis. O que muda com a distância é o valor mínimo do pedido."
+        />
+
+        <ul class="faixas">
+          <li class="faixa">
+            <span class="faixa__icone"><app-icone nome="map-pin" /></span>
+            <span>
+              <span class="faixa__distancia">Até {{ raio() }} da loja</span>
+              <span class="faixa__regra">Entrega grátis, sem pedido mínimo.</span>
+            </span>
+          </li>
+          <li class="faixa">
+            <span class="faixa__icone"><app-icone nome="bike" /></span>
+            <span>
+              <span class="faixa__distancia">Mais de {{ raio() }} da loja</span>
+              <span class="faixa__regra"
+                >Entrega grátis com pedido mínimo de {{ pedidoMinimo() }}.</span
+              >
+            </span>
+          </li>
+        </ul>
+
+        @if (loja.endereco(); as endereco) {
+          <p class="entrega__ponto">
+            A distância é medida em linha reta a partir da loja: {{ endereco }}.
+          </p>
+        }
+      </div>
+
+      @if (loja.loja(); as dados) {
+        <app-consulta-entrega [regra]="regra" [loja]="dados.coordenadas" />
+      }
+    </div>
+  </section>
+}

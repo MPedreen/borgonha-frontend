@@ -29,6 +29,32 @@ test('o painel "Faça seu pedido" aberto não tem problemas de acessibilidade', 
   expect(resultado.violations).toEqual([]);
 });
 
+test('a consulta de entrega, com sugestões e resultado, não tem problemas de acessibilidade', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page.locator('#entrega').scrollIntoViewIfNeeded();
+  const campo = page.getByRole('combobox', { name: 'Sua rua ou bairro' });
+  await campo.pressSequentially('zilda');
+  await expect(page.getByRole('listbox')).toBeVisible();
+  await campo.press('ArrowDown');
+
+  const comSugestoes = await new AxeBuilder({ page })
+    .withTags(REGRAS_WCAG_AA)
+    .include('#entrega')
+    .analyze();
+  expect(comSugestoes.violations).toEqual([]);
+
+  await campo.press('Enter');
+  await expect(page.locator('#entrega .resultado')).toContainText('Depende do trecho');
+  const comResultado = await new AxeBuilder({ page })
+    .withTags(REGRAS_WCAG_AA)
+    .include('#entrega')
+    .analyze();
+  expect(comResultado.violations).toEqual([]);
+});
+
 test('a tela de login da área do administrador não tem problemas de acessibilidade', async ({
   page,
 }) => {

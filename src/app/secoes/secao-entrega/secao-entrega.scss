@@ -1,0 +1,65 @@
+@use 'mixins' as *;
+
+.entrega {
+  @include fundo-escuro;
+}
+
+.entrega__grade {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+
+  @include a-partir-de($desktop) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+  }
+}
+
+.entrega__regra {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.faixas {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.faixa {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgb(255 248 231 / 35%);
+  border-radius: var(--raio-m);
+
+  > span:last-child {
+    display: grid;
+    gap: 0.15rem;
+  }
+}
+
+.faixa__icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: 50%;
+  background-color: var(--cor-creme);
+  color: var(--cor-vinho);
+}
+
+.faixa__distancia {
+  font-size: var(--tamanho-titulo-card);
+  font-weight: 800;
+  letter-spacing: var(--espacamento-titulo);
+  text-transform: uppercase;
+}
+
+.entrega__ponto {
+  font-size: var(--tamanho-pequeno);
+  line-height: 1.5;
+}

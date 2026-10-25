@@ -46,6 +46,17 @@ export function formatarPreco(valor: number): string {
   return formatoMoeda.format(valor);
 }
 
+const formatoMoedaInteira = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  maximumFractionDigits: 0,
+});
+
+/** Valor redondo sem centavos, para textos: 30 → "R$ 30"; 12.5 → "R$ 12,50". */
+export function formatarPrecoCurto(valor: number): string {
+  return Number.isInteger(valor) ? formatoMoedaInteira.format(valor) : formatoMoeda.format(valor);
+}
+
 const formatoDia = new Intl.DateTimeFormat('pt-BR', {
   weekday: 'long',
   day: 'numeric',

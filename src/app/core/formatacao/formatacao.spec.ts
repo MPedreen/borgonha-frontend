@@ -5,6 +5,7 @@ import {
   formatarHora,
   formatarHorarios,
   formatarPreco,
+  formatarPrecoCurto,
   formatarTelefone,
 } from './formatacao';
 
@@ -38,6 +39,11 @@ describe('formatacao', () => {
 
   it('formata preços em reais', () => {
     expect(formatarPreco(12.9).replace(/\s/g, ' ')).toBe('R$ 12,90');
+  });
+
+  it('escreve valores redondos sem centavos nos textos', () => {
+    expect(formatarPrecoCurto(30).replace(/\s/g, ' ')).toBe('R$ 30');
+    expect(formatarPrecoCurto(12.5).replace(/\s/g, ' ')).toBe('R$ 12,50');
   });
 
   it('escreve o dia da semana e a data no fuso da loja', () => {

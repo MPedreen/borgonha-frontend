@@ -3,5 +3,6 @@ export const LINKS_DE_NAVEGACAO = [
   { id: 'cookies', rotulo: 'Cookies' },
   { id: 'doces', rotulo: 'Doces' },
   { id: 'salgados', rotulo: 'Salgados' },
+  { id: 'entrega', rotulo: 'Entrega' },
   { id: 'pedido', rotulo: 'Onde estamos' },
 ] as const;

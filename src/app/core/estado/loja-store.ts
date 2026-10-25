@@ -11,6 +11,7 @@ export class LojaStore {
   readonly loja = this.recurso.dados;
   readonly avisoTopo = computed(() => this.loja()?.avisoTopo ?? null);
   readonly canaisPedido = computed(() => this.loja()?.canaisPedido ?? []);
+  readonly entrega = computed(() => this.loja()?.entrega ?? null);
   readonly endereco = computed(() => {
     const loja = this.loja();
     return loja ? formatarEndereco(loja.endereco) : '';

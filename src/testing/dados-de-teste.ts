@@ -1,3 +1,4 @@
+import { ArquivoDeRuas } from '../app/core/entrega/consulta-entrega';
 import { Catalogo, Produto } from '../app/core/modelos/catalogo';
 import { Loja } from '../app/core/modelos/loja';
 
@@ -64,6 +65,7 @@ export const LOJA: Loja = {
   telefone: '+5521974509789',
   instagram: 'borgonhaconfeitaria',
   avisoTopo: 'Frete grátis em Santa Luzia e região pedindo pelo WhatsApp',
+  entrega: { raioSemPedidoMinimoEmMetros: 1500, pedidoMinimo: 30 },
   horarios: [
     {
       dias: ['tuesday', 'wednesday', 'thursday', 'friday'],
@@ -100,5 +102,27 @@ export const LOJA: Loja = {
       selo: null,
       destaque: false,
     },
+  ],
+};
+
+/** Pedaço de `public/entrega/ruas.json` (raio de 1,5 km). */
+export const ARQUIVO_DE_RUAS: ArquivoDeRuas = {
+  versao: 1,
+  fonte: 'Mapa de ruas © colaboradores do OpenStreetMap (ODbL)',
+  geradoEm: '2026-10-25',
+  origem: { latitude: -22.8021494, longitude: -42.9803336 },
+  raioEmMetros: 1500,
+  alcanceEmMetros: 5000,
+  bairros: [
+    ['Laranjal', 400, 2500],
+    ['Santa Luzia', 0, 3400],
+  ],
+  ruas: [
+    ['Avenida Santa Luzia', [1], 460, 1980, ['Rua Afrânio Peixoto', 'Rua 1']],
+    ['Largo da Igreja', [0], 900, 1000],
+    ['Rua 1', [0], 3900, 4200, null, 'Rua Coronel Peixoto'],
+    ['Rua 1', [0], 1900, 2100, null, 'Largo da Igreja'],
+    ['Rua Afrânio Peixoto', [1], 10, 736],
+    ['Rua Coronel Peixoto', [0], 2500, 3000],
   ],
 };

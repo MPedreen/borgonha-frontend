@@ -143,3 +143,44 @@ test.describe('no celular', () => {
     await expect(barra).not.toHaveClass(/barra--visivel/);
   });
 });
+
+test('confere o endereço da entrega sem chamar nenhuma API de mapas', async ({ page }) => {
+  const pedidosDeMapa: string[] = [];
+  page.on('request', (requisicao) => {
+    if (/google|openstreetmap|overpass|nominatim/.test(new URL(requisicao.url()).hostname)) {
+      pedidosDeMapa.push(requisicao.url());
+    }
+  });
+
+  const secao = page.locator('#entrega');
+  await secao.scrollIntoViewIfNeeded();
+  await expect(secao).toContainText('Entrega grátis, sem pedido mínimo.');
+  await expect(secao).toContainText('Entrega grátis com pedido mínimo de R$ 30.');
+
+  const campo = page.getByRole('combobox', { name: 'Sua rua ou bairro' });
+  await campo.pressSequentially('afranio');
+  await page.getByRole('option', { name: /Rua Afrânio Peixoto/ }).click();
+  await expect(secao.locator('.resultado')).toContainText('Sem pedido mínimo');
+
+  await campo.fill('');
+  await campo.pressSequentially('alcantara');
+  await campo.press('ArrowDown');
+  await campo.press('Enter');
+  await expect(secao.locator('.resultado')).toContainText('Pedido mínimo de R$ 30');
+
+  expect(pedidosDeMapa).toEqual([]);
+});
+
+test('a localização do aparelho diz se precisa de pedido mínimo', async ({ page, context }) => {
+  await context.grantPermissions(['geolocation']);
+  // ~930 m da loja
+  await context.setGeolocation({ latitude: -22.8105, longitude: -42.9805 });
+
+  await page.locator('#entrega').scrollIntoViewIfNeeded();
+  await page.getByRole('button', { name: 'Usar minha localização' }).click();
+
+  await expect(page.locator('#entrega .resultado')).toContainText(
+    'Você está a cerca de 950 m da loja',
+  );
+  await expect(page.locator('#entrega .resultado')).toContainText('Sem pedido mínimo');
+});
