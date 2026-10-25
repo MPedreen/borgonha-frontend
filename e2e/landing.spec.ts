@@ -8,10 +8,8 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('mostra o conceito "Parte ao meio" e os 6 sabores de cookie', async ({ page }) => {
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Parte ao meio. Deixa escorrer.',
-  );
+test('mostra o título do hero e os 6 sabores de cookie', async ({ page }) => {
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Parte. Olha esse recheio.');
   await expect(page.locator('#cookies .grade > li')).toHaveCount(6);
   await expect(page.locator('#cookies')).toContainText('130g');
   await expect(page.locator('#produto-tradicional')).toContainText('R$ 10,00');
