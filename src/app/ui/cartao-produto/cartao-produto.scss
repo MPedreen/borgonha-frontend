@@ -87,7 +87,7 @@
   margin-top: 0.4rem;
 }
 
-// Cookie do cardápio: aberto, centralizado e com o cookie girando no hover.
+// Cookie do cardápio: aberto, centralizado e com o cookie girando quando o mouse passa por cima dele.
 :host([data-variante='cookie']) {
   .cartao {
     gap: 1rem;
@@ -112,10 +112,14 @@
     align-self: center;
   }
 
-  .cartao:hover {
-    --giro-anel: 30deg;
-    --giro-cookie: -8deg;
-    --sobe-cookie: -4px;
+  // Só a foto reage (e só com mouse de verdade): o resto do card é texto e espaço vazio, e no celular
+  // o hover "gruda" no último toque.
+  @media (hover: hover) {
+    .cartao__imagem:hover {
+      --giro-anel: 30deg;
+      --giro-cookie: -8deg;
+      --sobe-cookie: -4px;
+    }
   }
 }
 
