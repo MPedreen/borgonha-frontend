@@ -6,7 +6,7 @@ Angular 22 (standalone, signals, zoneless) · pré-renderização (SSG) com hidr
 
 ## Como rodar
 
-Pré-requisitos: Node.js 24 (ou 22.22+) e, para a API, o [.NET SDK 10](https://dotnet.microsoft.com/download/dotnet/10.0).
+Pré-requisitos: Node.js 24 (ou 22.22+) e, para a API, o [.NET SDK 10](https://dotnet.microsoft.com/download/dotnet/10.0) e o [Docker](https://www.docker.com/products/docker-desktop/), que roda o banco PostgreSQL.
 
 Os dois repositórios ficam lado a lado, nas pastas `frontend/` e `backend/`:
 
@@ -16,8 +16,10 @@ git clone https://github.com/MPedreen/borgonha-backend.git backend
 ```
 
 ```bash
-# Terminal 1: API em http://localhost:5170
+# Terminal 1: banco e API em http://localhost:5170
+# (na primeira vez, configure a senha do banco como explica o README do backend)
 cd backend
+docker compose up -d
 dotnet run --project src/Borgonha.Api
 
 # Terminal 2: site em http://localhost:4200
