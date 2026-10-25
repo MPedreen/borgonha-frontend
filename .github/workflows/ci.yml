@@ -60,6 +60,25 @@ jobs:
       - name: Testes unitários
         run: npm test -- --watch=false
 
+      # Banco descartável só desta execução. A senha é sorteada na hora, fica mascarada nos logs
+      # e nunca aparece no repositório.
+      - name: Subir o PostgreSQL
+        run: |
+          senha="$(openssl rand -hex 24)"
+          echo "::add-mask::$senha"
+          docker run --detach --name banco --publish 127.0.0.1:5432:5432 \
+            --env POSTGRES_DB=borgonha --env POSTGRES_USER=borgonha --env POSTGRES_PASSWORD="$senha" \
+            postgres:18-alpine
+          echo "ConnectionStrings__Borgonha=Host=localhost;Port=5432;Database=borgonha;Username=borgonha;Password=$senha" >> "$GITHUB_ENV"
+          for tentativa in $(seq 1 30); do
+            if docker exec banco pg_isready --host=127.0.0.1 --username=borgonha --dbname=borgonha > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs banco
+          exit 1
+
       - name: Subir a API
         working-directory: backend
         run: |
