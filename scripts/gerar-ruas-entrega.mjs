@@ -1,6 +1,7 @@
 // Gera public/entrega/ruas.json: as ruas e os bairros perto da loja, com a distância de cada um até ela.
-// A consulta de entrega do site usa esse arquivo, então nenhuma API de mapas é chamada quando o cliente
-// confere o endereço. Os dados vêm do OpenStreetMap (licença ODbL; o site mostra o crédito).
+// O site usa esse arquivo só quando a conferência de endereço pela API está indisponível (serviço de mapas
+// fora do ar, sem chave ou sem limite do dia): o cliente procura pelo nome da rua e vê uma estimativa em linha
+// reta. Os dados vêm do OpenStreetMap (licença ODbL; o site mostra o crédito).
 //
 // Uso (com a API rodando, de onde vêm a posição da loja e o raio sem pedido mínimo):
 //   npm run ruas-entrega
