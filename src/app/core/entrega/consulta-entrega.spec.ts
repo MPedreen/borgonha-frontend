@@ -62,9 +62,9 @@ describe('consulta de entrega', () => {
   });
 
   it('classifica uma distância (localização do aparelho)', () => {
-    expect(situacaoDaDistancia(1500, 1500)).toBe('sem-minimo');
-    expect(situacaoDaDistancia(1501, 1500)).toBe('com-minimo');
-    expect(situacaoDaDistancia(40_000, 1500)).toBe('com-minimo');
+    expect(situacaoDaDistancia(1500, 1500, 5000)).toBe('sem-minimo');
+    expect(situacaoDaDistancia(1501, 1500, 5000)).toBe('com-minimo');
+    expect(situacaoDaDistancia(5001, 1500, 5000)).toBe('fora-da-regiao');
   });
 
   it('mede a distância em linha reta entre dois pontos', () => {

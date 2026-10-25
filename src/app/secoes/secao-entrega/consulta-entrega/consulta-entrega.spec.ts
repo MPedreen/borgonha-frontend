@@ -183,14 +183,13 @@ describe('ConsultaEntrega', () => {
       expect(botao('Fazer meu pedido')).toBeUndefined();
     });
 
-    it('muito longe da loja, o pedido mínimo vale do mesmo jeito', async () => {
-      api.conferir.mockReturnValue(of(resultado('com-minimo', null, 30_000)));
+    it('além do alcance, pede para perguntar no WhatsApp', async () => {
+      api.conferir.mockReturnValue(of(resultado('fora-da-regiao', null, 9000)));
       await digitar('rua afranio peixoto 40');
       await conferir();
 
-      expect(resultadoNaTela()).toContain('Pedido mínimo de');
-      expect(resultadoNaTela()).toContain('a mais de 1,5 km da loja (30 km em linha reta)');
-      expect(resultadoNaTela()).not.toContain('longe demais');
+      expect(resultadoNaTela()).toContain('Mais longe que Santa Luzia e região');
+      expect(botao('Perguntar no WhatsApp')).toBeDefined();
     });
 
     it('com Enter direto, usa a primeira sugestão sem buscar de novo', async () => {
