@@ -12,7 +12,8 @@
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\" \"e2e/**/*.ts\" \"scripts/**/*.mjs\"",
     "e2e": "playwright test",
     "imagens": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/otimizar-imagens.mjs",
-    "icones": "node scripts/gerar-icones.mjs"
+    "icones": "node scripts/gerar-icones.mjs",
+    "ruas-entrega": "node scripts/gerar-ruas-entrega.mjs"
   },
   "private": true,
   "packageManager": "npm@11.13.0",
